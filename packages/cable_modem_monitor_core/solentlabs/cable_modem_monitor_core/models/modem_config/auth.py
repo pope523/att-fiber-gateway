@@ -105,6 +105,34 @@ class FormNonceAuth(AuthStrategyBase):
     transport: ClassVar[str] = "http"
 
 
+class FormMd5NonceAuth(AuthStrategyBase):
+    """Form POST with a server-provided nonce and MD5-hashed credential.
+
+    Used by AT&T ARRIS/Nokia gateways (e.g. BGW320-505). The login
+    page carries a hidden ``nonce``; the client computes
+    ``hashpassword = md5(access_code + nonce)`` and POSTs the nonce,
+    an asterisk-masked password, the hash, and a submit field. Success
+    is a redirect that sets the ``SessionID`` cookie.
+
+    Distinct from ``form_nonce`` (which generates a *client* nonce and
+    posts the password in plaintext with no hashing).
+    """
+
+    model_config = ConfigDict(extra="forbid")
+    strategy: Literal["form_md5_nonce"]
+    action: str = "/cgi-bin/login.ha"
+    nonce_field: str = "nonce"
+    password_field: str = "password"
+    hash_field: str = "hashpassword"
+    submit_field: str = "Continue"
+    submit_value: str = "Continue"
+    mask_password: bool = True
+    cookie_name: str = "SessionID"
+
+    display_name: ClassVar[str] = "Form Login (MD5 Nonce)"
+    transport: ClassVar[str] = "http"
+
+
 class UrlTokenAuth(AuthStrategyBase):
     """Credentials encoded in URL query string."""
 
@@ -227,6 +255,7 @@ AuthConfig = Annotated[
     | Annotated[BearerAuth, Tag("bearer")]
     | Annotated[FormAuth, Tag("form")]
     | Annotated[FormCbnAuth, Tag("form_cbn")]
+    | Annotated[FormMd5NonceAuth, Tag("form_md5_nonce")]
     | Annotated[FormNonceAuth, Tag("form_nonce")]
     | Annotated[FormPbkdf2Auth, Tag("form_pbkdf2")]
     | Annotated[FormSjclAuth, Tag("form_sjcl")]
@@ -247,6 +276,7 @@ _AUTH_MODELS: list[type[AuthStrategyBase]] = [
     BearerAuth,
     FormAuth,
     FormCbnAuth,
+    FormMd5NonceAuth,
     FormNonceAuth,
     FormPbkdf2Auth,
     FormSjclAuth,

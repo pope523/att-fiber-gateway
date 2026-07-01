@@ -167,12 +167,29 @@ _DS_ALWAYS_FIELDS = frozenset(("power", "snr"))
 _US_ALWAYS_FIELDS = frozenset(("power",))
 
 # Units and device classes for dynamic system_info fields.
-# Fields not listed here display as unitless strings.
-_SYSTEM_INFO_FIELD_UNITS: dict[str, tuple[str, SensorDeviceClass | None, SensorStateClass | None]] = {
+# Fields not listed here display as unitless strings. A None unit means
+# the field is numeric/graphable but has no natural unit (e.g. packet
+# counts).
+_SYSTEM_INFO_FIELD_UNITS: dict[str, tuple[str | None, SensorDeviceClass | None, SensorStateClass | None]] = {
     "provisioned_speed_down": ("bit/s", SensorDeviceClass.DATA_RATE, SensorStateClass.MEASUREMENT),
     "provisioned_speed_up": ("bit/s", SensorDeviceClass.DATA_RATE, SensorStateClass.MEASUREMENT),
     "provisioned_burst_down": ("B", SensorDeviceClass.DATA_SIZE, SensorStateClass.MEASUREMENT),
     "provisioned_burst_up": ("B", SensorDeviceClass.DATA_SIZE, SensorStateClass.MEASUREMENT),
+    # Fiber optical link metrics (ONT/gateways such as the Nokia BGW320-505).
+    "optical_rx_power": ("dBm", SensorDeviceClass.SIGNAL_STRENGTH, SensorStateClass.MEASUREMENT),
+    "optical_tx_power": ("dBm", SensorDeviceClass.SIGNAL_STRENGTH, SensorStateClass.MEASUREMENT),
+    "optical_temperature": ("°C", SensorDeviceClass.TEMPERATURE, SensorStateClass.MEASUREMENT),
+    # WAN link + IPv4 traffic counters (fiber gateways expose these
+    # instead of DOCSIS channel counters).
+    "wan_link_speed_mbps": ("Mbit/s", SensorDeviceClass.DATA_RATE, SensorStateClass.MEASUREMENT),
+    "wan_rx_bytes": ("B", SensorDeviceClass.DATA_SIZE, SensorStateClass.TOTAL_INCREASING),
+    "wan_tx_bytes": ("B", SensorDeviceClass.DATA_SIZE, SensorStateClass.TOTAL_INCREASING),
+    "wan_rx_packets": (None, None, SensorStateClass.TOTAL_INCREASING),
+    "wan_tx_packets": (None, None, SensorStateClass.TOTAL_INCREASING),
+    "wan_rx_errors": (None, None, SensorStateClass.TOTAL_INCREASING),
+    "wan_tx_errors": (None, None, SensorStateClass.TOTAL_INCREASING),
+    "wan_rx_drops": (None, None, SensorStateClass.TOTAL_INCREASING),
+    "wan_tx_drops": (None, None, SensorStateClass.TOTAL_INCREASING),
 }
 
 # Abbreviations uppercased in humanized field names.

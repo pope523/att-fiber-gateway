@@ -89,12 +89,17 @@ def execute_http_action(
                 timeout=timeout,
             )
         else:
-            raw_params = dict(action.params) if action.params else None
-            data: dict[str, str] | None = (
-                _interpolate_cookie_params(raw_params, session.cookies)
-                if raw_params and any("{cookie:" in v for v in raw_params.values())
-                else raw_params
-            )
+            raw_params: dict[str, str] = dict(action.params) if action.params else {}
+            # Pull a per-request nonce off the action page and inject it
+            # into the POST body (AT&T gateways require this).
+            if action.nonce_field:
+                nonce_url = f"{stripped_base}{action.pre_fetch_url or endpoint}"
+                nonce = _fetch_hidden_field(session, nonce_url, action.nonce_field, timeout)
+                if nonce:
+                    raw_params[action.nonce_field] = nonce
+            data: dict[str, str] | None = raw_params or None
+            if data and any("{cookie:" in v for v in data.values()):
+                data = _interpolate_cookie_params(data, session.cookies)
             resp = session.request(
                 action.method,
                 url,
@@ -222,6 +227,38 @@ def _extract_form_action(page_html: str, keyword: str) -> str | None:
     if match:
         return match.group(1)
     return None
+
+
+def _fetch_hidden_field(
+    session: requests.Session,
+    url: str,
+    field: str,
+    timeout: int,
+) -> str:
+    """GET ``url`` and return the value of hidden input ``field``, or ``""``.
+
+    Used to pull a per-request nonce off an action page immediately
+    before POSTing it back. Failures are swallowed — the POST proceeds
+    without the field and the modem rejects it if the nonce was required.
+    """
+    try:
+        resp = session.get(url, timeout=timeout)
+    except (requests.ConnectionError, requests.Timeout):
+        return ""
+    escaped = re.escape(field)
+    name_first = re.search(
+        r"<input[^>]*\bname=[\"']" + escaped + r"[\"'][^>]*\bvalue=[\"']([^\"']*)[\"']",
+        resp.text,
+        re.IGNORECASE,
+    )
+    if name_first:
+        return name_first.group(1)
+    value_first = re.search(
+        r"<input[^>]*\bvalue=[\"']([^\"']*)[\"'][^>]*\bname=[\"']" + escaped + r"[\"']",
+        resp.text,
+        re.IGNORECASE,
+    )
+    return value_first.group(1) if value_first else ""
 
 
 _COOKIE_PLACEHOLDER_RE = re.compile(r"\{cookie:([^}]+)\}")

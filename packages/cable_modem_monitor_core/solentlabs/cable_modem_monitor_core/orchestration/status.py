@@ -36,6 +36,15 @@ def derive_connection_status(modem_data: dict[str, Any], model: str = "") -> Con
         return ConnectionStatus.ONLINE
 
     system_info = modem_data.get("system_info", {})
+
+    # Channel-less devices (e.g. fiber ONT/gateways) have no DOCSIS
+    # downstream/upstream channels and instead report link health via
+    # docsis_status. An operational status means the WAN link is up,
+    # so treat it as ONLINE rather than NO_SIGNAL (which assumes a
+    # cable modem that failed to lock any channels).
+    if system_info.get("docsis_status") == DocsisStatus.OPERATIONAL:
+        return ConnectionStatus.ONLINE
+
     if system_info:
         return ConnectionStatus.NO_SIGNAL
 

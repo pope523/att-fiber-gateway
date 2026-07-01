@@ -1,0 +1,45 @@
+manufacturer: Nokia
+model: BGW320-505
+transport: http
+default_host: "192.168.1.254"
+
+auth:
+  strategy: none
+
+hardware:
+  hw_version: "02001E0046004F"
+  firmware: "6.34.7"
+  release_date: "2021"
+
+status: awaiting_verification
+
+sources:
+  data: "Live HTTP capture from an AT&T BGW320-505 (firmware 6.34.7): sysinfo.ha, broadbandstatistics.ha, fiberstat.ha"
+
+attribution:
+  contributors:
+    - github: https://github.com/pope523
+      contribution: "Live capture, catalog entry, and fiber optical post-processor"
+
+isps:
+  - AT&T
+  - AT&T Fiber
+
+notes: |
+  AT&T Nokia BGW320-505 XGS-PON fiber gateway (ONT + router) — NOT a DOCSIS
+  cable modem, so it has no downstream/upstream channels and no DOCSIS version.
+  The read-only status pages require no authentication.
+
+  Fiber "signal quality" is a single optical link. parser.py extracts the
+  current optical values embedded in the <h1> "Currently N" headers on
+  fiberstat.ha: Rx/Tx power (firmware reports one-tenth dBm, scaled to dBm)
+  and module temperature (°C). WAN throughput/error counters come from the
+  broadbandstatistics.ha IPv4 Statistics table; link state/wavelength from
+  fiberstat.ha.
+
+  The gateway's software base is ARRIS/Nokia with the classic /cgi-bin/*.ha
+  XHTML UI. Login-protected actions (e.g. restart) use a server-nonce + MD5
+  scheme (hashpassword = md5(access_code + nonce)).
+
+references:
+  issues: []

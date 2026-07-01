@@ -172,6 +172,49 @@ registered_fields:
       type: integer
       unit: "B"
       description: "ISP-provisioned upstream max traffic burst"
+    # --- Fiber ONT / gateway fields (e.g. AT&T Nokia BGW320-505) ---
+    optical_rx_power:
+      type: float
+      unit: "dBm"
+      description: "Fiber receive optical power"
+    optical_tx_power:
+      type: float
+      unit: "dBm"
+      description: "Fiber transmit optical power"
+    optical_temperature:
+      type: float
+      unit: "°C"
+      description: "Optical transceiver (SFP) temperature"
+    wan_link_speed_mbps:
+      type: integer
+      unit: "Mbit/s"
+      description: "WAN Ethernet link speed"
+    wan_rx_bytes:
+      type: integer
+      unit: "B"
+      description: "WAN received bytes (cumulative)"
+    wan_tx_bytes:
+      type: integer
+      unit: "B"
+      description: "WAN transmitted bytes (cumulative)"
+    wan_rx_packets:
+      type: integer
+      description: "WAN received packets (cumulative)"
+    wan_tx_packets:
+      type: integer
+      description: "WAN transmitted packets (cumulative)"
+    wan_rx_errors:
+      type: integer
+      description: "WAN receive errors (cumulative)"
+    wan_tx_errors:
+      type: integer
+      description: "WAN transmit errors (cumulative)"
+    wan_rx_drops:
+      type: integer
+      description: "WAN receive drops (cumulative)"
+    wan_tx_drops:
+      type: integer
+      description: "WAN transmit drops (cumulative)"
 ```
 
 ### Graduation Criteria

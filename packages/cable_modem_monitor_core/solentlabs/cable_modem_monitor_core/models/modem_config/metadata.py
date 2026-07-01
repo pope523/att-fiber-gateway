@@ -15,7 +15,9 @@ class HardwareConfig(BaseModel):
     """Hardware metadata."""
 
     model_config = ConfigDict(extra="forbid")
-    docsis_version: Literal["3.0", "3.1"]
+    # Optional: DOCSIS cable modems report "3.0"/"3.1"; non-DOCSIS
+    # devices (e.g. fiber ONT/gateways) omit it (None).
+    docsis_version: Literal["3.0", "3.1"] | None = None
     hw_version: str | None = None
     firmware: str | None = None
     chipset: str = ""

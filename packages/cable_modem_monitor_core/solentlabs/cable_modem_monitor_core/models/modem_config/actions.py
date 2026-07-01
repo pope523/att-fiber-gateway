@@ -25,6 +25,10 @@ class HttpAction(BaseModel):
     headers: dict[str, str] = Field(default_factory=dict)
     pre_fetch_url: str = ""
     endpoint_pattern: str = ""
+    # When set, GET the endpoint (or pre_fetch_url) before POSTing and
+    # inject that page's hidden field of this name into the POST body.
+    # Used by AT&T gateways whose action pages carry a per-request nonce.
+    nonce_field: str = ""
     action_auth: AuthConfig | None = None
 
     @model_validator(mode="after")

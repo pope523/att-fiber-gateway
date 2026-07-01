@@ -1,0 +1,92 @@
+# Nokia BGW320-505 — AT&T XGS-PON fiber gateway.
+#
+# No DOCSIS downstream/upstream channels: this is a fiber ONT + router, so
+# everything is surfaced through system_info. The current fiber optical
+# values (Rx/Tx power, temperature) live inside <h1> "Currently N" headers
+# on fiberstat.ha and are extracted by parser.py (PostProcessor); the simple
+# label/value rows below are handled declaratively here.
+#
+# NOTE: html_fields label matching is substring-based, so labels must be
+# unique on their page. docsis_status is derived from the fiber link state
+# ("Optical WAN Operational Status") because "Broadband Connection" collides
+# with "Broadband Connection Source".
+system_info:
+  sources:
+    # --- Device / System Information ---
+    - format: html_fields
+      resource: "/cgi-bin/sysinfo.ha"
+      fields:
+        - label: "Software Version"
+          field: software_version
+          type: string
+        - label: "Hardware Version"
+          field: hardware_version
+          type: string
+        - label: "Time Since Last Reboot"
+          field: system_uptime
+          type: uptime
+          format: seconds
+
+    # --- Broadband status: WAN state, link, addresses, IPv4 counters ---
+    - format: html_fields
+      resource: "/cgi-bin/broadbandstatistics.ha"
+      fields:
+        - label: "Broadband Connection Source"
+          field: wan_connection_type
+          type: string
+        - label: "Broadband Network Type"
+          field: wan_network_type
+          type: string
+        - label: "PON Link Status"
+          field: pon_link_status
+          type: string
+        - label: "Current Speed (Mbps)"
+          field: wan_link_speed_mbps
+          type: integer
+        - label: "Broadband IPv4 Address"
+          field: wan_ipv4
+          type: string
+        - label: "Global Unicast IPv6 Address"
+          field: wan_ipv6
+          type: string
+        - label: "Receive Bytes"
+          field: wan_rx_bytes
+          type: integer
+        - label: "Transmit Bytes"
+          field: wan_tx_bytes
+          type: integer
+        - label: "Receive Packets"
+          field: wan_rx_packets
+          type: integer
+        - label: "Transmit Packets"
+          field: wan_tx_packets
+          type: integer
+        - label: "Receive Errors"
+          field: wan_rx_errors
+          type: integer
+        - label: "Transmit Errors"
+          field: wan_tx_errors
+          type: integer
+        - label: "Receive Drops"
+          field: wan_rx_drops
+          type: integer
+        - label: "Transmit Drops"
+          field: wan_tx_drops
+          type: integer
+
+    # --- Fiber status: link state + wavelength (optical power/temperature
+    #     are added by parser.py from the <h1> "Currently N" headers) ---
+    - format: html_fields
+      resource: "/cgi-bin/fiberstat.ha"
+      fields:
+        - label: "Optical WAN Operational Status"
+          field: docsis_status
+          type: string
+          map:
+            Up: Operational
+        - label: "Link State"
+          field: optical_status
+          type: string
+        - label: "Wave Length"
+          field: optical_wavelength
+          type: string
