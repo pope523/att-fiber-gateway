@@ -127,3 +127,6 @@ regression_output.txt
 
 # Windows artifact from /dev/null writes
 nul
+
+# Self-contained HACS build artifact (scripts/dev/build_hacs_zip.py)
+/cable_modem_monitor.zip

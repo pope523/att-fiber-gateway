@@ -77,18 +77,21 @@ jobs:
           # Save to file to preserve formatting
           echo "$CHANGELOG" > /tmp/changelog.txt
 
-      - name: Package integration for HACS
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Package integration for HACS (self-contained, vendored engines)
         run: |
-          cd custom_components/cable_modem_monitor
-          # Exclude docs/ (dev specs) and any bytecode cache.
-          # Exclude brand/ — HACS v2 validates brand assets against
-          # the git tree (not the zip), so brand/ must exist in the
-          # repo but does not need to ship to users at runtime.
-          # See https://hacs.xyz/docs/publish/include#check-brands
-          # Tests run in tests.yml on every push to main and
-          # feature/*; release.yml does not re-run them — by the time
-          # we tag, tests have already passed on the same commit.
-          zip -r ../../cable_modem_monitor.zip . -x 'docs/*' 'brand/*' '*__pycache__*'
+          # This fork is not published to PyPI, so the HACS zip bundles the
+          # core+catalog engines: build_hacs_zip.py vendors solentlabs.* into
+          # _vendor/, injects a sys.path bootstrap, and rewrites the manifest
+          # requirements to the third-party deps. It excludes docs/, brand/,
+          # test_data/, and bytecode.
+          # Tests run in tests.yml on every push; release.yml does not re-run
+          # them — by tag time they've already passed on the same commit.
+          python scripts/dev/build_hacs_zip.py --no-verify --output cable_modem_monitor.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
