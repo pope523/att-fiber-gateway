@@ -16,6 +16,9 @@ jobs:
   build-core:
     name: Build Core
     runs-on: ubuntu-latest
+    # Fork guard: only the upstream repo publishes to PyPI. On forks (which
+    # ship the self-contained HACS build) the whole publish flow no-ops.
+    if: github.repository == 'solentlabs/cable_modem_monitor'
     steps:
       - uses: actions/checkout@v6
 
@@ -40,6 +43,9 @@ jobs:
   build-catalog:
     name: Build Catalog
     runs-on: ubuntu-latest
+    # Fork guard: only the upstream repo publishes to PyPI. On forks (which
+    # ship the self-contained HACS build) the whole publish flow no-ops.
+    if: github.repository == 'solentlabs/cable_modem_monitor'
     steps:
       - uses: actions/checkout@v6
 

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.14.0-beta.13] - 2026-07-07
+
+### Added
+
+- **Nokia BGW320-505 (AT&T XGS-PON fiber gateway) support.** Monitors WAN
+  status, link speed, uptime, byte/packet/error counters, public IPv4/IPv6,
+  and fiber optical Rx/Tx power + module temperature as graphable sensors. A
+  channel-less (non-DOCSIS) device: all metrics surface via system_info and an
+  operational optical link reports ONLINE.
+- **Restart button for the BGW320-505.** New `form_md5_nonce` auth strategy
+  (server-nonce + `md5(access_code + nonce)`) authenticates a fresh session,
+  then the reboot is POSTed with the `Restart` button and a per-request nonce.
+  Requires the 12-char Device Access Code (entered as the connection password);
+  monitoring stays credential-free. Verified live against firmware 6.34.7.
+- **Self-contained HACS build for this fork.** `scripts/dev/build_hacs_zip.py`
+  vendors the Core + Catalog engines into the integration zip so it installs
+  via HACS without the PyPI packages. See `FORK_INSTALL.md`.
+
+### Changed
+
+- **`form_md5_nonce` handles the BGW cookie handshake.** The login GET is
+  retried once so the gateway's SessionID-cookie two-step ("cookies must be
+  enabled") resolves before the nonce is read.
+
 ## [3.14.0-beta.12] - 2026-06-28
 
 ### Added
