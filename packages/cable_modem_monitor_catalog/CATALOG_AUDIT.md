@@ -2,7 +2,7 @@
 
 > Auto-generated. Run `scripts/generate_catalog_index.py` to refresh.
 
-**42 configurations supported** — 23 confirmed on real hardware, 19 awaiting verification.
+**43 configurations supported** — 23 confirmed on real hardware, 20 awaiting verification.
 
 ---
 
@@ -21,6 +21,7 @@ and share a diagnostics snapshot.
 | C3700 | HTML | Comcast, Cox, Spectrum |  |
 | CM2000 | HTML | Comcast, Cox, Spectrum, Xfinity |  |
 | CM600 | HTML | Comcast, Cox, Spectrum, TWC |  |
+| BGW320-505 (02001E0046004F) | HTML | AT&T, AT&T Fiber |  |
 | DM1000 | HTML | Koodo |  |
 | CGA2121 | HTML | Telia |  |
 | CGA4236 | HTML | Unknown |  |

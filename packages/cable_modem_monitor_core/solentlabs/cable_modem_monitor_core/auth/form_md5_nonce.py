@@ -66,14 +66,22 @@ class FormMd5NonceAuthManager(BaseAuthManager):
         login_url = f"{base_url}{config.action}"
 
         # Step 1: GET the login page and extract the hidden nonce.
+        # Some AT&T gateways (e.g. BGW320-505) prime a session cookie on the
+        # first GET and only serve the login form — and its nonce — on a
+        # second request that carries that cookie (the "cookies must be
+        # enabled" handshake). The session persists the cookie, so retry the
+        # GET once when the first response carries no nonce.
         try:
             page = session.get(login_url, timeout=timeout)
+            nonce = _extract_nonce(page.text, config.nonce_field)
+            if not nonce:
+                page = session.get(login_url, timeout=timeout)
+                nonce = _extract_nonce(page.text, config.nonce_field)
         except requests.RequestException as e:
             if isinstance(e, requests.ConnectionError | requests.Timeout):
                 raise
             return AuthResult(success=False, error=f"Login page fetch failed: {type(e).__name__}: {e}")
 
-        nonce = _extract_nonce(page.text, config.nonce_field)
         if not nonce:
             return AuthResult(
                 success=False,

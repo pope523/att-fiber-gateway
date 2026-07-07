@@ -25,13 +25,14 @@
     "kood":        {"abbrev": "KOOD", "name": "Koodo",                  "color": "77aa88"},
     "brighthouse": {"abbrev": "BRIG", "name": "BrightHouse",            "color": "6688aa"},
     "service electric": {"abbrev": "SERV", "name": "Service Electric Cablevision", "color": "778899"},
-    "teksavvy":    {"abbrev": "TEKS", "name": "Teksavvy",               "color": "669977"}
+    "teksavvy":    {"abbrev": "TEKS", "name": "Teksavvy",               "color": "669977"},
+    "at&t":        {"abbrev": "ATT",  "name": "AT&T",                   "color": "0091d5"}
   },
   "display_order": [
     "comcast", "xfinity", "cox", "spectrum", "twc", "rogers", "shaw",
     "videotron", "volia", "pyür", "vodafone", "unitymedia", "virgin",
     "telia", "mediacom", "suddenlink", "rcn", "cableone", "kood",
-    "brighthouse", "service electric", "teksavvy"
+    "brighthouse", "service electric", "teksavvy", "at&t"
   ],
   "info": {
     "comcast":     {"name": "Comcast Xfinity",        "region": "US (nationwide)",    "approval_url": "https://www.xfinity.com/support/articles/list-of-approved-cable-modems", "notes": "Online activation required"},
@@ -54,7 +55,8 @@
     "kood":        {"name": "Koodo",                   "region": "Canada",             "approval_url": "", "notes": "Telus subsidiary"},
     "brighthouse": {"name": "BrightHouse Networks",    "region": "US (Southeast)",     "approval_url": "", "notes": "Merged into Spectrum (2016). Source: https://en.wikipedia.org/wiki/Bright_House_Networks"},
     "service electric": {"name": "Service Electric Cablevision", "region": "US (Pennsylvania)", "approval_url": "https://www.sectv.com/", "notes": "Family-owned regional ISP since 1948. Source: https://en.wikipedia.org/wiki/Service_Electric"},
-    "teksavvy":    {"name": "Teksavvy",                "region": "Canada",             "approval_url": "https://teksavvy.com/services/internet/", "notes": "Independent Canadian ISP/reseller. Source: https://en.wikipedia.org/wiki/TekSavvy"}
+    "teksavvy":    {"name": "Teksavvy",                "region": "Canada",             "approval_url": "https://teksavvy.com/services/internet/", "notes": "Independent Canadian ISP/reseller. Source: https://en.wikipedia.org/wiki/TekSavvy"},
+    "at&t":        {"name": "AT&T",                    "region": "US (21 states)",     "approval_url": "https://www.att.com/internet/fiber/", "notes": "Fiber (XGS-PON) and DSL; gateways are ISP-supplied (no BYOD). BGW320-505 is a Nokia ONT+router. Source: https://en.wikipedia.org/wiki/AT%26T_Internet"}
   },
   "duplicates": ["xfinity", "time warner"]
 }

@@ -21,9 +21,9 @@ Auto-generated index of the v3.14 modem catalog.
 
 - `modem.yaml` — Single source of truth (manufacturer, model, hardware, ISPs, status)
 
-**37 modems, 42 configurations** (23 ✅ confirmed, 19 ⏳ awaiting)
+**38 modems, 43 configurations** (23 ✅ confirmed, 20 ⏳ awaiting)
 
-**Auth strategies:** form (13), none (8), hnap (7), basic (5), url_token (3), form_cbn (2), form_pbkdf2 (2), form_nonce (1), form_sjcl (1)
+**Auth strategies:** form (13), none (9), hnap (7), basic (5), url_token (3), form_cbn (2), form_pbkdf2 (2), form_nonce (1), form_sjcl (1)
 
 ## Directory Structure
 
@@ -78,6 +78,7 @@ packages/cable_modem_monitor_catalog/.../modems/
 | Netgear | [CM2050V](https://github.com/solentlabs/cable_modem_monitor/blob/main/packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/netgear/cm2050v/modem.yaml) | 3.1 | ![HTML](https://img.shields.io/badge/-HTML-E34C26?style=flat-square "Standard web scraping") | [BCM3390](#bcm3390) | ![form](https://img.shields.io/badge/-form-4A7FB8?style=flat-square "Form Login") | [![COM](https://img.shields.io/badge/-COM-5588aa?style=flat-square "Comcast")](#comcast) [![XFI](https://img.shields.io/badge/-XFI-aa7788?style=flat-square "Xfinity")](#comcast) | CM2050V | ✅ Confirmed |
 | Netgear | [CM3000](https://github.com/solentlabs/cable_modem_monitor/blob/main/packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/netgear/cm3000/modem.yaml) | 3.1 | ![HTML](https://img.shields.io/badge/-HTML-E34C26?style=flat-square "Standard web scraping") |  | ![form](https://img.shields.io/badge/-form-4A7FB8?style=flat-square "Form Login") | [![COM](https://img.shields.io/badge/-COM-5588aa?style=flat-square "Comcast")](#comcast) [![COX](https://img.shields.io/badge/-COX-cc9966?style=flat-square "Cox Communications")](#cox) [![SPEC](https://img.shields.io/badge/-SPEC-6699aa?style=flat-square "Spectrum (Charter)")](#spectrum) [![XFI](https://img.shields.io/badge/-XFI-aa7788?style=flat-square "Xfinity")](#comcast) | CM3000 | ✅ Confirmed |
 | Netgear | [CM600](https://github.com/solentlabs/cable_modem_monitor/blob/main/packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/netgear/cm600/modem.yaml) | 3.0 | ![HTML](https://img.shields.io/badge/-HTML-E34C26?style=flat-square "Standard web scraping") | [BCM3384](#bcm3384) | ![basic](https://img.shields.io/badge/-basic-C07820?style=flat-square "Basic Authentication") | [![COM](https://img.shields.io/badge/-COM-5588aa?style=flat-square "Comcast")](#comcast) [![COX](https://img.shields.io/badge/-COX-cc9966?style=flat-square "Cox Communications")](#cox) [![SPEC](https://img.shields.io/badge/-SPEC-6699aa?style=flat-square "Spectrum (Charter)")](#spectrum) [![TWC](https://img.shields.io/badge/-TWC-7799aa?style=flat-square "Time Warner Cable")](#twc) | CM600 | ⏳ Awaiting |
+| Nokia | [BGW320-505 (02001E0046004F)](https://github.com/solentlabs/cable_modem_monitor/blob/main/packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/nokia/bgw320_505/modem.yaml) |  | ![HTML](https://img.shields.io/badge/-HTML-E34C26?style=flat-square "Standard web scraping") |  | ![none](https://img.shields.io/badge/-none-808080?style=flat-square "No Authentication") | [![ATT](https://img.shields.io/badge/-ATT-0091d5?style=flat-square "AT&T")](#att) | BGW320-505 | ⏳ Awaiting |
 | Sercomm | [DM1000](https://github.com/solentlabs/cable_modem_monitor/blob/main/packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/sercomm/dm1000/modem.yaml) | 3.1 | ![HTML](https://img.shields.io/badge/-HTML-E34C26?style=flat-square "Standard web scraping") | Broadcom | ![form](https://img.shields.io/badge/-form-4A7FB8?style=flat-square "Form Login") | [![KOOD](https://img.shields.io/badge/-KOOD-77aa88?style=flat-square "Koodo")](#kood) | DM1000 | ⏳ Awaiting |
 | Technicolor | [CGA2121](https://github.com/solentlabs/cable_modem_monitor/blob/main/packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/technicolor/cga2121/modem.yaml) | 3.0 | ![HTML](https://img.shields.io/badge/-HTML-E34C26?style=flat-square "Standard web scraping") | [BCM3384](#bcm3384) | ![form](https://img.shields.io/badge/-form-4A7FB8?style=flat-square "Form Login") | [![TEL](https://img.shields.io/badge/-TEL-9966aa?style=flat-square "Telia")](#telia) | CGA2121 | ⏳ Awaiting |
 | Technicolor | [CGA4236](https://github.com/solentlabs/cable_modem_monitor/blob/main/packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/technicolor/cga4236/modem.yaml) | 3.1 | ![HTML](https://img.shields.io/badge/-HTML-E34C26?style=flat-square "Standard web scraping") | [BCM3390](#bcm3390) | ![pbkdf2](https://img.shields.io/badge/-pbkdf2-4A9A5B?style=flat-square "Form Login (PBKDF2)") | ![UNKN](https://img.shields.io/badge/-UNKN-gray?style=flat-square "Unknown") | CGA4236<br>CGA4236TCH1 | ⏳ Awaiting |
@@ -145,6 +146,7 @@ _Scale: 2010-2026 (16 years)_
   - Form-based: ![form](https://img.shields.io/badge/-form-4A7FB8?style=flat-square) Form Login | ![nonce](https://img.shields.io/badge/-nonce-3A6A9E?style=flat-square) Form Login (Nonce) | ![pbkdf2](https://img.shields.io/badge/-pbkdf2-4A9A5B?style=flat-square) Form Login (PBKDF2) | ![sjcl](https://img.shields.io/badge/-sjcl-7B4FB8?style=flat-square) Form Login (SJCL) | ![cbn](https://img.shields.io/badge/-cbn-8B6914?style=flat-square) Form Login CBN
   - Token-based: ![token](https://img.shields.io/badge/-token-0E9A8B?style=flat-square) URL Token | ![bearer](https://img.shields.io/badge/-bearer-1A7FAA?style=flat-square) Bearer Token
   - Protocol: ![hnap](https://img.shields.io/badge/-hnap-5B8FBF?style=flat-square) HNAP
+  - Other: ![nonce](https://img.shields.io/badge/-nonce-9E9E9E?style=flat-square) Form Login (MD5 Nonce)
 
 ## Chipset Reference
 
@@ -184,7 +186,8 @@ _Scale: 2010-2026 (16 years)_
 | <span id="brighthouse"></span>BRIG | BrightHouse Networks | US (Southeast) | — | Merged into Spectrum (2016). Source: <https://en.wikipedia.org/wiki/Bright_House_Networks> |
 | <span id="service-electric"></span>SERV | Service Electric Cablevision | US (Pennsylvania) | [Official list](https://www.sectv.com/) | Family-owned regional ISP since 1948. Source: <https://en.wikipedia.org/wiki/Service_Electric> |
 | <span id="teksavvy"></span>TEKS | Teksavvy | Canada | [Official list](https://teksavvy.com/services/internet/) | Independent Canadian ISP/reseller. Source: <https://en.wikipedia.org/wiki/TekSavvy> |
+| <span id="att"></span>ATT | AT&T | US (21 states) | [Official list](https://www.att.com/internet/fiber/) | Fiber (XGS-PON) and DSL; gateways are ISP-supplied (no BYOD). BGW320-505 is a Nokia ONT+router. Source: <https://en.wikipedia.org/wiki/AT%26T_Internet> |
 
 ---
 
-Generated by `scripts/generate_catalog_index.py` from 43 modem configs ([source](https://github.com/solentlabs/cable_modem_monitor/blob/main/packages/cable_modem_monitor_catalog/scripts/generate_catalog_index.py)).
+Generated by `scripts/generate_catalog_index.py` from 44 modem configs ([source](https://github.com/solentlabs/cable_modem_monitor/blob/main/packages/cable_modem_monitor_catalog/scripts/generate_catalog_index.py)).

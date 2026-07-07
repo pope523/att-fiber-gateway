@@ -280,6 +280,9 @@ words:
   - ssids
   - swinfo
   - sysauth
+  - broadbandstatistics
+  - fiberstat
+  - hashpassword
   - sysinfo
   - Sysinfo
   - SYSINFO

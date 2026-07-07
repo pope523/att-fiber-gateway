@@ -6,6 +6,27 @@ default_host: "192.168.1.254"
 auth:
   strategy: none
 
+# Restart requires the 12-char Device Access Code. Polling stays
+# auth-free (auth: none); the restart action authenticates on a fresh
+# session via the server-nonce + MD5 login (form_md5_nonce; the gateway
+# primes a SessionID cookie on the first GET and serves the login nonce
+# only on a second GET). It then POSTs the reboot with the "Restart"
+# submit button plus a per-request nonce lifted from the restart page.
+# Field names/flow verified live against firmware 6.34.7 (login POST -> 302
+# + SessionID; restart form action=/cgi-bin/restart.ha, submit Restart).
+actions:
+  restart:
+    type: http
+    method: POST
+    endpoint: "/cgi-bin/restart.ha"
+    requires_session: true
+    nonce_field: nonce
+    params:
+      Restart: Restart
+    action_auth:
+      strategy: form_md5_nonce
+      action: "/cgi-bin/login.ha"
+
 hardware:
   hw_version: "02001E0046004F"
   firmware: "6.34.7"

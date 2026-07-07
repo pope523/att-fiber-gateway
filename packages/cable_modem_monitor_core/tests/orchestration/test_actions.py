@@ -25,6 +25,9 @@ from solentlabs.cable_modem_monitor_core.orchestration.actions import (
     execute_hnap_action,
     execute_http_action,
 )
+from solentlabs.cable_modem_monitor_core.orchestration.actions.http_action import (
+    _fetch_hidden_field,
+)
 
 # ------------------------------------------------------------------
 # Tests — execute_http_action
@@ -1016,3 +1019,152 @@ class TestHttpActionWithActionAuth:
         execute_action(collector, self._make_modem_config(), action)
 
         original_session.request.assert_called_once()
+
+
+# ------------------------------------------------------------------
+# Tests — HTTP per-request nonce injection (AT&T ARRIS/Nokia gateways)
+# ------------------------------------------------------------------
+
+
+class TestHttpActionNonceInjection:
+    """nonce_field pulls a per-request nonce off the action page into the POST body."""
+
+    def test_nonce_injected_from_endpoint(self) -> None:
+        """GET the endpoint, extract the hidden nonce, POST it in the body."""
+        session = MagicMock(spec=requests.Session)
+        nonce_page = MagicMock()
+        nonce_page.text = '<input type="hidden" name="nonce" value="N-123" />'
+        session.get.return_value = nonce_page
+        resp = MagicMock()
+        resp.status_code = 200
+        session.request.return_value = resp
+
+        action = HttpAction(
+            type="http",
+            method="POST",
+            endpoint="/cgi-bin/restart.ha",
+            nonce_field="nonce",
+        )
+
+        result = execute_http_action(session, "http://192.168.1.254", action)
+
+        assert result.success is True
+        # With no pre_fetch_url, the nonce GET targets the endpoint itself.
+        session.get.assert_called_once_with("http://192.168.1.254/cgi-bin/restart.ha", timeout=10)
+        session.request.assert_called_once_with(
+            "POST",
+            "http://192.168.1.254/cgi-bin/restart.ha",
+            data={"nonce": "N-123"},
+            headers=None,
+            timeout=10,
+        )
+
+    def test_nonce_from_pre_fetch_url(self) -> None:
+        """When pre_fetch_url is set, the nonce is read from that page, not the endpoint."""
+        session = MagicMock(spec=requests.Session)
+        pre_resp = MagicMock()
+        pre_resp.status_code = 200
+        pre_resp.content = b""
+        # pre_fetch page carries the hidden nonce.
+        pre_resp.text = '<input type="hidden" name="nonce" value="N-777" />'
+        session.get.return_value = pre_resp
+        resp = MagicMock()
+        resp.status_code = 200
+        session.request.return_value = resp
+
+        action = HttpAction(
+            type="http",
+            method="POST",
+            endpoint="/cgi-bin/restart.ha",
+            pre_fetch_url="/cgi-bin/restart.ha",
+            nonce_field="nonce",
+        )
+
+        execute_http_action(session, "http://192.168.1.254", action)
+
+        assert session.request.call_args.kwargs["data"] == {"nonce": "N-777"}
+
+    def test_nonce_missing_posts_without_it(self) -> None:
+        """When the page has no nonce, the POST proceeds without the field."""
+        session = MagicMock(spec=requests.Session)
+        nonce_page = MagicMock()
+        nonce_page.text = "<html><body>no nonce</body></html>"
+        session.get.return_value = nonce_page
+        resp = MagicMock()
+        resp.status_code = 200
+        session.request.return_value = resp
+
+        action = HttpAction(
+            type="http",
+            method="POST",
+            endpoint="/cgi-bin/restart.ha",
+            nonce_field="nonce",
+        )
+
+        execute_http_action(session, "http://192.168.1.254", action)
+
+        session.request.assert_called_once_with(
+            "POST",
+            "http://192.168.1.254/cgi-bin/restart.ha",
+            data=None,
+            headers=None,
+            timeout=10,
+        )
+
+    def test_nonce_merged_with_static_params(self) -> None:
+        """A configured param and the injected nonce are both sent."""
+        session = MagicMock(spec=requests.Session)
+        nonce_page = MagicMock()
+        nonce_page.text = '<input name="nonce" value="N-9" type="hidden" />'
+        session.get.return_value = nonce_page
+        resp = MagicMock()
+        resp.status_code = 200
+        session.request.return_value = resp
+
+        action = HttpAction(
+            type="http",
+            method="POST",
+            endpoint="/cgi-bin/restart.ha",
+            nonce_field="nonce",
+            params={"Restart": "1"},
+        )
+
+        execute_http_action(session, "http://192.168.1.254", action)
+
+        session.request.assert_called_once_with(
+            "POST",
+            "http://192.168.1.254/cgi-bin/restart.ha",
+            data={"Restart": "1", "nonce": "N-9"},
+            headers=None,
+            timeout=10,
+        )
+
+
+class TestFetchHiddenField:
+    """_fetch_hidden_field extracts a hidden input value, name- or value-first."""
+
+    def test_name_before_value(self) -> None:
+        session = MagicMock(spec=requests.Session)
+        resp = MagicMock()
+        resp.text = '<input type="hidden" name="nonce" value="abc" />'
+        session.get.return_value = resp
+        assert _fetch_hidden_field(session, "http://gw/p", "nonce", 10) == "abc"
+
+    def test_value_before_name(self) -> None:
+        session = MagicMock(spec=requests.Session)
+        resp = MagicMock()
+        resp.text = '<input value="xyz" name="nonce" />'
+        session.get.return_value = resp
+        assert _fetch_hidden_field(session, "http://gw/p", "nonce", 10) == "xyz"
+
+    def test_missing_returns_empty(self) -> None:
+        session = MagicMock(spec=requests.Session)
+        resp = MagicMock()
+        resp.text = "<html></html>"
+        session.get.return_value = resp
+        assert _fetch_hidden_field(session, "http://gw/p", "nonce", 10) == ""
+
+    def test_connection_error_returns_empty(self) -> None:
+        session = MagicMock(spec=requests.Session)
+        session.get.side_effect = requests.ConnectionError("refused")
+        assert _fetch_hidden_field(session, "http://gw/p", "nonce", 10) == ""
