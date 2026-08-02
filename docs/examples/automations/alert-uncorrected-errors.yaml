@@ -5,7 +5,7 @@ automation:
   - alias: "Cable Modem - High Uncorrected Errors"
     trigger:
       - platform: numeric_state
-        entity_id: sensor.cable_modem_total_uncorrected_errors
+        entity_id: sensor.bgw320_total_uncorrected_errors
         above: 100
     action:
       - service: notify.notify

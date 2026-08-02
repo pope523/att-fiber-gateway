@@ -23,7 +23,7 @@ from solentlabs.cable_modem_monitor_core.catalog_manager import (
     VariantInfo,
 )
 
-from custom_components.cable_modem_monitor.migrations.v1_to_v2 import (
+from custom_components.bgw320.migrations.v1_to_v2 import (
     V1_STALE_KEYS,
     ResolvedModem,
     async_migrate,
@@ -188,11 +188,11 @@ class TestResolveModemDir:
     def test_resolve(self, manufacturer, model, expected, desc):
         with (
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.list_modems",
+                "custom_components.bgw320.migrations.v1_to_v2.list_modems",
                 return_value=_SYNTHETIC_SUMMARIES,
             ),
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.CATALOG_PATH",
+                "custom_components.bgw320.migrations.v1_to_v2.CATALOG_PATH",
                 _FAKE_CATALOG,
             ),
         ):
@@ -212,11 +212,11 @@ class TestResolveModemDir:
         ]
         with (
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.list_modems",
+                "custom_components.bgw320.migrations.v1_to_v2.list_modems",
                 return_value=ambiguous_summaries,
             ),
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.CATALOG_PATH",
+                "custom_components.bgw320.migrations.v1_to_v2.CATALOG_PATH",
                 _FAKE_CATALOG,
             ),
         ):
@@ -278,11 +278,11 @@ class TestResolveVariant:
     def test_resolve(self, v1_auth, variants, expected, desc):
         with (
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.list_variants",
+                "custom_components.bgw320.migrations.v1_to_v2.list_variants",
                 return_value=variants,
             ),
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.CATALOG_PATH",
+                "custom_components.bgw320.migrations.v1_to_v2.CATALOG_PATH",
                 _FAKE_CATALOG,
             ),
         ):
@@ -294,11 +294,11 @@ class TestResolveVariant:
         sibling = Path("/fake/catalog/mfr/m1-sibling")
         with (
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.list_variants",
+                "custom_components.bgw320.migrations.v1_to_v2.list_variants",
                 return_value=_TWO_VARIANTS,
             ) as mock_lv,
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.CATALOG_PATH",
+                "custom_components.bgw320.migrations.v1_to_v2.CATALOG_PATH",
                 _FAKE_CATALOG,
             ),
         ):
@@ -464,11 +464,11 @@ class TestAsyncMigrate:
 
         with (
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.resolve_modem_dir",
+                "custom_components.bgw320.migrations.v1_to_v2.resolve_modem_dir",
                 return_value=ResolvedModem("vendor/model", "Vendor", "Model", []),
             ),
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.resolve_variant",
+                "custom_components.bgw320.migrations.v1_to_v2.resolve_variant",
                 return_value="basic",
             ),
         ):
@@ -502,11 +502,11 @@ class TestAsyncMigrate:
 
         with (
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.resolve_modem_dir",
+                "custom_components.bgw320.migrations.v1_to_v2.resolve_modem_dir",
                 return_value=ResolvedModem("vendor/model", "Vendor", "Model", []),
             ),
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.resolve_variant",
+                "custom_components.bgw320.migrations.v1_to_v2.resolve_variant",
                 return_value=None,
             ),
         ):
@@ -532,11 +532,11 @@ class TestAsyncMigrate:
 
         with (
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.resolve_modem_dir",
+                "custom_components.bgw320.migrations.v1_to_v2.resolve_modem_dir",
                 return_value=ResolvedModem("vendor/model", "Vendor", "Model", []),
             ),
             patch(
-                "custom_components.cable_modem_monitor.migrations.v1_to_v2.resolve_variant",
+                "custom_components.bgw320.migrations.v1_to_v2.resolve_variant",
                 return_value=None,
             ),
         ):
@@ -559,7 +559,7 @@ class TestAsyncMigrate:
         hass.async_add_executor_job = _mock_executor
 
         with patch(
-            "custom_components.cable_modem_monitor.migrations.v1_to_v2.resolve_modem_dir",
+            "custom_components.bgw320.migrations.v1_to_v2.resolve_modem_dir",
             return_value=None,
         ):
             result = await async_migrate(hass, entry)

@@ -18,8 +18,8 @@ from typing import Any
 
 import pytest
 
-from custom_components.cable_modem_monitor.const import ChannelIdentity
-from custom_components.cable_modem_monitor.mapping_manager import (
+from custom_components.bgw320.const import ChannelIdentity
+from custom_components.bgw320.mapping_manager import (
     ChannelMap,
     build_channel_map,
 )

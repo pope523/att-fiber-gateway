@@ -215,10 +215,10 @@ def main():  # noqa: C901
 
     # 1. Check if in project root
     print_step("Checking if in project root directory...")
-    if not os.path.exists("custom_components/cable_modem_monitor/__init__.py"):
+    if not os.path.exists("custom_components/bgw320/__init__.py"):
         print_error("Not in project root directory")
-        print("\nPlease run this script from the cable_modem_monitor/ directory:")
-        print("  cd /path/to/cable_modem_monitor")
+        print("\nPlease run this script from the bgw320/ directory:")
+        print("  cd /path/to/bgw320")
         print("  python3 scripts/setup.py\n")
         sys.exit(1)
     print_success("Running from project root")

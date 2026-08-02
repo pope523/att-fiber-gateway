@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from custom_components.cable_modem_monitor.const import EntityPrefix
-from custom_components.cable_modem_monitor.lib.utils import (
+from custom_components.bgw320.const import EntityPrefix
+from custom_components.bgw320.lib.utils import (
     extract_float,
     extract_number,
     get_device_name,
@@ -17,11 +17,12 @@ from custom_components.cable_modem_monitor.lib.utils import (
 # │ entity_prefix    │ model   │ host               │ expected                   │
 # ├──────────────────┼─────────┼────────────────────┼────────────────────────────┤
 DEVICE_NAME_CASES = [
-    (EntityPrefix.NONE,  "",        "",               "Cable Modem"),
-    (EntityPrefix.MODEL, "SB8200",  "",               "Cable Modem SB8200"),
-    (EntityPrefix.IP,    "",        "192.168.100.1",  "Cable Modem 192.168.100.1"),
-    (EntityPrefix.MODEL, "SB8200",  "192.168.100.1",  "Cable Modem SB8200"),  # model wins
-    (EntityPrefix.IP,    "SB8200",  "192.168.100.1",  "Cable Modem 192.168.100.1"),
+    (EntityPrefix.NONE,  "",             "",               "BGW320"),
+    (EntityPrefix.MODEL, "BGW320-505",   "",               "BGW320-505"),
+    (EntityPrefix.IP,    "",             "192.168.0.254",  "BGW320 192.168.0.254"),
+    (EntityPrefix.MODEL, "BGW320-505",   "192.168.0.254",  "BGW320-505"),  # model wins
+    (EntityPrefix.IP,    "BGW320-505",   "192.168.0.254",  "BGW320 192.168.0.254"),
+    (EntityPrefix.MODEL, "",             "192.168.0.254",  "BGW320"),  # empty model falls back
 ]
 # └──────────────────┴─────────┴────────────────────┴────────────────────────────┘
 # fmt: on

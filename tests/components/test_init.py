@@ -19,7 +19,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from solentlabs.cable_modem_monitor_core.orchestration.models import ModemIdentity
 
-from custom_components.cable_modem_monitor import (
+from custom_components.bgw320 import (
     _async_update_listener,
     _check_channel_bond_change,
     _create_core_components,
@@ -31,9 +31,9 @@ from custom_components.cable_modem_monitor import (
     async_setup_entry,
     async_unload_entry,
 )
-from custom_components.cable_modem_monitor.const import PLATFORMS
-from custom_components.cable_modem_monitor.coordinator import CableModemRuntimeData
-from custom_components.cable_modem_monitor.migrations import async_run_migrations
+from custom_components.bgw320.const import PLATFORMS
+from custom_components.bgw320.coordinator import CableModemRuntimeData
+from custom_components.bgw320.migrations import async_run_migrations
 
 from .conftest import MOCK_ENTRY_DATA, STUB_MODEM_CONFIG, _make_stub_modem_config
 
@@ -45,7 +45,7 @@ from .conftest import MOCK_ENTRY_DATA, STUB_MODEM_CONFIG, _make_stub_modem_confi
 def test_get_package_versions_installed():
     """Returns formatted version string when packages are installed."""
     with patch(
-        "custom_components.cable_modem_monitor.pkg_version",
+        "custom_components.bgw320.pkg_version",
         return_value="1.0.0",
     ):
         result = _get_package_versions()
@@ -56,7 +56,7 @@ def test_get_package_versions_installed():
 def test_get_package_versions_not_installed():
     """Returns 'not installed' when package lookup fails."""
     with patch(
-        "custom_components.cable_modem_monitor.pkg_version",
+        "custom_components.bgw320.pkg_version",
         side_effect=Exception("not found"),
     ):
         result = _get_package_versions()
@@ -94,7 +94,7 @@ SUMMARY_CASES = [
 )
 def test_log_operational_summary(scan, health, expected_poll, expected_health, desc, caplog):
     """Operational summary formats intervals correctly."""
-    with caplog.at_level(logging.INFO, logger="custom_components.cable_modem_monitor"):
+    with caplog.at_level(logging.INFO, logger="custom_components.bgw320"):
         _log_operational_summary(scan, health, "TPS-2000")
 
     assert expected_poll in caplog.text
@@ -114,7 +114,7 @@ async def test_async_migrate_entry_delegates():
     entry.version = 1
 
     with patch(
-        "custom_components.cable_modem_monitor.async_run_migrations",
+        "custom_components.bgw320.async_run_migrations",
         new_callable=AsyncMock,
         return_value=True,
     ) as mock_migrate:
@@ -137,7 +137,7 @@ async def test_unload_entry_basic():
 
     entry = MagicMock()
 
-    with patch("custom_components.cable_modem_monitor.async_unregister_services") as mock_unreg:
+    with patch("custom_components.bgw320.async_unregister_services") as mock_unreg:
         result = await async_unload_entry(hass, entry)
 
     assert result is True
@@ -153,7 +153,7 @@ async def test_unload_entry_unregisters_services_on_last():
 
     entry = MagicMock()
 
-    with patch("custom_components.cable_modem_monitor.async_unregister_services") as mock_unreg:
+    with patch("custom_components.bgw320.async_unregister_services") as mock_unreg:
         await async_unload_entry(hass, entry)
 
     mock_unreg.assert_called_once_with(hass)
@@ -185,7 +185,7 @@ async def test_setup_entry_catalog_failure():
     entry.data = {"host": "192.168.100.1", "manufacturer": "Solent Labs", "model": "TPS-2000"}
     entry.options = {}
 
-    with patch("custom_components.cable_modem_monitor.setup_log_buffer"):
+    with patch("custom_components.bgw320.setup_log_buffer"):
         result = await async_setup_entry(hass, entry)
 
     assert result is False
@@ -196,9 +196,9 @@ async def test_setup_entry_catalog_failure():
 # -----------------------------------------------------------------------
 
 # Shared patch targets for _create_core_components tests
-_PATCH_LOAD_MODEM = "custom_components.cable_modem_monitor.load_modem_config"
-_PATCH_LOAD_PARSER = "custom_components.cable_modem_monitor.load_parser_config"
-_PATCH_LOAD_POST = "custom_components.cable_modem_monitor.load_post_processor"
+_PATCH_LOAD_MODEM = "custom_components.bgw320.load_modem_config"
+_PATCH_LOAD_PARSER = "custom_components.bgw320.load_parser_config"
+_PATCH_LOAD_POST = "custom_components.bgw320.load_post_processor"
 
 
 def test_wiring_loads_config_and_returns_tuple():
@@ -366,7 +366,7 @@ async def test_migration_exception_returns_false():
     entry.entry_id = "test"
 
     with patch.dict(
-        "custom_components.cable_modem_monitor.migrations.MIGRATIONS",
+        "custom_components.bgw320.migrations.MIGRATIONS",
         {2: _failing},
         clear=True,
     ):
@@ -392,7 +392,7 @@ async def test_migration_returning_false_stops_chain():
     entry.entry_id = "test"
 
     with patch.dict(
-        "custom_components.cable_modem_monitor.migrations.MIGRATIONS",
+        "custom_components.bgw320.migrations.MIGRATIONS",
         {2: _fail, 3: _should_not_run},
         clear=True,
     ):
@@ -454,14 +454,14 @@ async def test_setup_entry_happy_path():
     ]
 
     with (
-        patch("custom_components.cable_modem_monitor.setup_log_buffer"),
+        patch("custom_components.bgw320.setup_log_buffer"),
         patch(
-            "custom_components.cable_modem_monitor.DataUpdateCoordinator",
+            "custom_components.bgw320.DataUpdateCoordinator",
             mock_duc,
         ),
-        patch("custom_components.cable_modem_monitor._update_device_registry"),
-        patch("custom_components.cable_modem_monitor.async_register_services"),
-        patch("custom_components.cable_modem_monitor.attach_recovery_cadence_listener") as mock_attach,
+        patch("custom_components.bgw320._update_device_registry"),
+        patch("custom_components.bgw320.async_register_services"),
+        patch("custom_components.bgw320.attach_recovery_cadence_listener") as mock_attach,
     ):
         result = await async_setup_entry(hass, entry)
 
@@ -502,7 +502,7 @@ def test_update_device_registry():
     mock_registry = MagicMock()
 
     with patch(
-        "custom_components.cable_modem_monitor.dr.async_get",
+        "custom_components.bgw320.dr.async_get",
         return_value=mock_registry,
     ):
         _update_device_registry(hass, entry)
@@ -588,11 +588,11 @@ async def test_channel_bond_fresh_setup_fires_onboarding():
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.async_load_bond_state",
+            "custom_components.bgw320.async_load_bond_state",
             AsyncMock(return_value=None),
         ),
         patch(
-            "custom_components.cable_modem_monitor.async_save_bond_state",
+            "custom_components.bgw320.async_save_bond_state",
             AsyncMock(),
         ) as mock_save,
     ):
@@ -610,7 +610,7 @@ async def test_channel_bond_fresh_setup_fires_onboarding():
     assert call_args.args[0] == "persistent_notification"
     assert call_args.args[1] == "create"
     payload = call_args.args[2]
-    assert payload["notification_id"] == "cable_modem_monitor_onboarding_entry_abc"
+    assert payload["notification_id"] == "bgw320_onboarding_entry_abc"
     assert "TPS-2000" in payload["message"]
     assert "generate_dashboard" in payload["message"]
 
@@ -622,11 +622,11 @@ async def test_channel_bond_upgraded_entry_silent_init():
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.async_load_bond_state",
+            "custom_components.bgw320.async_load_bond_state",
             AsyncMock(return_value=None),
         ),
         patch(
-            "custom_components.cable_modem_monitor.async_save_bond_state",
+            "custom_components.bgw320.async_save_bond_state",
             AsyncMock(),
         ) as mock_save,
     ):
@@ -640,7 +640,7 @@ async def test_channel_bond_upgraded_entry_silent_init():
 
 async def test_channel_bond_change_fires_notification():
     """Totals differing from baseline fire the change notification."""
-    from custom_components.cable_modem_monitor.channel_bond_storage import BondState
+    from custom_components.bgw320.channel_bond_storage import BondState
 
     entry_data = {"channel_onboarding_eligible": True}
     hass, entry, orchestrator, snapshot = _make_bond_test_harness(
@@ -651,11 +651,11 @@ async def test_channel_bond_change_fires_notification():
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.async_load_bond_state",
+            "custom_components.bgw320.async_load_bond_state",
             AsyncMock(return_value=prior),
         ),
         patch(
-            "custom_components.cable_modem_monitor.async_save_bond_state",
+            "custom_components.bgw320.async_save_bond_state",
             AsyncMock(),
         ) as mock_save,
     ):
@@ -665,13 +665,13 @@ async def test_channel_bond_change_fires_notification():
     assert mock_save.call_args.args[2].baseline_downstream == 23
 
     payload = hass.services.async_call.call_args.args[2]
-    assert payload["notification_id"] == "cable_modem_monitor_channel_change_entry_abc"
+    assert payload["notification_id"] == "bgw320_channel_change_entry_abc"
     assert "downstream 24 → 23" in payload["message"]
 
 
 async def test_channel_bond_steady_counts_no_op():
     """No change means no notification, no Store write, no entry-data write."""
-    from custom_components.cable_modem_monitor.channel_bond_storage import BondState
+    from custom_components.bgw320.channel_bond_storage import BondState
 
     entry_data = {"channel_onboarding_eligible": True}
     hass, entry, orchestrator, snapshot = _make_bond_test_harness(entry_data=entry_data)
@@ -679,11 +679,11 @@ async def test_channel_bond_steady_counts_no_op():
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.async_load_bond_state",
+            "custom_components.bgw320.async_load_bond_state",
             AsyncMock(return_value=stored),
         ),
         patch(
-            "custom_components.cable_modem_monitor.async_save_bond_state",
+            "custom_components.bgw320.async_save_bond_state",
             AsyncMock(),
         ) as mock_save,
     ):
@@ -696,7 +696,7 @@ async def test_channel_bond_steady_counts_no_op():
 
 async def test_channel_bond_recovery_suppresses_change():
     """Count mismatch during a recovery window: no notification, no Store write."""
-    from custom_components.cable_modem_monitor.channel_bond_storage import BondState
+    from custom_components.bgw320.channel_bond_storage import BondState
 
     entry_data = {"channel_onboarding_eligible": True}
     hass, entry, orchestrator, snapshot = _make_bond_test_harness(
@@ -708,11 +708,11 @@ async def test_channel_bond_recovery_suppresses_change():
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.async_load_bond_state",
+            "custom_components.bgw320.async_load_bond_state",
             AsyncMock(return_value=stored),
         ),
         patch(
-            "custom_components.cable_modem_monitor.async_save_bond_state",
+            "custom_components.bgw320.async_save_bond_state",
             AsyncMock(),
         ) as mock_save,
     ):
@@ -731,11 +731,11 @@ async def test_channel_bond_missing_snapshot_data_no_op():
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.async_load_bond_state",
+            "custom_components.bgw320.async_load_bond_state",
             AsyncMock(return_value=None),
         ) as mock_load,
         patch(
-            "custom_components.cable_modem_monitor.async_save_bond_state",
+            "custom_components.bgw320.async_save_bond_state",
             AsyncMock(),
         ) as mock_save,
     ):
@@ -754,7 +754,7 @@ async def test_async_remove_entry_clears_bond_store():
     entry.entry_id = "entry_abc"
 
     with patch(
-        "custom_components.cable_modem_monitor.async_remove_bond_state",
+        "custom_components.bgw320.async_remove_bond_state",
         AsyncMock(),
     ) as mock_remove:
         await async_remove_entry(hass, entry)
@@ -787,7 +787,7 @@ async def test_channel_bond_no_modem_data_no_op():
     )
 
     with patch(
-        "custom_components.cable_modem_monitor.async_load_bond_state",
+        "custom_components.bgw320.async_load_bond_state",
         AsyncMock(),
     ) as mock_load:
         await _check_channel_bond_change(hass, entry, snapshot, orchestrator, "TPS-2000")
@@ -809,7 +809,7 @@ def _rebuild_inputs(*, with_runtime: bool, with_modem_data: bool) -> tuple[Any, 
         DocsisStatus,
     )
 
-    from custom_components.cable_modem_monitor.const import ChannelIdentity
+    from custom_components.bgw320.const import ChannelIdentity
 
     entry: Any = MagicMock()
     if with_runtime:
@@ -834,7 +834,7 @@ def _rebuild_inputs(*, with_runtime: bool, with_modem_data: bool) -> tuple[Any, 
 
 def test_rebuild_channel_map_no_runtime_data_no_op():
     """Pre-Step-9 entry without runtime_data returns silently."""
-    from custom_components.cable_modem_monitor import _rebuild_channel_map
+    from custom_components.bgw320 import _rebuild_channel_map
 
     entry, snapshot, identity = _rebuild_inputs(with_runtime=False, with_modem_data=True)
 
@@ -845,7 +845,7 @@ def test_rebuild_channel_map_no_runtime_data_no_op():
 
 def test_rebuild_channel_map_no_modem_data_no_op():
     """Snapshot without modem_data leaves runtime.channel_map untouched."""
-    from custom_components.cable_modem_monitor import _rebuild_channel_map
+    from custom_components.bgw320 import _rebuild_channel_map
 
     entry, snapshot, identity = _rebuild_inputs(with_runtime=True, with_modem_data=False)
 
@@ -857,7 +857,7 @@ def test_rebuild_channel_map_no_modem_data_no_op():
 
 def test_rebuild_channel_map_builds_map():
     """With runtime + modem_data, channel_map is rebuilt from snapshot."""
-    from custom_components.cable_modem_monitor import _rebuild_channel_map
+    from custom_components.bgw320 import _rebuild_channel_map
 
     entry, snapshot, identity = _rebuild_inputs(with_runtime=True, with_modem_data=True)
 
@@ -877,7 +877,7 @@ def _health_recovery_inputs():
     """Wire up listener inputs and return (hass, health_coord, data_coord, listener_fn)."""
     from solentlabs.cable_modem_monitor_core.orchestration.signals import HealthStatus
 
-    from custom_components.cable_modem_monitor import _attach_health_recovery_listener
+    from custom_components.bgw320 import _attach_health_recovery_listener
 
     hass = MagicMock()
     health_coord = MagicMock()
@@ -948,7 +948,7 @@ def test_health_recovery_no_op_in_steady_responsive():
 )
 def test_format_interval_includes_hours(seconds, expected, caplog):
     """_format_interval emits an hours component when seconds >= 3600."""
-    with caplog.at_level(logging.INFO, logger="custom_components.cable_modem_monitor"):
+    with caplog.at_level(logging.INFO, logger="custom_components.bgw320"):
         _log_operational_summary(seconds, 30, "TPS-2000")
 
     assert expected in caplog.text

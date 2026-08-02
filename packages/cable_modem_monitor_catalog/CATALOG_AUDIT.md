@@ -2,7 +2,7 @@
 
 > Auto-generated. Run `scripts/generate_catalog_index.py` to refresh.
 
-**43 configurations supported** — 23 confirmed on real hardware, 20 awaiting verification.
+**1 configurations supported** — 0 confirmed on real hardware, 1 awaiting verification.
 
 ---
 
@@ -14,21 +14,7 @@ and share a diagnostics snapshot.
 
 | Modem | Transport | ISPs | Note |
 |-------|-----------|------|------|
-| G54 | HTML | Cox, Spectrum, Xfinity |  |
-| S34 | HNAP | Comcast, Cox, Spectrum, Xfinity |  |
-| SB6141 | HTML | Comcast, Cox, Spectrum, TWC, Mediacom |  |
-| SB8200 (v3) | CBN | Comcast, Cox, Spectrum, Xfinity |  |
-| C3700 | HTML | Comcast, Cox, Spectrum |  |
-| CM2000 | HTML | Comcast, Cox, Spectrum, Xfinity |  |
-| CM600 | HTML | Comcast, Cox, Spectrum, TWC |  |
 | BGW320-505 (02001E0046004F) | HTML | AT&T, AT&T Fiber |  |
-| DM1000 | HTML | Koodo |  |
-| CGA2121 | HTML | Telia |  |
-| CGA4236 | HTML | Unknown |  |
-| CGA6444VF | HTML | Vodafone |  |
-| TC4400 | HTML | Comcast, Cox, Spectrum, Rogers, Shaw, Videotron, Vodafone Germany, Unitymedia, Teksavvy |  |
-| XB6 | HTML | Rogers |  |
-| Hub 5 | HTML | Virgin Media UK |  |
 
 ## Pending Review
 
@@ -37,11 +23,6 @@ May have open repair work — review individually.
 
 | Modem | Transport | ISPs |
 |-------|-----------|------|
-| SB6190 | HTML | Comcast, Cox, Spectrum, TWC |
-| SB8200 (v7, cookie) | HTML | Spectrum |
-| SB8200 (v7, url-token) | HTML | Comcast, Cox, Spectrum, Xfinity |
-| SB8200 (v7) | HTML | Service Electric Cablevision |
-| CM1200 | HTML | Comcast, Spectrum, Cox |
 
 ## Confirmed
 
@@ -49,29 +30,6 @@ Working on real hardware with a report on file.
 
 | Modem | Transport | ISPs |
 |-------|-----------|------|
-| CM3500B | HTML | Vodafone Germany, Vodafone |
-| CM820B | HTML | Volya, Various |
-| S33 | HNAP | Comcast, Cox, Spectrum, Xfinity |
-| S33 (v2) | HNAP | Comcast, Cox, Spectrum, Xfinity |
-| S33 (v3) | HNAP | Comcast, Cox, Spectrum, Xfinity |
-| SB6183 | HTML | Comcast, Cox, Spectrum, Xfinity, Mediacom |
-| SB6190 (form-nonce) | HTML | Comcast, Spectrum |
-| SB8200 (v7, body-token) | HTML | Spectrum |
-| SB8200 (v6) | HNAP | Cox |
-| TG3442DE | HTML | Vodafone DE |
-| TM1602A | HTML | Spectrum |
-| CH7465MT | CBN | MTAT |
-| CODA56 | HTML | Comcast, Xfinity |
-| MB7621 | HTML | Comcast, Cox, Spectrum, TWC, CableOne, RCN, Comcast Xfinity, Suddenlink, BrightHouse |
-| MB8600 | HNAP | Comcast, Xfinity, Cox, Spectrum |
-| MB8611 | HNAP | Comcast, Xfinity, Cox, Spectrum |
-| C7000v2 | HTML | Comcast |
-| CM1100 | HTML | Comcast |
-| CM1200 (basic) | HTML | Comcast, Spectrum, Cox |
-| CM2050V | HTML | Comcast, Xfinity |
-| CM3000 | HTML | Comcast, Cox, Spectrum, Xfinity |
-| XB10 | HTML | Xfinity |
-| XB7 | HTML | Rogers, Comcast, Xfinity |
 
 ---
 

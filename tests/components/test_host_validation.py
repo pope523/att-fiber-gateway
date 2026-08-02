@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from custom_components.cable_modem_monitor.lib.host_validation import build_url, parse_host_input
+from custom_components.bgw320.lib.host_validation import build_url, parse_host_input
 
 # fmt: off
 # ┌──────────────────────────────┬──────────────────────┬──────────┬──────────────────────────────────┐

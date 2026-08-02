@@ -27,12 +27,12 @@ from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     HealthStatus,
 )
 
-from custom_components.cable_modem_monitor.const import (
+from custom_components.bgw320.const import (
     CONF_CHANNEL_IDENTITY,
     ChannelIdentity,
 )
-from custom_components.cable_modem_monitor.mapping_manager import build_channel_map
-from custom_components.cable_modem_monitor.sensor import (
+from custom_components.bgw320.mapping_manager import build_channel_map
+from custom_components.bgw320.sensor import (
     ChannelSensor,
     HttpLatencySensor,
     LanStatsSensor,
@@ -272,7 +272,7 @@ def test_error_rate_sensor_value(mock_runtime_data, error_type, field_value, exp
     and field absent (orchestrator omitted on this poll → HA shows
     `unknown`).
     """
-    from custom_components.cable_modem_monitor.sensor import ModemErrorRateSensor
+    from custom_components.bgw320.sensor import ModemErrorRateSensor
 
     system_info = {} if field_value is None else {f"rate_{error_type}": field_value}
     modem_data = {"system_info": system_info, "downstream": [], "upstream": []}
@@ -290,7 +290,7 @@ def test_error_rate_sensor_unit_and_state_class(mock_runtime_data, error_type):
     """Rate sensor exposes errors/min as MEASUREMENT (point-in-time)."""
     from homeassistant.components.sensor import SensorStateClass
 
-    from custom_components.cable_modem_monitor.sensor import ModemErrorRateSensor
+    from custom_components.bgw320.sensor import ModemErrorRateSensor
 
     sensor = _make_sensor(ModemErrorRateSensor, mock_runtime_data, error_type=error_type)
     assert sensor._attr_native_unit_of_measurement == "errors/min"
@@ -427,7 +427,7 @@ def test_channel_sensor_native_value_position_mode(mock_runtime_data):
     assert sensor.native_value == 2.5
     assert sensor._attr_name == "DS Ch 1 Power"
     assert sensor._attr_unique_id is not None
-    assert "cable_modem_ds_ch_1_power" in sensor._attr_unique_id
+    assert "bgw320_ds_ch_1_power" in sensor._attr_unique_id
     attrs = sensor.extra_state_attributes
     assert attrs["channel_id"] == 1
     assert attrs["channel_number"] == 1
@@ -761,7 +761,7 @@ def test_system_info_field_sensor(
 
 def test_create_data_dependent_entities(mock_runtime_data):
     """Helper creates system, channel, and LAN sensors from modem data."""
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         ModemErrorRateSensor,
         _create_data_dependent_entities,
     )
@@ -804,7 +804,7 @@ def test_create_data_dependent_entities_rate_omitted_first_poll(mock_runtime_dat
 
     Fixture: ``MODEM_DATA_RATE_FIELDS_ABSENT`` (module-level constant).
     """
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         ModemErrorRateSensor,
         _create_data_dependent_entities,
     )
@@ -822,7 +822,7 @@ def test_create_data_dependent_entities_rate_omitted_first_poll(mock_runtime_dat
 
 def test_create_data_dependent_entities_no_channels(mock_runtime_data):
     """Helper with empty channel lists creates only system sensors."""
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         _create_data_dependent_entities,
     )
 
@@ -840,7 +840,7 @@ def test_create_data_dependent_entities_no_channels(mock_runtime_data):
 
 def test_create_data_dependent_entities_with_passthrough(mock_runtime_data):
     """Tier 3 system_info fields produce dynamic SystemInfoFieldSensor instances."""
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         _create_data_dependent_entities,
     )
 
@@ -859,7 +859,7 @@ def test_create_data_dependent_entities_with_passthrough(mock_runtime_data):
 
 def test_create_data_dependent_entities_passthrough_sorted(mock_runtime_data):
     """Tier 3 dynamic sensors are created in sorted field order."""
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         _create_data_dependent_entities,
     )
 
@@ -882,7 +882,7 @@ def test_deferred_creation_on_first_data(mock_runtime_data):
     UC-84 steps 7-9: modem comes back, listener fires, entities created,
     listener unsubscribes.
     """
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         _register_deferred_entity_creation,
     )
 
@@ -931,7 +931,7 @@ def test_deferred_creation_noop_while_no_data(mock_runtime_data):
     UC-84 step 5: subsequent polls still unreachable, listener fires
     but takes no action.
     """
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         _register_deferred_entity_creation,
     )
 
@@ -1141,7 +1141,7 @@ def test_deferred_creation_cleanup_on_unload(mock_runtime_data):
     UC-84 assertion: if consumer unloads before modem recovers,
     listener is cleaned up.
     """
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         _register_deferred_entity_creation,
     )
 
@@ -1181,7 +1181,7 @@ def test_deferred_creation_schedules_re_notification(mock_runtime_data):
     _handle_coordinator_update() after their coordinator listeners are
     registered.
     """
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         _register_deferred_entity_creation,
     )
 
@@ -1213,7 +1213,7 @@ def test_deferred_creation_schedules_re_notification(mock_runtime_data):
     # Re-notification task should be scheduled
     coord.hass.async_create_task.assert_called_once()
     task_name = coord.hass.async_create_task.call_args[0][1]
-    assert task_name == "cable_modem_deferred_entity_state"
+    assert task_name == "bgw320_deferred_entity_state"
 
 
 @pytest.mark.asyncio
@@ -1231,7 +1231,7 @@ async def test_deferred_re_notification_fires_coordinator_listeners(
     """
     from unittest.mock import AsyncMock, patch
 
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         _register_deferred_entity_creation,
     )
 
@@ -1267,7 +1267,7 @@ async def test_deferred_re_notification_fires_coordinator_listeners(
 
     # Await the coroutine with sleep patched out
     with patch(
-        "custom_components.cable_modem_monitor.sensor.asyncio.sleep",
+        "custom_components.bgw320.sensor.asyncio.sleep",
         new_callable=AsyncMock,
     ):
         _ = await coro
@@ -1282,7 +1282,7 @@ def test_deferred_re_notification_not_scheduled_when_no_data(mock_runtime_data):
     UC-84 step 5: listener fires but modem_data=None, so no entities
     are created and no re-notification is scheduled.
     """
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         _register_deferred_entity_creation,
     )
 
@@ -1357,7 +1357,7 @@ def _setup_entry_inputs(
 
 async def test_async_setup_entry_happy_path(mock_runtime_data) -> None:
     """All sensors created when modem_data and health_coord are present."""
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         HttpLatencySensor,
         ModemInfoSensor,
         ModemStatusSensor,
@@ -1387,7 +1387,7 @@ async def test_async_setup_entry_happy_path(mock_runtime_data) -> None:
 
 async def test_async_setup_entry_no_health_coord(mock_runtime_data) -> None:
     """No latency sensors created when health_coordinator is None."""
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         HttpLatencySensor,
         PingLatencySensor,
         TcpLatencySensor,
@@ -1413,7 +1413,7 @@ async def test_async_setup_entry_defers_when_no_modem_data(
     """No modem_data on first poll defers data-dependent entities."""
     from unittest.mock import patch
 
-    from custom_components.cable_modem_monitor.sensor import (
+    from custom_components.bgw320.sensor import (
         ModemInfoSensor,
         ModemStatusSensor,
         async_setup_entry,
@@ -1421,7 +1421,7 @@ async def test_async_setup_entry_defers_when_no_modem_data(
 
     hass, entry, add_entities = _setup_entry_inputs(mock_runtime_data, modem_data=None)
 
-    with patch("custom_components.cable_modem_monitor.sensor." "_register_deferred_entity_creation") as mock_register:
+    with patch("custom_components.bgw320.sensor." "_register_deferred_entity_creation") as mock_register:
         await async_setup_entry(hass, entry, add_entities)
 
     # First call: only always-created + health sensors, no data-dependent
@@ -1431,7 +1431,7 @@ async def test_async_setup_entry_defers_when_no_modem_data(
     assert ModemStatusSensor in types
     assert ModemInfoSensor in types
     # No ChannelSensor (would only appear with modem_data)
-    from custom_components.cable_modem_monitor.sensor import ChannelSensor
+    from custom_components.bgw320.sensor import ChannelSensor
 
     assert ChannelSensor not in types
 

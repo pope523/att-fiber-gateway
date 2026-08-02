@@ -174,7 +174,7 @@ def check_integration_mounted() -> bool:
     """Check if the cable modem integration is mounted in the container."""
     try:
         result = subprocess.run(
-            ["docker", "exec", CONTAINER_NAME, "ls", "/config/custom_components/cable_modem_monitor/__init__.py"],
+            ["docker", "exec", CONTAINER_NAME, "ls", "/config/custom_components/bgw320/__init__.py"],
             capture_output=True,
             timeout=10,
         )
@@ -234,7 +234,7 @@ def stop_other_ha_containers() -> list[str]:
 
 
 _INTEGRATION_LOGGERS = [
-    "custom_components.cable_modem_monitor",
+    "custom_components.bgw320",
     "solentlabs.cable_modem_monitor_core",
     "solentlabs.cable_modem_monitor_catalog",
 ]
@@ -307,7 +307,7 @@ def ensure_dev_config(log_level: str = "info") -> None:
         except PermissionError:
             content = ""
 
-        if "logger:" in content and "cable_modem_monitor" in content:
+        if "logger:" in content and "bgw320" in content:
             # Config exists — reconcile log levels
             updated = content
             for ns in _INTEGRATION_LOGGERS:

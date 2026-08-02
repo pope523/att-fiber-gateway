@@ -7,7 +7,7 @@ actually exist in the repository. Two link classes are checked:
   - Relative links (``./x``, ``../x``, ``dir/y.md``, ``/x``) resolve
     against the containing file's directory (or repo root for ``/x``).
   - Repo-absolute self-links
-    (``https://github.com/solentlabs/cable_modem_monitor/blob/<ref>/<path>``)
+    (``https://github.com/pope523/att-fiber-gateway/blob/<ref>/<path>``)
     resolve ``<path>`` against the repo root.
 
 External URLs and pure in-page anchors (``#section``) are skipped — the
@@ -37,7 +37,7 @@ import sys
 from pathlib import Path
 
 _REPO_BLOB = re.compile(
-    r"^https?://github\.com/solentlabs/cable_modem_monitor/(?:blob|tree)/[^/]+/(.+)$",
+    r"^https?://github\.com/pope523/att-fiber-gateway/(?:blob|tree)/[^/]+/(.+)$",
     re.IGNORECASE,
 )
 # [text](target) and ![alt](target). Capture the target up to the first

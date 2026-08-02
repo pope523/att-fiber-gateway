@@ -25,7 +25,7 @@ from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     CollectorSignal,
 )
 
-from custom_components.cable_modem_monitor.config_flow_helpers import (
+from custom_components.bgw320.config_flow_helpers import (
     _detect_and_inject_form_nonce_encoding,
     _run_validation,
     build_model_display_name,
@@ -43,7 +43,7 @@ from custom_components.cable_modem_monitor.config_flow_helpers import (
 # Helpers
 # =====================================================================
 
-_MODULE = "custom_components.cable_modem_monitor.config_flow_helpers"
+_MODULE = "custom_components.bgw320.config_flow_helpers"
 
 
 def _ok_result() -> ModemResult:
@@ -845,7 +845,7 @@ class TestRaiseValidationFailure:
 
     def test_auth_signal_raises_permission_error(self) -> None:
         """AUTH_FAILED signal → ``PermissionError`` with ``auth_error:`` prefix."""
-        from custom_components.cable_modem_monitor.config_flow_helpers import (
+        from custom_components.bgw320.config_flow_helpers import (
             _raise_validation_failure,
         )
 
@@ -854,7 +854,7 @@ class TestRaiseValidationFailure:
 
     def test_non_auth_signal_raises_runtime_error(self) -> None:
         """PARSE_ERROR signal → ``RuntimeError`` with ``collection_error:`` prefix."""
-        from custom_components.cable_modem_monitor.config_flow_helpers import (
+        from custom_components.bgw320.config_flow_helpers import (
             _raise_validation_failure,
         )
 
@@ -866,7 +866,7 @@ class TestRaiseValidationFailure:
 # restart_requires_credentials
 # =====================================================================
 
-_RRC_MODULE = "custom_components.cable_modem_monitor.config_flow_helpers"
+_RRC_MODULE = "custom_components.bgw320.config_flow_helpers"
 
 
 def _make_restart_action(*, has_action_auth: bool) -> MagicMock:

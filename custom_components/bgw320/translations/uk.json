@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "AT&T BGW320 Gateway",
+        "description": "Оберіть виробника або виберіть 'Усі'.",
+        "data": {
+          "manufacturer": "Виробник"
+        }
+      },
+      "model": {
+        "title": "Вибір модему",
+        "description": "Виберіть модель модему {manufacturer}. Моделі, позначені *, не перевірені.",
+        "data": {
+          "model": "Модель модему",
+          "entity_prefix": "Префікс Entity ID",
+          "channel_identity": "Channel Naming"
+        },
+        "data_description": {
+          "model": "Виберіть модель вашого модему зі списку.",
+          "entity_prefix": "Додає назву моделі або IP до ідентифікаторів сутностей. Обов'язково при моніторингу кількох модемів.",
+          "channel_identity": "Channel Number names entities after the modem's row position (stable across reboots). Channel ID uses the DOCSIS Channel ID (matches ISP diagnostics but can change on reboot)."
+        }
+      },
+      "variant": {
+        "title": "Варіант прошивки",
+        "description": "У вашого модему кілька варіантів прошивки з різною автентифікацією. Виберіть той, що відповідає вашій конфігурації.",
+        "data": {
+          "variant": "Варіант"
+        },
+        "data_description": {
+          "variant": "Якщо не впевнені, спробуйте перший варіант. Варіанти, позначені *, ще не перевірені на реальному обладнанні."
+        }
+      },
+      "connection": {
+        "title": "З'єднання",
+        "description": "Вибраний варіант: {variant}\n\nВведіть параметри з'єднання з модемом.",
+        "data": {
+          "variant": "Варіант",
+          "host": "IP-адреса модему",
+          "username": "Ім'я користувача",
+          "password": "Пароль"
+        },
+        "data_description": {
+          "variant": "Змінюйте, лише якщо вважаєте, що вашому модему підходить інший варіант.",
+          "host": "Зазвичай 192.168.100.1. Додайте http:// або https://, щоб пропустити визначення протоколу.",
+          "username": "Залиште порожнім, якщо не потрібно.",
+          "password": "Залиште порожнім, якщо не потрібно."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Повторна автентифікація",
+        "description": "Модем відхилив ваші облікові дані. Будь ласка, введіть їх заново.",
+        "data": {
+          "host": "IP-адреса модему",
+          "username": "Ім'я користувача",
+          "password": "Пароль"
+        }
+      }
+    },
+    "error": {
+      "network_unreachable": "Не вдається зв'язатися з модемом.\n\nПеревірте:\n1. Ви підключені до мережі модему (не до гостьового WiFi)\n2. VPN вимкнено\n3. IP-адреса вказана правильно (зазвичай 192.168.100.1)\n4. Веб-інтерфейс модему доступний у вашому браузері",
+      "cannot_connect": "Модем не відповідає.\n\nПеревірте:\n1. IP-адреса вказана правильно\n2. Спробуйте вказати протокол (наприклад, http://192.168.100.1)\n3. Веб-інтерфейс модему доступний з мережі Home Assistant",
+      "invalid_auth": "Помилка входу.\n\nПеревірте:\n1. Ім'я користувача вказано правильно (зазвичай «admin»)\n2. Пароль вказано правильно (перевірте наклейку на модемі)\n3. Спробуйте спочатку увійти через браузер для перевірки облікових даних",
+      "parse_failed": "З'єднання встановлено, але не вдалося прочитати дані модему.\n\nМожливо, для вашого модему потрібен інший варіант прошивки. Спробуйте повернутися та вибрати інший варіант, або переконайтеся, що прошивка вашого модему підтримується.",
+      "unknown": "Непередбачена помилка. Перевірте журнали Home Assistant для отримання деталей."
+    },
+    "abort": {
+      "already_configured": "Цей модем вже налаштовано.",
+      "missing_input": "Відсутні обов'язкові дані. Будь ласка, перезапустіть налаштування.",
+      "unknown_model": "Вибраний модем не знайдено в каталозі.",
+      "reauth_successful": "Повторна автентифікація пройшла успішно.",
+      "reauth_failed": "Повторна автентифікація не вдалася. Будь ласка, спробуйте знову."
+    },
+    "progress": {
+      "validate": "Підключення до модему..."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Налаштування кабельного модему",
+        "description": "Оновіть параметри з'єднання та інтервали опитування.",
+        "data": {
+          "host": "IP-адреса модему",
+          "username": "Ім'я користувача",
+          "password": "Пароль",
+          "scan_interval": "Інтервал опитування даних",
+          "health_check_interval": "Інтервал перевірки доступності"
+        },
+        "data_description": {
+          "host": "Зазвичай 192.168.100.1",
+          "username": "Залиште порожнім, якщо не потрібно.",
+          "password": "Порожнє поле зберігає поточний пароль.",
+          "scan_interval": "Як часто збирати дані з модему. За замовчуванням 10 хвилин. Встановіть 00:00:00, щоб вимкнути автоматичне опитування (лише вручну кнопкою «Оновити»).",
+          "health_check_interval": "Як часто перевіряти доступність модему. За замовчуванням 30 секунд. Встановіть 00:00:00, щоб вимкнути перевірку доступності."
+        }
+      }
+    },
+    "error": {
+      "network_unreachable": "Не вдається зв'язатися з модемом. Перевірте IP-адресу та мережеве з'єднання.",
+      "cannot_connect": "Модем не відповідає. Перевірте IP-адресу та протокол.",
+      "invalid_auth": "Помилка входу. Перевірте ім'я користувача та пароль.",
+      "parse_failed": "З'єднання встановлено, але не вдалося прочитати дані модему.",
+      "unknown": "Непередбачена помилка. Перевірте журнали Home Assistant."
+    },
+    "progress": {
+      "validate": "Перевірка з'єднання..."
+    }
+  },
+  "services": {
+    "generate_dashboard": {
+      "name": "Створити панель керування",
+      "description": "Генерує готовий до використання Lovelace YAML для панелі керування кабельним модемом. Скопіюйте результат і вставте його в картку «Вручну».",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to generate the dashboard for. Defaults to the first configured modem."
+        },
+        "include_status_card": {
+          "name": "Картка стану",
+          "description": "Стан модему, час роботи, кількість каналів та кнопка перезавантаження."
+        },
+        "include_downstream_power": {
+          "name": "Графік потужності низхідного потоку",
+          "description": "Рівні потужності для всіх низхідних каналів."
+        },
+        "include_downstream_snr": {
+          "name": "Графік SNR низхідного потоку",
+          "description": "Співвідношення сигнал/шум для всіх низхідних каналів."
+        },
+        "include_downstream_frequency": {
+          "name": "Графік частот низхідного потоку",
+          "description": "Частоти для всіх низхідних каналів."
+        },
+        "include_upstream_power": {
+          "name": "Графік потужності висхідного потоку",
+          "description": "Рівні потужності для всіх висхідних каналів."
+        },
+        "include_upstream_frequency": {
+          "name": "Графік частот висхідного потоку",
+          "description": "Частоти для всіх висхідних каналів."
+        },
+        "include_errors": {
+          "name": "Графіки помилок",
+          "description": "Кількість виправлених та невиправлених помилок (за 7 днів)."
+        },
+        "include_error_rates": {
+          "name": "Графіки частоти помилок",
+          "description": "Додає графіки частоти помилок за хвилину (помилок/хв, за 7 днів). Вимкнено за замовчуванням. Частота коливається при кожному опитуванні."
+        },
+        "include_latency": {
+          "name": "Графік затримки",
+          "description": "Час відгуку ping та HTTP (за 6 годин)."
+        },
+        "graph_hours": {
+          "name": "Історія графіків (години)",
+          "description": "Години історії для графіків потужності/SNR (помилки та затримка використовують фіксовані періоди)."
+        },
+        "short_titles": {
+          "name": "Короткі заголовки",
+          "description": "Короткі: «Низх. потужність (dBmV)» або довгі: «Рівні потужності низхідного потоку (dBmV)»."
+        }
+      }
+    },
+    "request_refresh": {
+      "name": "Request Refresh",
+      "description": "Triggers an immediate modem data poll, bypassing any connectivity backoff. Use in automations to refresh modem data on demand."
+    },
+    "request_health_check": {
+      "name": "Request Health Check",
+      "description": "Triggers an immediate health check (ICMP and HTTP probes). Only works if health monitoring is enabled for the modem."
+    },
+    "convert_channel_identity": {
+      "name": "Convert Channel Identity",
+      "description": "Renames recorder statistics to match the current channel identity mode after re-adding the integration in the other mode. Modem must be online.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to convert. Defaults to the first configured modem."
+        }
+      }
+    },
+    "orphaned_statistics": {
+      "name": "Orphaned Statistics",
+      "description": "Finds recorder statistics for this modem that have no registered entity — left behind by a mode switch, channel rebonding (ID mode), or a prefix change. Without execute, returns a preview of orphaned entities. With execute: true, purges them all directly. Purge is permanent.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to inspect. Defaults to the first configured modem."
+        },
+        "execute": {
+          "name": "Execute",
+          "description": "Set to true to purge all orphaned statistics immediately. Default is false (preview only). Purge is permanent and cannot be undone."
+        }
+      }
+    }
+  }
+}

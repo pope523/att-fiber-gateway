@@ -1,9 +1,9 @@
 {
-  "name": "Cable Modem Monitor",
+  "name": "AT&T BGW320 Gateway",
   "homeassistant": "2024.12.0",
   "hacs": "2.0.0",
   "zip_release": true,
-  "filename": "cable_modem_monitor.zip",
+  "filename": "bgw320.zip",
   "hide_default_branch": true,
   "render_readme": true
 }

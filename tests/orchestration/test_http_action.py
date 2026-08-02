@@ -26,6 +26,7 @@ def _make_action(
     params: dict | None = None,
     json_body: dict | None = None,
     headers: dict | None = None,
+    nonce_field: str = "",
 ) -> MagicMock:
     action = MagicMock()
     action.method = method
@@ -35,6 +36,10 @@ def _make_action(
     action.params = params
     action.json_body = json_body
     action.headers = headers
+    # Must mirror HttpAction's default. Left as a bare MagicMock it is
+    # truthy, which sends every action down the nonce-injection path and
+    # feeds a MagicMock to re.escape().
+    action.nonce_field = nonce_field
     return action
 
 

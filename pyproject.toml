@@ -93,7 +93,7 @@ ignore = [
 max-complexity = 10                # Keep functions readable
 
 [tool.ruff.lint.isort]
-known-first-party = ["custom_components.cable_modem_monitor"]  # Treat integration code as first-party
+known-first-party = ["custom_components.bgw320"]  # Treat integration code as first-party
 split-on-trailing-comma = true
 force-wrap-aliases = true
 combine-as-imports = true

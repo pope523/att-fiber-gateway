@@ -11,7 +11,7 @@ services:
       # Use HOST_WORKSPACE_FOLDER (set by dev container) or fall back to PWD (local dev)
       - ${HOST_WORKSPACE_FOLDER:-${PWD}}/test-ha-config:/config
       # Mount the integration directly into custom_components
-      - ${HOST_WORKSPACE_FOLDER:-${PWD}}/custom_components/cable_modem_monitor:/config/custom_components/cable_modem_monitor
+      - ${HOST_WORKSPACE_FOLDER:-${PWD}}/custom_components/bgw320:/config/custom_components/bgw320
       # Mount the entire project for development and testing
       - ${HOST_WORKSPACE_FOLDER:-${PWD}}:/workspace:cached
       # Mount Docker socket for Docker-from-Docker

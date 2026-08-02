@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-from custom_components.cable_modem_monitor.diagnostics import (
+from custom_components.bgw320.diagnostics import (
     _create_log_entry,
     _get_logs_from_file,
     _get_logs_from_system_log_direct,
@@ -30,7 +30,7 @@ from .conftest import MOCK_ENTRY_DATA
 
 SAMPLE_LOG_FILE_CONTENT = (
     "2025-03-30 12:00:00.123 INFO (MainThread) "
-    "[custom_components.cable_modem_monitor.sensor] Poll OK\n"
+    "[custom_components.bgw320.sensor] Poll OK\n"
     "2025-03-30 12:00:01.456 DEBUG (MainThread) "
     "[homeassistant.core] Other line\n"
     "2025-03-30 12:00:02.789 WARNING (MainThread) "
@@ -51,7 +51,7 @@ def test_create_log_entry():
     entry = _create_log_entry(
         1700000000.0,
         "INFO",
-        "custom_components.cable_modem_monitor.sensor",
+        "custom_components.bgw320.sensor",
         "Poll OK",
     )
     assert entry["timestamp"] == 1700000000.0
@@ -74,9 +74,9 @@ def test_no_logs_available_entry():
 
 
 def test_get_logs_from_system_log_handler_filters():
-    """Only cable_modem_monitor records extracted from system_log handler."""
+    """Only bgw320 records extracted from system_log handler."""
     record_ours = MagicMock()
-    record_ours.name = "custom_components.cable_modem_monitor.sensor"
+    record_ours.name = "custom_components.bgw320.sensor"
     record_ours.created = 1700000000.0
     record_ours.levelname = "INFO"
     record_ours.getMessage.return_value = "Poll OK"
@@ -108,9 +108,9 @@ def test_get_logs_from_system_log_handler_no_records():
 
 
 def test_get_logs_from_system_log_direct_filters():
-    """Only cable_modem_monitor records extracted from system_log.records."""
+    """Only bgw320 records extracted from system_log.records."""
     record_ours = MagicMock()
-    record_ours.name = "custom_components.cable_modem_monitor"
+    record_ours.name = "custom_components.bgw320"
     record_ours.message = "Auth failed"
     record_ours.level = "ERROR"
     record_ours.timestamp = 1700000000.0
@@ -146,7 +146,7 @@ def test_get_logs_from_system_log_direct_no_records():
 def test_parse_legacy_record_with_name_and_message():
     """Legacy record with name + message attributes."""
     record = MagicMock()
-    record.name = "custom_components.cable_modem_monitor"
+    record.name = "custom_components.bgw320"
     record.message = "Auth failed"
     record.level = "ERROR"
     record.timestamp = 1700000000.0
@@ -171,7 +171,7 @@ def test_parse_legacy_record_non_matching():
 
 def test_parse_legacy_record_tuple_format():
     """Legacy tuple record (logger, timestamp, level, message)."""
-    record = ("custom_components.cable_modem_monitor", 1700000000.0, "WARNING", "Timeout")
+    record = ("custom_components.bgw320", 1700000000.0, "WARNING", "Timeout")
     entry = _parse_legacy_record(record)
     assert entry is not None
     assert entry["level"] == "WARNING"
@@ -187,7 +187,7 @@ def test_parse_legacy_record_tuple_non_matching():
 def test_parse_legacy_record_with_get_message():
     """Legacy record with getMessage() method (logging.LogRecord-like)."""
     record = MagicMock(spec=logging.LogRecord)
-    record.name = "cable_modem_monitor"
+    record.name = "custom_components.bgw320"
     record.created = 1700000000.0
     record.levelname = "INFO"
     record.getMessage.return_value = "Startup complete"
@@ -197,6 +197,27 @@ def test_parse_legacy_record_with_get_message():
     entry = _parse_legacy_record(record)
     assert entry is not None
     assert entry["message"] == "Startup complete"
+
+
+def test_parse_legacy_record_matches_engine_logger():
+    """Engine records are captured despite the upstream package name.
+
+    The HA adapter is ``custom_components.bgw320`` but the engine keeps
+    its upstream name (``solentlabs.cable_modem_monitor_core``). Filtering
+    on the domain alone would silently drop every engine record.
+    """
+    record = MagicMock(spec=logging.LogRecord)
+    record.name = "solentlabs.cable_modem_monitor_core.auth.form_md5_nonce"
+    record.created = 1700000000.0
+    record.levelname = "WARNING"
+    record.getMessage.return_value = "Nonce refresh failed"
+    del record.message
+
+    entry = _parse_legacy_record(record)
+    assert entry is not None
+    assert entry["message"] == "Nonce refresh failed"
+    # Prefix is stripped for readable diagnostics output.
+    assert entry["logger"] == "auth.form_md5_nonce"
 
 
 def test_parse_legacy_record_getmessage_non_matching():
@@ -214,7 +235,7 @@ def test_parse_legacy_record_getmessage_non_matching():
 def test_parse_legacy_record_integer_level():
     """Record with integer level is converted via getLevelName."""
     record = MagicMock()
-    record.name = "custom_components.cable_modem_monitor"
+    record.name = "custom_components.bgw320"
     record.message = "Auth failed"
     record.level = 40  # logging.ERROR
     record.timestamp = 1700000000.0
@@ -227,7 +248,7 @@ def test_parse_legacy_record_integer_level():
 
 def test_parse_legacy_record_tuple_integer_level():
     """Tuple record with integer level is converted to name."""
-    record = ("custom_components.cable_modem_monitor", 1700000000.0, 30, "Warning")
+    record = ("custom_components.bgw320", 1700000000.0, 30, "Warning")
     entry = _parse_legacy_record(record)
     assert entry is not None
     assert entry["level"] == "WARNING"
@@ -273,7 +294,7 @@ def test_get_recent_logs_from_buffer():
     """Log buffer (method 1) is preferred source."""
     hass = MagicMock()
     with patch(
-        "custom_components.cable_modem_monitor.diagnostics.get_log_entries",
+        "custom_components.bgw320.diagnostics.get_log_entries",
         return_value=SAMPLE_LOG_BUFFER_ENTRY,
     ):
         logs = _get_recent_logs(hass, max_records=10)
@@ -286,7 +307,7 @@ def test_get_recent_logs_falls_through_to_placeholder():
     hass.data = {}
     hass.config.path.return_value = "/nonexistent/home-assistant.log"
     with patch(
-        "custom_components.cable_modem_monitor.diagnostics.get_log_entries",
+        "custom_components.bgw320.diagnostics.get_log_entries",
         return_value=[],
     ):
         logs = _get_recent_logs(hass, max_records=10)
@@ -299,7 +320,7 @@ def test_get_recent_logs_system_log_handler_fallback():
     hass = MagicMock()
 
     record = MagicMock()
-    record.name = "custom_components.cable_modem_monitor.sensor"
+    record.name = "custom_components.bgw320.sensor"
     record.created = 1700000000.0
     record.levelname = "WARNING"
     record.getMessage.return_value = "Timeout"
@@ -312,7 +333,7 @@ def test_get_recent_logs_system_log_handler_fallback():
     hass.data = {"system_log": system_log}
 
     with patch(
-        "custom_components.cable_modem_monitor.diagnostics.get_log_entries",
+        "custom_components.bgw320.diagnostics.get_log_entries",
         return_value=[],
     ):
         logs = _get_recent_logs(hass, max_records=10)
@@ -326,7 +347,7 @@ def test_get_recent_logs_system_log_direct_fallback():
     hass = MagicMock()
 
     record = MagicMock()
-    record.name = "custom_components.cable_modem_monitor"
+    record.name = "custom_components.bgw320"
     record.message = "Auth failed"
     record.level = "ERROR"
     record.timestamp = 1700000000.0
@@ -339,7 +360,7 @@ def test_get_recent_logs_system_log_direct_fallback():
     hass.data = {"system_log": system_log}
 
     with patch(
-        "custom_components.cable_modem_monitor.diagnostics.get_log_entries",
+        "custom_components.bgw320.diagnostics.get_log_entries",
         return_value=[],
     ):
         logs = _get_recent_logs(hass, max_records=10)
@@ -355,7 +376,7 @@ def test_get_recent_logs_log_file_exception():
     hass.config.path.side_effect = RuntimeError("config error")
 
     with patch(
-        "custom_components.cable_modem_monitor.diagnostics.get_log_entries",
+        "custom_components.bgw320.diagnostics.get_log_entries",
         return_value=[],
     ):
         logs = _get_recent_logs(hass, max_records=10)
@@ -372,7 +393,7 @@ def test_get_recent_logs_system_log_exception():
     hass.config.path.return_value = "/nonexistent/home-assistant.log"
 
     with patch(
-        "custom_components.cable_modem_monitor.diagnostics.get_log_entries",
+        "custom_components.bgw320.diagnostics.get_log_entries",
         return_value=[],
     ):
         logs = _get_recent_logs(hass, max_records=10)
@@ -416,11 +437,11 @@ async def test_diagnostics_delegates_to_builder(mock_runtime_data):
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.diagnostics.get_log_entries",
+            "custom_components.bgw320.diagnostics.get_log_entries",
             return_value=[],
         ),
         patch(
-            "custom_components.cable_modem_monitor.diagnostics._get_logs_from_file",
+            "custom_components.bgw320.diagnostics._get_logs_from_file",
             return_value=[],
         ),
     ):
@@ -464,7 +485,7 @@ async def test_diagnostics_no_snapshot(mock_runtime_data):
     hass.async_add_executor_job = fake_executor
 
     with patch(
-        "custom_components.cable_modem_monitor.diagnostics.get_log_entries",
+        "custom_components.bgw320.diagnostics.get_log_entries",
         return_value=SAMPLE_LOG_BUFFER_ENTRY,
     ):
         result = await async_get_config_entry_diagnostics(hass, entry)
@@ -491,7 +512,7 @@ async def test_diagnostics_last_exception_truncated(mock_runtime_data):
     hass.async_add_executor_job = fake_executor
 
     with patch(
-        "custom_components.cable_modem_monitor.diagnostics.get_log_entries",
+        "custom_components.bgw320.diagnostics.get_log_entries",
         return_value=SAMPLE_LOG_BUFFER_ENTRY,
     ):
         result = await async_get_config_entry_diagnostics(hass, entry)
@@ -518,7 +539,7 @@ async def test_diagnostics_health_coord_data_none(mock_runtime_data):
     hass.async_add_executor_job = fake_executor
 
     with patch(
-        "custom_components.cable_modem_monitor.diagnostics.get_log_entries",
+        "custom_components.bgw320.diagnostics.get_log_entries",
         return_value=SAMPLE_LOG_BUFFER_ENTRY,
     ):
         result = await async_get_config_entry_diagnostics(hass, entry)
@@ -541,7 +562,7 @@ async def test_diagnostics_log_retrieval_exception(mock_runtime_data):
     hass.async_add_executor_job = fake_executor
 
     with patch(
-        "custom_components.cable_modem_monitor.diagnostics._get_recent_logs",
+        "custom_components.bgw320.diagnostics._get_recent_logs",
         side_effect=RuntimeError("log crash"),
     ):
         result = await async_get_config_entry_diagnostics(hass, entry)

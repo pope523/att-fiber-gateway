@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-_COMPONENT_DIR = Path("custom_components/cable_modem_monitor")
+_COMPONENT_DIR = Path("custom_components/bgw320")
 _STRINGS = _COMPONENT_DIR / "strings.json"
 _TRANSLATIONS_DIR = _COMPONENT_DIR / "translations"
 

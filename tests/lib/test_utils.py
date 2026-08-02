@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from custom_components.cable_modem_monitor.const import EntityPrefix
-from custom_components.cable_modem_monitor.lib.utils import (
+from custom_components.bgw320.const import EntityPrefix
+from custom_components.bgw320.lib.utils import (
     extract_float,
     extract_number,
     get_device_name,
@@ -144,9 +144,9 @@ class TestParseUptime:
 @pytest.mark.parametrize(
     "prefix,model,host,expected",
     [
-        (EntityPrefix.MODEL, "TPS-2000", "192.168.100.1", "Cable Modem TPS-2000"),
-        (EntityPrefix.IP, "TPS-2000", "192.168.100.1", "Cable Modem 192.168.100.1"),
-        (EntityPrefix.NONE, "TPS-2000", "192.168.100.1", "Cable Modem"),
+        (EntityPrefix.MODEL, "TPS-2000", "192.168.0.254", "TPS-2000"),
+        (EntityPrefix.IP, "TPS-2000", "192.168.0.254", "BGW320 192.168.0.254"),
+        (EntityPrefix.NONE, "TPS-2000", "192.168.0.254", "BGW320"),
     ],
     ids=["model_prefix", "ip_prefix", "no_prefix"],
 )

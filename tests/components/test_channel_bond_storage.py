@@ -12,14 +12,14 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from custom_components.cable_modem_monitor.channel_bond_storage import (
+from custom_components.bgw320.channel_bond_storage import (
     BondState,
     async_load_bond_state,
     async_remove_bond_state,
     async_save_bond_state,
 )
 
-_MODULE = "custom_components.cable_modem_monitor.channel_bond_storage"
+_MODULE = "custom_components.bgw320.channel_bond_storage"
 
 
 async def test_load_returns_none_when_store_empty():
@@ -65,8 +65,8 @@ async def test_remove_delegates_to_store():
 @pytest.mark.parametrize(
     "entry_id,expected_key",
     [
-        ("abc", "cable_modem_monitor.abc.channel_bond"),
-        ("config_entry_9fd4", "cable_modem_monitor.config_entry_9fd4.channel_bond"),
+        ("abc", "bgw320.abc.channel_bond"),
+        ("config_entry_9fd4", "bgw320.config_entry_9fd4.channel_bond"),
     ],
 )
 async def test_storage_key_is_entry_scoped(entry_id, expected_key):

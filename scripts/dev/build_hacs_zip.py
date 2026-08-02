@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Build a self-contained HACS zip for a fork that isn't published to PyPI.
+"""Build a self-contained HACS zip for an integration not published to PyPI.
 
-Upstream ships the HA integration (``custom_components/cable_modem_monitor``)
-as a HACS ``zip_release`` and pulls the engines from PyPI via the
-integration's ``manifest.json`` ``requirements``
-(``solentlabs-cable-modem-monitor-core``/``-catalog``). A fork with local-only
-engine changes (e.g. added modems, new auth strategies) can't rely on those
-PyPI packages, so this script produces a **self-contained** artifact:
+This integration ships ``custom_components/bgw320`` as a HACS
+``zip_release``. Its engines are the upstream ``cable_modem_monitor``
+core/catalog packages, carried here as local sources with BGW320-specific
+changes (fiber status derivation, the ``form_md5_nonce`` auth strategy,
+nonce injection) and never published to PyPI under those names. The
+artifact is therefore **self-contained**:
 
-1. Stage ``custom_components/cable_modem_monitor`` (minus dev-only ``docs/``,
+1. Stage ``custom_components/bgw320`` (minus dev-only ``docs/``,
    ``brand/``, and bytecode).
 2. Vendor the ``solentlabs.cable_modem_monitor_core`` and ``...catalog`` source
    trees into ``_vendor/solentlabs/`` (excluding ``test_data/`` fixtures).
@@ -22,7 +22,7 @@ copy that becomes the zip. Run with ``--verify`` (default) to prove the
 vendored artifact imports and parses a modem in an isolated interpreter.
 
 Usage:
-    python scripts/dev/build_hacs_zip.py [--output cable_modem_monitor.zip] [--no-verify]
+    python scripts/dev/build_hacs_zip.py [--output bgw320.zip] [--no-verify]
 """
 
 from __future__ import annotations
@@ -37,13 +37,14 @@ import zipfile
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-INTEGRATION_DIR = REPO_ROOT / "custom_components" / "cable_modem_monitor"
+INTEGRATION_DIR = REPO_ROOT / "custom_components" / "bgw320"
 CORE_PKG = REPO_ROOT / "packages" / "cable_modem_monitor_core" / "solentlabs" / "cable_modem_monitor_core"
 CATALOG_PKG = REPO_ROOT / "packages" / "cable_modem_monitor_catalog" / "solentlabs" / "cable_modem_monitor_catalog"
 
 # Third-party runtime deps the vendored engines need (from the packages'
-# pyproject.toml). cryptography backs the sjcl/cbn auth strategies used by
-# some catalog modems, so it is bundled for a full-catalog integration.
+# pyproject.toml). cryptography is retained because the core engine is
+# vendored whole and still imports the sjcl/cbn auth strategies, even though
+# the BGW320-505 itself only uses form_md5_nonce (stdlib hashlib).
 VENDORED_REQUIREMENTS = [
     "beautifulsoup4>=4.12",
     "pyyaml>=6.0.2",
@@ -53,8 +54,8 @@ VENDORED_REQUIREMENTS = [
     "cryptography>=44.0",
 ]
 
-FORK_DOCS = "https://github.com/pope523/cable_modem_monitor"
-FORK_ISSUES = "https://github.com/pope523/cable_modem_monitor/issues"
+FORK_DOCS = "https://github.com/pope523/att-fiber-gateway"
+FORK_ISSUES = "https://github.com/pope523/att-fiber-gateway/issues"
 
 # Excluded from the integration copy and the vendored trees.
 _PRUNE_DIRS = {"__pycache__", "docs", "brand", "test_data", ".pytest_cache", ".mypy_cache"}
@@ -135,7 +136,7 @@ def _zip(staging: Path, output: Path) -> None:
 def _verify(output: Path) -> bool:
     """Extract the zip and import the vendored engine in an isolated interpreter."""
     with tempfile.TemporaryDirectory() as tmp:
-        extract = Path(tmp) / "cable_modem_monitor"
+        extract = Path(tmp) / "bgw320"
         with zipfile.ZipFile(output) as zf:
             zf.extractall(extract)
         vendor = extract / "_vendor"
@@ -145,6 +146,8 @@ def _verify(output: Path) -> bool:
         # from the vendored copy. Third-party deps stay available via the venv.
         check = (
             "import sys\n"
+            # Engine sources still live under packages/cable_modem_monitor_*;
+            # strip them so only the vendored copy can satisfy the import.
             "sys.path = [p for p in sys.path if 'packages/cable_modem_monitor' not in p]\n"
             "for _m in [m for m in sys.modules if m == 'solentlabs' or m.startswith('solentlabs.')]:\n"
             "    del sys.modules[_m]\n"
@@ -167,13 +170,13 @@ def _verify(output: Path) -> bool:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build a self-contained HACS zip")
-    parser.add_argument("--output", default=str(REPO_ROOT / "cable_modem_monitor.zip"))
+    parser.add_argument("--output", default=str(REPO_ROOT / "bgw320.zip"))
     parser.add_argument("--no-verify", action="store_true", help="Skip the isolated import check")
     args = parser.parse_args()
 
     output = Path(args.output).resolve()
     with tempfile.TemporaryDirectory() as tmp:
-        staging = Path(tmp) / "cable_modem_monitor"
+        staging = Path(tmp) / "bgw320"
         _stage(staging)
         _zip(staging, output)
 

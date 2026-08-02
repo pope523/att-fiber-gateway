@@ -29,7 +29,7 @@ from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     HealthStatus,
 )
 
-from custom_components.cable_modem_monitor.const import (
+from custom_components.bgw320.const import (
     CONF_CHANNEL_IDENTITY,
     CONF_ENTITY_PREFIX,
     CONF_HEALTH_CHECK_INTERVAL,
@@ -45,7 +45,7 @@ from custom_components.cable_modem_monitor.const import (
     ChannelIdentity,
     EntityPrefix,
 )
-from custom_components.cable_modem_monitor.coordinator import (
+from custom_components.bgw320.coordinator import (
     CableModemRuntimeData,
 )
 

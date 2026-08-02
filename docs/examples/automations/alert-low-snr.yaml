@@ -5,7 +5,7 @@ automation:
   - alias: "Cable Modem - Low SNR Warning"
     trigger:
       - platform: numeric_state
-        entity_id: sensor.cable_modem_ds_ch_1_snr
+        entity_id: sensor.bgw320_ds_ch_1_snr
         below: 30
     action:
       - service: notify.notify

@@ -55,7 +55,7 @@ echo ""
 
 # Run linting
 echo -e "${YELLOW}Running code quality checks (ruff)...${NC}"
-if ruff check custom_components/cable_modem_monitor/ --select E,F,W,C90 && ruff check packages/; then
+if ruff check custom_components/bgw320/ --select E,F,W,C90 && ruff check packages/; then
     echo -e "${GREEN}✓ Code quality checks passed${NC}"
 else
     echo -e "${RED}✗ Code quality checks failed${NC}"
@@ -65,7 +65,7 @@ echo ""
 
 # Run HA integration tests (coverage gate mirrors CI tests.yml: --cov-fail-under=95)
 echo -e "${YELLOW}Running HA integration tests...${NC}"
-if pytest tests/ -v --tb=short --cov=custom_components/cable_modem_monitor --cov-report=term --cov-report=html --cov-fail-under=95; then
+if pytest tests/ -v --tb=short --cov=custom_components/bgw320 --cov-report=term --cov-report=html --cov-fail-under=95; then
     echo -e "${GREEN}✓ HA integration tests passed!${NC}"
     TEST_PASSED=true
 else

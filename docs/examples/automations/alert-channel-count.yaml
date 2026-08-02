@@ -8,8 +8,8 @@ automation:
     trigger:
       - platform: state
         entity_id:
-          - sensor.cable_modem_ds_channel_count
-          - sensor.cable_modem_us_channel_count
+          - sensor.bgw320_ds_channel_count
+          - sensor.bgw320_us_channel_count
     condition:
       - condition: template
         value_template: "{{ trigger.from_state.state != 'unavailable' }}"

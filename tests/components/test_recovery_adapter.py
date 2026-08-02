@@ -19,10 +19,10 @@ import pytest
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
-from custom_components.cable_modem_monitor.coordinator import (
+from custom_components.bgw320.coordinator import (
     CableModemRuntimeData,
 )
-from custom_components.cable_modem_monitor.recovery_adapter import (
+from custom_components.bgw320.recovery_adapter import (
     _RECOVERY_POLL_INTERVAL,
     attach_recovery_cadence_listener,
     recovery_state_signal,

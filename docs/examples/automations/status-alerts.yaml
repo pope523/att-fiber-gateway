@@ -5,7 +5,7 @@ automation:
   - alias: "Cable Modem Status Alert"
     trigger:
       - platform: state
-        entity_id: sensor.cable_modem_status
+        entity_id: sensor.bgw320_status
         to: "Unresponsive"
         for:
           minutes: 5
@@ -18,7 +18,7 @@ automation:
   - alias: "Cable Modem DOCSIS Alert"
     trigger:
       - platform: state
-        entity_id: sensor.cable_modem_status
+        entity_id: sensor.bgw320_status
         to:
           - "Not Locked"
           - "Partial Lock"
@@ -28,4 +28,4 @@ automation:
       - service: notify.mobile_app
         data:
           title: "Modem Connection Issue"
-          message: "Cable modem DOCSIS status: {{ states('sensor.cable_modem_status') }}"
+          message: "Cable modem DOCSIS status: {{ states('sensor.bgw320_status') }}"

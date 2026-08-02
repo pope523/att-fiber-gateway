@@ -12,7 +12,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from custom_components.cable_modem_monitor.core.log_buffer import (
+from custom_components.bgw320.core.log_buffer import (
     _MONITORED_LOGGERS,
     MAX_LOG_ENTRIES,
     BufferingHandler,
@@ -31,11 +31,11 @@ from custom_components.cable_modem_monitor.core.log_buffer import (
 # ┌──────────────────────────────────────────────────────────────────┬──────────────────────────┬───────────────────┐
 # │ input                                                            │ expected                 │ description       │
 # ├──────────────────────────────────────────────────────────────────┼──────────────────────────┼───────────────────┤
-# │ custom_components.cable_modem_monitor.sensor                     │ sensor                   │ HA sub-module     │
-# │ custom_components.cable_modem_monitor.core.log_buffer            │ core.log_buffer          │ HA nested         │
+# │ custom_components.bgw320.sensor                     │ sensor                   │ HA sub-module     │
+# │ custom_components.bgw320.core.log_buffer            │ core.log_buffer          │ HA nested         │
 # │ solentlabs.cable_modem_monitor_core.auth.form                    │ auth.form                │ Core sub-module   │
 # │ solentlabs.cable_modem_monitor_core.orchestration.orchestrator   │ orchestration.orch…      │ Core nested       │
-# │ custom_components.cable_modem_monitor                            │ (unchanged)              │ HA root — no dot  │
+# │ custom_components.bgw320                            │ (unchanged)              │ HA root — no dot  │
 # │ solentlabs.cable_modem_monitor_core                              │ (unchanged)              │ Core root — no dot│
 # │ some.other.logger                                                │ (unchanged)              │ unrelated logger  │
 # └──────────────────────────────────────────────────────────────────┴──────────────────────────┴───────────────────┘
@@ -43,11 +43,11 @@ from custom_components.cable_modem_monitor.core.log_buffer import (
 # fmt: off
 STRIP_PREFIX_CASES = [
     # (input, expected, id)
-    ("custom_components.cable_modem_monitor.sensor", "sensor", "ha-sub"),
-    ("custom_components.cable_modem_monitor.core.log_buffer", "core.log_buffer", "ha-nested"),
+    ("custom_components.bgw320.sensor", "sensor", "ha-sub"),
+    ("custom_components.bgw320.core.log_buffer", "core.log_buffer", "ha-nested"),
     ("solentlabs.cable_modem_monitor_core.auth.form", "auth.form", "core-sub"),
     ("solentlabs.cable_modem_monitor_core.orchestration.orchestrator", "orchestration.orchestrator", "core-nested"),
-    ("custom_components.cable_modem_monitor", "custom_components.cable_modem_monitor", "ha-root-no-dot"),
+    ("custom_components.bgw320", "custom_components.bgw320", "ha-root-no-dot"),
     ("solentlabs.cable_modem_monitor_core", "solentlabs.cable_modem_monitor_core", "core-root-no-dot"),
     ("some.other.logger", "some.other.logger", "unrelated"),
 ]
@@ -125,7 +125,7 @@ class TestLogBufferAdd:
     def test_strips_ha_prefix(self) -> None:
         """HA adapter logger prefix is stripped on add."""
         buf = LogBuffer()
-        buf.add("INFO", "custom_components.cable_modem_monitor.sensor", "test")
+        buf.add("INFO", "custom_components.bgw320.sensor", "test")
         assert buf.get_entries()[0]["logger"] == "sensor"
 
     def test_strips_core_prefix(self) -> None:
@@ -221,18 +221,18 @@ class TestSetupLogBuffer:
         hass = self._make_hass()
         setup_log_buffer(hass)
 
-        buf = hass.data["cable_modem_monitor"]["log_buffer"]
+        buf = hass.data["bgw320"]["log_buffer"]
         assert isinstance(buf, LogBuffer)
 
     def test_reload_reuses_buffer(self) -> None:
         """Second call reuses existing buffer, preserving log history."""
         hass = self._make_hass()
         setup_log_buffer(hass)
-        buffer_first = hass.data["cable_modem_monitor"]["log_buffer"]
+        buffer_first = hass.data["bgw320"]["log_buffer"]
         buffer_first.add("INFO", "test", "before reload")
 
         setup_log_buffer(hass)
-        buffer_second = hass.data["cable_modem_monitor"]["log_buffer"]
+        buffer_second = hass.data["bgw320"]["log_buffer"]
 
         assert buffer_first is buffer_second
         assert len(buffer_second.get_entries()) == 1
@@ -261,7 +261,7 @@ class TestSetupLogBuffer:
     def test_core_logger_mirrors_ha_debug(self) -> None:
         """Core logger follows HA logger when HA is set to DEBUG."""
         hass = self._make_hass()
-        ha = logging.getLogger("custom_components.cable_modem_monitor")
+        ha = logging.getLogger("custom_components.bgw320")
         ha.setLevel(logging.DEBUG)
         core = logging.getLogger("solentlabs.cable_modem_monitor_core")
 
@@ -277,22 +277,22 @@ class TestSetupLogBuffer:
         core_child = logging.getLogger("solentlabs.cable_modem_monitor_core.auth.form")
         core_child.info("Form auth started")
 
-        entries = hass.data["cable_modem_monitor"]["log_buffer"].get_entries()
+        entries = hass.data["bgw320"]["log_buffer"].get_entries()
         messages = [e["message"] for e in entries]
         assert any("Form auth started" in m for m in messages)
 
     def test_end_to_end_ha_log_captured(self) -> None:
         """An INFO log from the HA adapter reaches the buffer."""
         hass = self._make_hass()
-        ha_parent = logging.getLogger("custom_components.cable_modem_monitor")
+        ha_parent = logging.getLogger("custom_components.bgw320")
         ha_parent.setLevel(logging.DEBUG)
 
         setup_log_buffer(hass)
 
-        ha_child = logging.getLogger("custom_components.cable_modem_monitor.sensor")
+        ha_child = logging.getLogger("custom_components.bgw320.sensor")
         ha_child.info("Sensor update complete")
 
-        entries = hass.data["cable_modem_monitor"]["log_buffer"].get_entries()
+        entries = hass.data["bgw320"]["log_buffer"].get_entries()
         messages = [e["message"] for e in entries]
         assert any("Sensor update" in m for m in messages)
 
@@ -300,14 +300,14 @@ class TestSetupLogBuffer:
         """Buffer is recovered from logger handlers if hass.data is wiped."""
         hass = self._make_hass()
         setup_log_buffer(hass)
-        buffer_first = hass.data["cable_modem_monitor"]["log_buffer"]
+        buffer_first = hass.data["bgw320"]["log_buffer"]
         buffer_first.add("INFO", "test", "before wipe")
 
         # Simulate hass.data cleared during reload
         hass.data.clear()
 
         setup_log_buffer(hass)
-        buffer_recovered = hass.data["cable_modem_monitor"]["log_buffer"]
+        buffer_recovered = hass.data["bgw320"]["log_buffer"]
 
         assert buffer_first is buffer_recovered
         assert len(buffer_recovered.get_entries()) == 1
@@ -341,7 +341,7 @@ def test_buffering_handler_swallows_format_errors() -> None:
     handler.setFormatter(_Boom())
 
     record = logging.LogRecord(
-        name="custom_components.cable_modem_monitor",
+        name="custom_components.bgw320",
         level=logging.INFO,
         pathname="test",
         lineno=0,
@@ -372,10 +372,10 @@ def test_get_log_buffer_returns_none_when_domain_missing() -> None:
 def test_get_log_buffer_returns_none_when_buffer_missing_or_wrong_type() -> None:
     """DOMAIN exists but log_buffer is missing or non-LogBuffer → None."""
     hass = MagicMock()
-    hass.data = {"cable_modem_monitor": {}}
+    hass.data = {"bgw320": {}}
     assert get_log_buffer(hass) is None
 
-    hass.data = {"cable_modem_monitor": {"log_buffer": "not a buffer"}}
+    hass.data = {"bgw320": {"log_buffer": "not a buffer"}}
     assert get_log_buffer(hass) is None
 
 
@@ -383,7 +383,7 @@ def test_get_log_buffer_returns_buffer_when_present() -> None:
     """Happy path — registered LogBuffer is returned."""
     buf = LogBuffer()
     hass = MagicMock()
-    hass.data = {"cable_modem_monitor": {"log_buffer": buf}}
+    hass.data = {"bgw320": {"log_buffer": buf}}
     assert get_log_buffer(hass) is buf
 
 
@@ -399,7 +399,7 @@ def test_get_log_entries_returns_buffer_entries() -> None:
     buf = LogBuffer()
     buf.add("INFO", "test", "first")
     hass = MagicMock()
-    hass.data = {"cable_modem_monitor": {"log_buffer": buf}}
+    hass.data = {"bgw320": {"log_buffer": buf}}
 
     entries = get_log_entries(hass)
     assert len(entries) == 1

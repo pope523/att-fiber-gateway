@@ -16,14 +16,14 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.cable_modem_monitor.config_flow import (
+from custom_components.bgw320.config_flow import (
     CableModemMonitorConfigFlow,
     _build_prefix_options,
     _duration_to_seconds,
     _seconds_to_duration,
     _ValidationProgress,
 )
-from custom_components.cable_modem_monitor.const import DOMAIN, EntityPrefix
+from custom_components.bgw320.const import DOMAIN, EntityPrefix
 
 from .conftest import (
     FAKE_CATALOG,
@@ -34,7 +34,7 @@ from .conftest import (
     MOCK_VALIDATION_RESULT,
 )
 
-_PATCH_CATALOG_PATH = "custom_components.cable_modem_monitor.config_flow.CATALOG_PATH"
+_PATCH_CATALOG_PATH = "custom_components.bgw320.config_flow.CATALOG_PATH"
 
 # All tests need the integration to be loadable
 pytestmark = pytest.mark.usefixtures("enable_custom_integrations")
@@ -206,7 +206,7 @@ async def test_validation_progress_permission_error():
 async def test_step_user_shows_form(hass: HomeAssistant):
     """Step 1a shows manufacturer dropdown."""
     with patch(
-        "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+        "custom_components.bgw320.config_flow.load_modem_catalog",
         return_value=MOCK_SUMMARIES,
     ):
         result: Any = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})
@@ -218,7 +218,7 @@ async def test_step_user_shows_form(hass: HomeAssistant):
 async def test_step_user_selects_manufacturer(hass: HomeAssistant):
     """Selecting a manufacturer advances to model step."""
     with patch(
-        "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+        "custom_components.bgw320.config_flow.load_modem_catalog",
         return_value=MOCK_SUMMARIES,
     ):
         result: Any = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})
@@ -240,11 +240,11 @@ async def test_step_model_selects_model_single_variant(hass: HomeAssistant):
     """Selecting a single-variant modem skips variant step."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_SINGLE_VARIANT,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -276,11 +276,11 @@ async def test_step_variant_shown_for_multi_variant(hass: HomeAssistant):
     """Variant step shown when modem has multiple variants."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_MULTI_VARIANTS,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -306,11 +306,11 @@ async def test_step_variant_advances_to_connection(hass: HomeAssistant):
     """Selecting a variant advances to connection step."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_MULTI_VARIANTS,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -344,11 +344,11 @@ async def test_step_connection_shows_form(hass: HomeAssistant):
     """Connection step shows host and credential fields."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_SINGLE_VARIANT,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -392,7 +392,7 @@ async def test_build_connection_schema_does_no_file_io(hass: HomeAssistant):
     flow._selected_modem_dir = MOCK_SUMMARIES[0].path
 
     with patch(
-        "custom_components.cable_modem_monitor.config_flow.restart_requires_credentials",
+        "custom_components.bgw320.config_flow.restart_requires_credentials",
         side_effect=AssertionError("must not read modem.yaml on the event loop"),
     ):
         schema = flow._build_connection_schema()
@@ -414,11 +414,11 @@ async def test_connection_form_shows_selected_variant(hass: HomeAssistant):
     """
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_MULTI_VARIANTS,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -452,11 +452,11 @@ async def test_single_variant_connection_still_populates_variant(hass: HomeAssis
     """
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_SINGLE_VARIANT,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -484,19 +484,19 @@ async def test_full_flow_creates_entry(hass: HomeAssistant):
     """Complete flow through validation creates config entry."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_SINGLE_VARIANT,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             return_value=MOCK_VALIDATION_RESULT,
         ),
         patch(
-            "custom_components.cable_modem_monitor.async_setup_entry",
+            "custom_components.bgw320.async_setup_entry",
             return_value=True,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -567,19 +567,19 @@ async def test_full_flow_sibling_variant_uses_sibling_modem_dir(hass: HomeAssist
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=[summary_with_sibling],
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=multi_transport_variants,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             return_value=MOCK_VALIDATION_RESULT,
         ),
         patch(
-            "custom_components.cable_modem_monitor.async_setup_entry",
+            "custom_components.bgw320.async_setup_entry",
             return_value=True,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -628,19 +628,19 @@ async def test_full_flow_get_only_modem_uses_default_cadence(hass: HomeAssistant
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_SINGLE_VARIANT,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             return_value=get_only_validation,
         ),
         patch(
-            "custom_components.cable_modem_monitor.async_setup_entry",
+            "custom_components.bgw320.async_setup_entry",
             return_value=True,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -674,15 +674,15 @@ async def test_validation_connection_error_shows_form(hass: HomeAssistant):
     """Connection error during validation returns to connection form."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_SINGLE_VARIANT,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             side_effect=ConnectionError("Modem unreachable"),
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -716,15 +716,15 @@ async def test_validation_auth_error(hass: HomeAssistant):
     """Auth error during validation shows error on connection form."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_SINGLE_VARIANT,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             side_effect=PermissionError("auth_error:invalid_auth:Bad password"),
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -788,15 +788,15 @@ async def test_multi_variant_failure_shows_error_form_with_variant_switch(hass: 
     """A multi-variant failure returns to the connection form with the error and an inline variant switch (#176)."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_MULTI_VARIANTS,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             side_effect=PermissionError("auth_error:invalid_auth:Bad password"),
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -815,15 +815,15 @@ async def test_single_variant_failure_has_no_variant_switch(hass: HomeAssistant)
     """A single-variant failure shows the error form without a variant field (nothing to switch to)."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_SINGLE_VARIANT,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             side_effect=ConnectionError("unreachable"),
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -848,15 +848,15 @@ async def test_failure_form_preserves_entered_connection(hass: HomeAssistant):
     """The error form keeps the host and credentials already typed (#176)."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_MULTI_VARIANTS,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             side_effect=PermissionError("auth_error:invalid_auth:Bad password"),
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -875,18 +875,18 @@ async def test_switch_variant_on_failure_form_revalidates(hass: HomeAssistant):
     """Switching variant on the error form re-runs validation with the new variant (#176)."""
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_MULTI_VARIANTS,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             side_effect=[PermissionError("auth_error:invalid_auth:Bad password"), MOCK_VALIDATION_RESULT],
         ),
-        patch("custom_components.cable_modem_monitor.async_setup_entry", return_value=True),
+        patch("custom_components.bgw320.async_setup_entry", return_value=True),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
     ):
         result: Any = await _drive_multi_variant_to_failure(hass, connection={"host": "192.168.100.1"})
@@ -919,15 +919,15 @@ async def test_switch_to_credentialed_variant_rerenders_before_validating(hass: 
     ]
     with (
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=variants,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             side_effect=ConnectionError("unreachable"),
         ) as mock_validate,
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -984,7 +984,7 @@ async def test_options_step_init_shows_form(hass: HomeAssistant):
     """Options init step shows form with current values."""
     entry = _options_entry(hass)
 
-    with patch("custom_components.cable_modem_monitor.async_setup_entry", return_value=True):
+    with patch("custom_components.bgw320.async_setup_entry", return_value=True):
         await hass.config_entries.async_setup(entry.entry_id)
 
     result: Any = await hass.config_entries.options.async_init(entry.entry_id)
@@ -998,13 +998,13 @@ async def test_options_full_flow_success(hass: HomeAssistant):
     entry = _options_entry(hass)
 
     with (
-        patch("custom_components.cable_modem_monitor.async_setup_entry", return_value=True),
+        patch("custom_components.bgw320.async_setup_entry", return_value=True),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             return_value=MOCK_VALIDATION_RESULT,
         ),
     ):
@@ -1036,13 +1036,13 @@ async def test_options_flow_validation_failure(hass: HomeAssistant):
     entry = _options_entry(hass)
 
     with (
-        patch("custom_components.cable_modem_monitor.async_setup_entry", return_value=True),
+        patch("custom_components.bgw320.async_setup_entry", return_value=True),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             side_effect=ConnectionError("Modem unreachable"),
         ),
     ):
@@ -1073,13 +1073,13 @@ async def test_options_password_preserved(hass: HomeAssistant):
     entry = _options_entry(hass)
 
     with (
-        patch("custom_components.cable_modem_monitor.async_setup_entry", return_value=True),
+        patch("custom_components.bgw320.async_setup_entry", return_value=True),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             return_value=MOCK_VALIDATION_RESULT,
         ) as mock_validate,
     ):
@@ -1120,7 +1120,7 @@ async def test_reauth_shows_form(hass: HomeAssistant):
     )
     entry.add_to_hass(hass)
 
-    with patch("custom_components.cable_modem_monitor.async_setup_entry", return_value=True):
+    with patch("custom_components.bgw320.async_setup_entry", return_value=True):
         await hass.config_entries.async_setup(entry.entry_id)
 
     result: Any = await hass.config_entries.flow.async_init(
@@ -1144,13 +1144,13 @@ async def test_reauth_success(hass: HomeAssistant):
     entry.add_to_hass(hass)
 
     with (
-        patch("custom_components.cable_modem_monitor.async_setup_entry", return_value=True),
+        patch("custom_components.bgw320.async_setup_entry", return_value=True),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             return_value=MOCK_VALIDATION_RESULT,
         ),
     ):
@@ -1186,13 +1186,13 @@ async def test_reauth_failure_shows_error(hass: HomeAssistant):
     entry.add_to_hass(hass)
 
     with (
-        patch("custom_components.cable_modem_monitor.async_setup_entry", return_value=True),
+        patch("custom_components.bgw320.async_setup_entry", return_value=True),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             side_effect=PermissionError("auth_error:invalid_auth:Bad password"),
         ),
     ):
@@ -1238,17 +1238,17 @@ async def test_duplicate_entity_prefix_aborts(hass: HomeAssistant):
     existing.add_to_hass(hass)
 
     with (
-        patch("custom_components.cable_modem_monitor.async_setup_entry", return_value=True),
+        patch("custom_components.bgw320.async_setup_entry", return_value=True),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_SINGLE_VARIANT,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             return_value=MOCK_VALIDATION_RESULT,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),
@@ -1292,17 +1292,17 @@ async def test_different_entity_prefix_at_same_host_succeeds(hass: HomeAssistant
     existing.add_to_hass(hass)
 
     with (
-        patch("custom_components.cable_modem_monitor.async_setup_entry", return_value=True),
+        patch("custom_components.bgw320.async_setup_entry", return_value=True),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_modem_catalog",
+            "custom_components.bgw320.config_flow.load_modem_catalog",
             return_value=MOCK_SUMMARIES,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.load_variant_list",
+            "custom_components.bgw320.config_flow.load_variant_list",
             return_value=MOCK_SINGLE_VARIANT,
         ),
         patch(
-            "custom_components.cable_modem_monitor.config_flow.validate_connection",
+            "custom_components.bgw320.config_flow.validate_connection",
             return_value=MOCK_VALIDATION_RESULT,
         ),
         patch(_PATCH_CATALOG_PATH, FAKE_CATALOG),

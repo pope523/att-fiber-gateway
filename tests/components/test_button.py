@@ -13,13 +13,13 @@ from solentlabs.cable_modem_monitor_core.orchestration.models import (
     RestartResult,
 )
 
-from custom_components.cable_modem_monitor.button import (
+from custom_components.bgw320.button import (
     ResetEntitiesButton,
     RestartModemButton,
     UpdateModemDataButton,
     async_setup_entry,
 )
-from custom_components.cable_modem_monitor.coordinator import (
+from custom_components.bgw320.coordinator import (
     CableModemRuntimeData,
 )
 
@@ -362,12 +362,12 @@ async def test_reset_button_press_with_probes(
     # Mock entity registry with two entities for this entry
     mock_entity_reg = MagicMock()
     entity_1 = MagicMock()
-    entity_1.platform = "cable_modem_monitor"
+    entity_1.platform = "bgw320"
     entity_1.config_entry_id = "test_entry"
     entity_1.entity_id = "sensor.modem_1"
     entity_1.domain = "sensor"
     entity_2 = MagicMock()
-    entity_2.platform = "cable_modem_monitor"
+    entity_2.platform = "bgw320"
     entity_2.config_entry_id = "test_entry"
     entity_2.entity_id = "sensor.modem_2"
     entity_2.domain = "sensor"
@@ -378,7 +378,7 @@ async def test_reset_button_press_with_probes(
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.button.er.async_get",
+            "custom_components.bgw320.button.er.async_get",
             return_value=mock_entity_reg,
         ),
         patch.object(button, "_redetect_probes", new=AsyncMock(return_value=probe_result)),
@@ -416,7 +416,7 @@ async def test_reset_button_press_probes_failed(
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.button.er.async_get",
+            "custom_components.bgw320.button.er.async_get",
             return_value=mock_entity_reg,
         ),
         patch.object(button, "_redetect_probes", new=AsyncMock(return_value=None)),

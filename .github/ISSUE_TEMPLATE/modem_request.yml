@@ -10,9 +10,9 @@ body:
 
         Adding support for your modem starts with a **HAR capture** from its web interface. This records the complete HTTP flow — authentication, API calls, page content — everything needed to build a parser.
 
-        **New here?** Read the [Modem Request Guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/MODEM_REQUEST.md) for the full walkthrough — it covers capturing, screening for PII (manually or with AI assist), and submitting.
+        **New here?** Read the [Modem Request Guide](https://github.com/pope523/att-fiber-gateway/blob/main/docs/MODEM_REQUEST.md) for the full walkthrough — it covers capturing, screening for PII (manually or with AI assist), and submitting.
 
-        **Help grow the catalog.** The catalog includes modems the maintainer can't physically test — it grows when contributors with hardware help analyze captures and propose entries. If you have AI access, you can do significantly more than file a request: analyze your own capture, propose the catalog entry, and help triage other users' submissions. See [AI-Assisted Catalog Contribution](https://github.com/solentlabs/cable_modem_monitor/blob/main/CONTRIBUTING.md#ai-assisted-catalog-contribution).
+        **Help grow the catalog.** The catalog includes modems the maintainer can't physically test — it grows when contributors with hardware help analyze captures and propose entries. If you have AI access, you can do significantly more than file a request: analyze your own capture, propose the catalog entry, and help triage other users' submissions. See [AI-Assisted Catalog Contribution](https://github.com/pope523/att-fiber-gateway/blob/main/CONTRIBUTING.md#ai-assisted-catalog-contribution).
 
   - type: input
     id: modem-model
@@ -88,7 +88,7 @@ body:
         4. If your modem requires login, **log out** before closing the browser
         5. Close the browser when done
 
-        **Before sharing:** Search the `.sanitized.har` file for your WiFi password and any other credentials — the sanitizer is best-effort. See the [Modem Request Guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/MODEM_REQUEST.md#important-about-pii-and-sanitization) for what to check.
+        **Before sharing:** Search the `.sanitized.har` file for your WiFi password and any other credentials — the sanitizer is best-effort. See the [Modem Request Guide](https://github.com/pope523/att-fiber-gateway/blob/main/docs/MODEM_REQUEST.md#important-about-pii-and-sanitization) for what to check.
 
         Attach the `.sanitized.har.gz` file to this issue.
 

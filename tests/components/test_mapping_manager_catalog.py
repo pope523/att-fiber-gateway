@@ -20,8 +20,8 @@ from pathlib import Path
 
 import pytest
 
-from custom_components.cable_modem_monitor.const import ChannelIdentity
-from custom_components.cable_modem_monitor.mapping_manager import build_channel_map
+from custom_components.bgw320.const import ChannelIdentity
+from custom_components.bgw320.mapping_manager import build_channel_map
 
 _CATALOG_ROOT = (
     Path(__file__).resolve().parents[2]

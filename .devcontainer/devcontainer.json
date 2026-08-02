@@ -12,10 +12,10 @@
   },
 
   // Explicitly mount the workspace folder
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/cable_modem_monitor,type=bind",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/bgw320,type=bind",
 
   // Folder inside the container where VS Code opens the workspace
-  "workspaceFolder": "/workspaces/cable_modem_monitor",
+  "workspaceFolder": "/workspaces/bgw320",
 
   // VS Code customizations for extensions and settings
   "customizations": {
@@ -38,7 +38,7 @@
       ],
       "settings": {
         // Use the project venv (created by post-create.sh)
-        "python.defaultInterpreterPath": "/workspaces/cable_modem_monitor/.venv/bin/python",
+        "python.defaultInterpreterPath": "/workspaces/bgw320/.venv/bin/python",
 
         // Enable linting and configure Ruff
         "python.linting.enabled": true,
@@ -74,10 +74,10 @@
 
         // Configure Black formatter path and interpreter
         "black-formatter.interpreter": [
-          "/workspaces/cable_modem_monitor/.venv/bin/python"
+          "/workspaces/bgw320/.venv/bin/python"
         ],
         "black-formatter.path": [
-          "/workspaces/cable_modem_monitor/.venv/bin/black"
+          "/workspaces/bgw320/.venv/bin/black"
         ]
       }
     }

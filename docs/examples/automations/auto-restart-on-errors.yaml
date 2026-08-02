@@ -6,7 +6,7 @@ automation:
   - alias: "Cable Modem - Auto Restart on High Errors"
     trigger:
       - platform: numeric_state
-        entity_id: sensor.cable_modem_total_uncorrected_errors
+        entity_id: sensor.bgw320_total_uncorrected_errors
         above: 1000
     action:
       - service: notify.notify
@@ -15,4 +15,4 @@ automation:
           message: "High error count detected. Restarting modem..."
       - service: button.press
         target:
-          entity_id: button.cable_modem_restart_modem
+          entity_id: button.bgw320_restart_modem

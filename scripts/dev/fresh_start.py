@@ -167,7 +167,7 @@ def clear_workspace_cache() -> int:
 
         try:
             content = workspace_json.read_text()
-            if "cable_modem_monitor" in content:
+            if "bgw320" in content:
                 print_info(f"Removing: {workspace_dir.name}")
                 shutil.rmtree(workspace_dir)
                 found += 1

@@ -12,8 +12,8 @@ Steps:
    tests, intake regression, PII check, catalog README freshness)
 4. Verify translations/en.json matches strings.json
 5. Update version in all required files:
-   - custom_components/cable_modem_monitor/manifest.json
-   - custom_components/cable_modem_monitor/const.py
+   - custom_components/bgw320/manifest.json
+   - custom_components/bgw320/const.py
    - tests/components/test_version_and_startup.py
    - packages/cable_modem_monitor_core/pyproject.toml
    - packages/cable_modem_monitor_catalog/pyproject.toml
@@ -93,7 +93,7 @@ def check_git_clean() -> bool:
 
 def update_manifest(repo_root: Path, version: str) -> bool:
     """Update version in manifest.json."""
-    manifest_path = repo_root / "custom_components" / "cable_modem_monitor" / "manifest.json"
+    manifest_path = repo_root / "custom_components" / "bgw320" / "manifest.json"
 
     try:
         with open(manifest_path, encoding="utf-8") as f:
@@ -115,7 +115,7 @@ def update_manifest(repo_root: Path, version: str) -> bool:
 
 def update_manifest_requirements(repo_root: Path, version: str) -> bool:
     """Update Core and Catalog version pins in manifest.json requirements."""
-    manifest_path = repo_root / "custom_components" / "cable_modem_monitor" / "manifest.json"
+    manifest_path = repo_root / "custom_components" / "bgw320" / "manifest.json"
 
     try:
         with open(manifest_path, encoding="utf-8") as f:
@@ -153,7 +153,7 @@ def update_manifest_requirements(repo_root: Path, version: str) -> bool:
 
 def update_const_py(repo_root: Path, version: str) -> bool:
     """Update VERSION constant in const.py."""
-    const_path = repo_root / "custom_components" / "cable_modem_monitor" / "const.py"
+    const_path = repo_root / "custom_components" / "bgw320" / "const.py"
 
     try:
         with open(const_path, encoding="utf-8") as f:
@@ -325,8 +325,8 @@ def update_changelog(repo_root: Path, version: str) -> bool:
 def show_changed_files(version: str) -> None:
     """Show the files that were updated and suggested next steps."""
     files = [
-        "custom_components/cable_modem_monitor/manifest.json",
-        "custom_components/cable_modem_monitor/const.py",
+        "custom_components/bgw320/manifest.json",
+        "custom_components/bgw320/const.py",
         "tests/components/test_version_and_startup.py",
         "packages/cable_modem_monitor_core/pyproject.toml",
         "packages/cable_modem_monitor_catalog/pyproject.toml",
@@ -336,13 +336,13 @@ def show_changed_files(version: str) -> None:
     # Check if translations were updated
     try:
         result = subprocess.run(
-            ["git", "diff", "--name-only", "--", "custom_components/cable_modem_monitor/translations/en.json"],
+            ["git", "diff", "--name-only", "--", "custom_components/bgw320/translations/en.json"],
             capture_output=True,
             text=True,
             check=False,
         )
         if result.stdout.strip():
-            files.append("custom_components/cable_modem_monitor/translations/en.json")
+            files.append("custom_components/bgw320/translations/en.json")
     except subprocess.CalledProcessError:
         pass
 
@@ -409,8 +409,8 @@ def _generate_catalog_index(repo_root: Path) -> None:
 def verify_translations(repo_root: Path) -> bool:
     """Verify translations/en.json matches strings.json."""
     try:
-        strings_path = repo_root / "custom_components" / "cable_modem_monitor" / "strings.json"
-        translations_path = repo_root / "custom_components" / "cable_modem_monitor" / "translations" / "en.json"
+        strings_path = repo_root / "custom_components" / "bgw320" / "strings.json"
+        translations_path = repo_root / "custom_components" / "bgw320" / "translations" / "en.json"
 
         # Read both files
         with open(strings_path, encoding="utf-8") as f:
@@ -551,7 +551,7 @@ def verify_version_consistency(repo_root: Path, version: str) -> bool:
     all_correct = True
 
     # Check manifest.json (JSON structure, not substring)
-    manifest_path = repo_root / "custom_components" / "cable_modem_monitor" / "manifest.json"
+    manifest_path = repo_root / "custom_components" / "bgw320" / "manifest.json"
     manifest = None
     try:
         with open(manifest_path, encoding="utf-8") as f:
@@ -580,7 +580,7 @@ def verify_version_consistency(repo_root: Path, version: str) -> bool:
                 print_success(f"manifest.json requirement pin correct: {pkg_name}")
 
     # Check text-based version files
-    cc = repo_root / "custom_components" / "cable_modem_monitor"
+    cc = repo_root / "custom_components" / "bgw320"
     pkg = repo_root / "packages"
     ver_assert = f'assert VERSION == "{version}"'
     ver_field = f'version = "{version}"'

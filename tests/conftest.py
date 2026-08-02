@@ -1,4 +1,4 @@
-"""Pytest configuration and fixtures for cable_modem_monitor tests."""
+"""Pytest configuration and fixtures for bgw320 tests."""
 
 from __future__ import annotations
 

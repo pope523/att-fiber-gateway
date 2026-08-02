@@ -13,11 +13,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from custom_components.cable_modem_monitor.const import DOMAIN
-from custom_components.cable_modem_monitor.coordinator import (
+from custom_components.bgw320.const import DOMAIN
+from custom_components.bgw320.coordinator import (
     CableModemRuntimeData,
 )
-from custom_components.cable_modem_monitor.dev_tools import (
+from custom_components.bgw320.dev_tools import (
     _add_channel_graphs,
     _build_channel_graph_yaml,
     _build_channel_lookup,
@@ -41,7 +41,7 @@ from custom_components.cable_modem_monitor.dev_tools import (
     create_generate_dashboard_handler,
     create_orphaned_statistics_handler,
 )
-from custom_components.cable_modem_monitor.services import (
+from custom_components.bgw320.services import (
     _find_loaded_entries,
     _resolve_target_entries,
     async_register_services,
@@ -213,20 +213,20 @@ def test_build_status_card_yaml_full():
         "rate_uncorrected": 0.0,
     }
     lines = _build_status_card_yaml(
-        "cable_modem",
+        "bgw320",
         system_info,
         has_icmp=True,
         has_head=True,
     )
     yaml = "\n".join(lines)
-    assert "sensor.cable_modem_status" in yaml
-    assert "sensor.cable_modem_ping_latency" in yaml
-    assert "sensor.cable_modem_tcp_latency" in yaml
-    assert "sensor.cable_modem_http_latency" in yaml
-    assert "sensor.cable_modem_software_version" in yaml
-    assert "sensor.cable_modem_system_uptime" in yaml
-    assert "sensor.cable_modem_last_boot_time" in yaml
-    assert "sensor.cable_modem_total_corrected_errors" in yaml
+    assert "sensor.bgw320_status" in yaml
+    assert "sensor.bgw320_ping_latency" in yaml
+    assert "sensor.bgw320_tcp_latency" in yaml
+    assert "sensor.bgw320_http_latency" in yaml
+    assert "sensor.bgw320_software_version" in yaml
+    assert "sensor.bgw320_system_uptime" in yaml
+    assert "sensor.bgw320_last_boot_time" in yaml
+    assert "sensor.bgw320_total_corrected_errors" in yaml
     # Rates are intentionally NOT in the status entities row even when
     # the fields are present in system_info.
     assert "rate_corrected_errors" not in yaml
@@ -239,14 +239,14 @@ def test_build_status_card_yaml_minimal():
     """Status card omits entities when modem data is sparse and HEAD unsupported."""
     system_info = {}
     lines = _build_status_card_yaml(
-        "cable_modem",
+        "bgw320",
         system_info,
         has_icmp=False,
         has_head=False,
     )
     yaml = "\n".join(lines)
-    assert "sensor.cable_modem_status" in yaml
-    assert "sensor.cable_modem_tcp_latency" in yaml
+    assert "sensor.bgw320_status" in yaml
+    assert "sensor.bgw320_tcp_latency" in yaml
     assert "ds_channel_count" in yaml
     assert "ping_latency" not in yaml
     assert "http_latency" not in yaml
@@ -269,12 +269,12 @@ def test_build_status_card_yaml_passthrough_fields():
         "total_uncorrected": 0,
         "rate_corrected": 5.0,
     }
-    lines = _build_status_card_yaml("cable_modem", system_info, has_icmp=False, has_head=False)
+    lines = _build_status_card_yaml("bgw320", system_info, has_icmp=False, has_head=False)
     yaml = "\n".join(lines)
-    assert "sensor.cable_modem_ds_power_status" in yaml
-    assert "sensor.cable_modem_ds_snr_status" in yaml
-    assert "sensor.cable_modem_us_power_status" in yaml
-    assert "sensor.cable_modem_ds_partial_service" in yaml
+    assert "sensor.bgw320_ds_power_status" in yaml
+    assert "sensor.bgw320_ds_snr_status" in yaml
+    assert "sensor.bgw320_us_power_status" in yaml
+    assert "sensor.bgw320_ds_partial_service" in yaml
     # Consumed/explicit fields must not be duplicated.
     assert yaml.count("software_version") == 1
     assert "rate_corrected" not in yaml
@@ -311,15 +311,15 @@ def test_passthrough_formerly_explicit_fields(system_info: dict[str, Any], expec
 
 def test_build_restart_button_card_yaml():
     """Restart button is a dedicated `button` card so confirmation always fires."""
-    lines = _build_restart_button_card_yaml("cable_modem")
+    lines = _build_restart_button_card_yaml("bgw320")
     yaml = "\n".join(lines)
     assert "type: button" in yaml
-    assert "entity: button.cable_modem_restart_modem" in yaml
+    assert "entity: button.bgw320_restart_modem" in yaml
     # Entities-card row tap_actions get bypassed by the button widget,
     # so we use call-service + confirmation on a standalone button card.
     assert "action: call-service" in yaml
     assert "service: button.press" in yaml
-    assert "entity_id: button.cable_modem_restart_modem" in yaml
+    assert "entity_id: button.bgw320_restart_modem" in yaml
     assert "confirmation:" in yaml
     assert "This will restart your modem" in yaml
 
@@ -600,7 +600,7 @@ RESOLVE_DEVICE_CASES = [
     RESOLVE_DEVICE_CASES,
     ids=[c[5] for c in RESOLVE_DEVICE_CASES],
 )
-@patch("custom_components.cable_modem_monitor.dev_tools.dr")
+@patch("custom_components.bgw320.dev_tools.dr")
 def test_resolve_config_entry_for_device(
     mock_dr: MagicMock,
     device_id: str,
@@ -643,7 +643,7 @@ def test_resolve_config_entry_for_device(
 # -----------------------------------------------------------------------
 
 
-@patch("custom_components.cable_modem_monitor.dev_tools.dr")
+@patch("custom_components.bgw320.dev_tools.dr")
 def test_resolve_target_with_device_id(mock_dr: MagicMock) -> None:
     """Resolves device_id to matching config entry."""
     hass = MagicMock()
@@ -678,7 +678,7 @@ def test_resolve_target_no_device_id_returns_all_loaded() -> None:
     assert result == [loaded]
 
 
-@patch("custom_components.cable_modem_monitor.dev_tools.dr")
+@patch("custom_components.bgw320.dev_tools.dr")
 def test_resolve_target_unknown_device_returns_empty(mock_dr: MagicMock) -> None:
     """Unknown device_id returns empty list, not fallback."""
     hass = MagicMock()
@@ -692,7 +692,7 @@ def test_resolve_target_unknown_device_returns_empty(mock_dr: MagicMock) -> None
     assert result == []
 
 
-@patch("custom_components.cable_modem_monitor.dev_tools.dr")
+@patch("custom_components.bgw320.dev_tools.dr")
 def test_resolve_target_string_device_id(mock_dr: MagicMock) -> None:
     """Single string device_id is handled (not just list)."""
     hass = MagicMock()
@@ -817,7 +817,7 @@ def test_get_entity_prefix() -> None:
     entry.data = {"entity_prefix": "none", "host": "192.168.100.1"}
     entry.runtime_data.modem_identity.model = "TPS-2000"
 
-    assert _get_entity_prefix(entry) == "cable_modem"
+    assert _get_entity_prefix(entry) == "bgw320"
 
 
 # -----------------------------------------------------------------------
@@ -915,18 +915,18 @@ def test_generate_dashboard_handler(
     result = handler(call)
 
     yaml = result["yaml"]
-    assert "Cable Modem Dashboard" in yaml
-    assert "sensor.cable_modem_status" in yaml
-    assert "sensor.cable_modem_ds_qam_ch_1_power" in yaml
-    assert "sensor.cable_modem_ds_ofdm_ch_2_power" in yaml
-    assert "sensor.cable_modem_us_atdma_ch_1_power" in yaml
-    assert "sensor.cable_modem_total_corrected_errors" in yaml
+    assert "BGW320 Dashboard" in yaml
+    assert "sensor.bgw320_status" in yaml
+    assert "sensor.bgw320_ds_qam_ch_1_power" in yaml
+    assert "sensor.bgw320_ds_ofdm_ch_2_power" in yaml
+    assert "sensor.bgw320_us_atdma_ch_1_power" in yaml
+    assert "sensor.bgw320_total_corrected_errors" in yaml
     # Rates are off by default — not in status card, not in graphs.
     assert "rate_corrected_errors" not in yaml
     assert "rate_uncorrected_errors" not in yaml
-    assert "sensor.cable_modem_tcp_latency" in yaml
-    assert "sensor.cable_modem_http_latency" in yaml
-    assert "entity: button.cable_modem_restart_modem" in yaml
+    assert "sensor.bgw320_tcp_latency" in yaml
+    assert "sensor.bgw320_http_latency" in yaml
+    assert "entity: button.bgw320_restart_modem" in yaml
 
 
 def test_generate_dashboard_handler_with_error_rates_opt_in(
@@ -954,8 +954,8 @@ def test_generate_dashboard_handler_with_error_rates_opt_in(
 
     yaml = handler(call)["yaml"]
     # Rate graphs appear (opt-in honored).
-    assert "sensor.cable_modem_rate_corrected_errors" in yaml
-    assert "sensor.cable_modem_rate_uncorrected_errors" in yaml
+    assert "sensor.bgw320_rate_corrected_errors" in yaml
+    assert "sensor.bgw320_rate_uncorrected_errors" in yaml
     # But the status entities row still excludes rate entities — the
     # entities-row exclusion is unconditional regardless of opt-in.
     status_card_lines: list[str] = []
@@ -985,7 +985,7 @@ def test_generate_dashboard_handler_no_restart_support(
     call.data = {}
 
     yaml = handler(call)["yaml"]
-    assert "button.cable_modem_restart_modem" not in yaml
+    assert "button.bgw320_restart_modem" not in yaml
     assert "This will restart your modem" not in yaml
 
 
@@ -1135,8 +1135,8 @@ def test_migrate_statistics_clears_then_renames() -> None:
     recorder = MagicMock()
 
     renames = [
-        ("sensor.cable_modem_ds_qam_ch_1_power", "sensor.cable_modem_ds_ch_1_power"),
-        ("sensor.cable_modem_ds_qam_ch_2_power", "sensor.cable_modem_ds_ch_2_power"),
+        ("sensor.bgw320_ds_qam_ch_1_power", "sensor.bgw320_ds_ch_1_power"),
+        ("sensor.bgw320_ds_qam_ch_2_power", "sensor.bgw320_ds_ch_2_power"),
     ]
 
     with patch("homeassistant.helpers.recorder.get_instance", return_value=recorder) as mock_get:
@@ -1149,11 +1149,11 @@ def test_migrate_statistics_clears_then_renames() -> None:
     assert recorder.async_clear_statistics.call_count == 2
     assert recorder.async_update_statistics_metadata.call_count == 2
 
-    recorder.async_clear_statistics.assert_any_call(["sensor.cable_modem_ds_ch_1_power"])
-    recorder.async_clear_statistics.assert_any_call(["sensor.cable_modem_ds_ch_2_power"])
+    recorder.async_clear_statistics.assert_any_call(["sensor.bgw320_ds_ch_1_power"])
+    recorder.async_clear_statistics.assert_any_call(["sensor.bgw320_ds_ch_2_power"])
     recorder.async_update_statistics_metadata.assert_any_call(
-        "sensor.cable_modem_ds_qam_ch_1_power",
-        new_statistic_id="sensor.cable_modem_ds_ch_1_power",
+        "sensor.bgw320_ds_qam_ch_1_power",
+        new_statistic_id="sensor.bgw320_ds_ch_1_power",
     )
 
 
@@ -1225,7 +1225,7 @@ async def test_convert_no_entry_returns_error(mock_runtime_data) -> None:
     ) as mock_list:
         result = await handler(call)
 
-    assert result == {"error": "No cable modem configured"}
+    assert result == {"error": "No BGW320 gateway configured"}
     mock_list.assert_not_called()
 
 
@@ -1286,8 +1286,8 @@ async def test_convert_to_id_mode_migrates(mock_runtime_data) -> None:
     recorder = MagicMock()
     # Number-mode stats that should be renamed to id-mode
     number_mode_stats = [
-        {"statistic_id": "sensor.cable_modem_ds_ch_1_power"},
-        {"statistic_id": "sensor.cable_modem_ds_ch_2_power"},
+        {"statistic_id": "sensor.bgw320_ds_ch_1_power"},
+        {"statistic_id": "sensor.bgw320_ds_ch_2_power"},
     ]
 
     with (
@@ -1315,8 +1315,8 @@ async def test_convert_to_number_mode_migrates(mock_runtime_data) -> None:
 
     recorder = MagicMock()
     id_mode_stats = [
-        {"statistic_id": "sensor.cable_modem_ds_qam_ch_1_power"},
-        {"statistic_id": "sensor.cable_modem_ds_qam_ch_2_power"},
+        {"statistic_id": "sensor.bgw320_ds_qam_ch_1_power"},
+        {"statistic_id": "sensor.bgw320_ds_qam_ch_2_power"},
     ]
 
     with (
@@ -1342,7 +1342,7 @@ async def test_convert_with_device_id_resolves_entry(mock_runtime_data) -> None:
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.dev_tools." "_resolve_config_entry_for_device",
+            "custom_components.bgw320.dev_tools." "_resolve_config_entry_for_device",
             return_value=entry,
         ) as mock_resolve,
         patch(
@@ -1366,7 +1366,7 @@ async def test_convert_with_device_id_resolves_entry(mock_runtime_data) -> None:
 
 def test_get_channel_info_number_mode_filters_unlocked() -> None:
     """_get_channel_info_number_mode returns only locked channels, sorted."""
-    from custom_components.cable_modem_monitor.dev_tools import (
+    from custom_components.bgw320.dev_tools import (
         _get_channel_info_number_mode,
     )
 
@@ -1382,8 +1382,8 @@ def test_get_channel_info_number_mode_filters_unlocked() -> None:
 
 def test_get_channel_info_number_mode_dispatched_when_identity_is_number() -> None:
     """_get_channel_info routes to _get_channel_info_number_mode when in NUMBER mode."""
-    from custom_components.cable_modem_monitor.const import ChannelIdentity
-    from custom_components.cable_modem_monitor.dev_tools import _get_channel_info
+    from custom_components.bgw320.const import ChannelIdentity
+    from custom_components.bgw320.dev_tools import _get_channel_info
 
     modem_data = {
         "downstream": [{"channel_number": 1, "lock_status": "locked"}],
@@ -1397,7 +1397,7 @@ def test_get_channel_info_number_mode_dispatched_when_identity_is_number() -> No
 
 def test_format_channel_label_position_mode() -> None:
     """Empty ch_type → 'Ch <n>' with no type prefix."""
-    from custom_components.cable_modem_monitor.dev_tools import _format_channel_label
+    from custom_components.bgw320.dev_tools import _format_channel_label
 
     assert _format_channel_label("", 5, "full") == "Ch 5"
     # The format param is ignored in position mode
@@ -1406,8 +1406,8 @@ def test_format_channel_label_position_mode() -> None:
 
 def test_build_channel_graph_defs_number_mode_omits_channel_type() -> None:
     """NUMBER-mode entity patterns omit the {ch_type} segment."""
-    from custom_components.cable_modem_monitor.const import ChannelIdentity
-    from custom_components.cable_modem_monitor.dev_tools import (
+    from custom_components.bgw320.const import ChannelIdentity
+    from custom_components.bgw320.dev_tools import (
         _build_channel_graph_defs,
     )
 
@@ -1644,7 +1644,7 @@ async def test_list_orphaned_execute_clears_statistics(mock_runtime_data) -> Non
         ),
         patch("homeassistant.helpers.entity_registry.async_get") as mock_er,
         patch(
-            "custom_components.cable_modem_monitor.dev_tools.get_instance",
+            "custom_components.bgw320.dev_tools.get_instance",
             return_value=mock_recorder,
         ),
     ):

@@ -40,7 +40,7 @@ jobs:
       - name: Verify version consistency
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          MANIFEST_VERSION=$(grep -oP '(?<="version": ")[^"]*' custom_components/cable_modem_monitor/manifest.json)
+          MANIFEST_VERSION=$(grep -oP '(?<="version": ")[^"]*' custom_components/bgw320/manifest.json)
 
           echo "Tag version: $VERSION"
           echo "Manifest version: $MANIFEST_VERSION"
@@ -71,7 +71,7 @@ jobs:
 
           if [ -z "$CHANGELOG" ]; then
             echo "⚠️ Warning: No changelog entry found for version $VERSION"
-            CHANGELOG="See [CHANGELOG.md](https://github.com/solentlabs/cable_modem_monitor/blob/main/CHANGELOG.md) for details."
+            CHANGELOG="See [CHANGELOG.md](https://github.com/pope523/att-fiber-gateway/blob/main/CHANGELOG.md) for details."
           fi
 
           # Save to file to preserve formatting
@@ -91,7 +91,7 @@ jobs:
           # test_data/, and bytecode.
           # Tests run in tests.yml on every push; release.yml does not re-run
           # them — by tag time they've already passed on the same commit.
-          python scripts/dev/build_hacs_zip.py --no-verify --output cable_modem_monitor.zip
+          python scripts/dev/build_hacs_zip.py --no-verify --output bgw320.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
@@ -102,7 +102,7 @@ jobs:
           prerelease: ${{ steps.version.outputs.is_prerelease == 'true' }}
           generate_release_notes: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: cable_modem_monitor.zip
+          files: bgw320.zip
 
       - name: Notify success
         if: success()

@@ -16,7 +16,7 @@ from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     HealthStatus,
 )
 
-from custom_components.cable_modem_monitor.sensor import _compute_display_status
+from custom_components.bgw320.sensor import _compute_display_status
 
 # Aliases for table readability
 _C = ConnectionStatus

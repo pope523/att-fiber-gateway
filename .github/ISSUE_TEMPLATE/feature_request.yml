@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **Before filing:** for new sensors, architecture changes, or anything spanning multiple files, please [open a Discussion](https://github.com/solentlabs/cable_modem_monitor/discussions/new?category=ideas) first. Issues are for features whose shape is already clear — Discussions are for shaping the idea.
+        **Before filing:** for new sensors, architecture changes, or anything spanning multiple files, please [open a Discussion](https://github.com/pope523/att-fiber-gateway/discussions/new?category=ideas) first. Issues are for features whose shape is already clear — Discussions are for shaping the idea.
 
         Keep this form short. You don't need to commit to a design to file an idea.
 
@@ -20,7 +20,7 @@ body:
     id: feature-type
     attributes:
       label: Feature Type
-      description: What type of feature are you requesting? (For new modem support, use the [New Modem Support Request](https://github.com/solentlabs/cable_modem_monitor/issues/new?template=modem_request.yml) template instead.)
+      description: What type of feature are you requesting? (For new modem support, use the [New Modem Support Request](https://github.com/pope523/att-fiber-gateway/issues/new?template=modem_request.yml) template instead.)
       options:
         - New sensor/entity
         - Enhancement to existing feature

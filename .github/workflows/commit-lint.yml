@@ -88,7 +88,7 @@ jobs:
             3. Use \`git rebase -i\` for older commits
             4. Force push with \`git push --force-with-lease\`
 
-            For more details, see the [Contributing Guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/CONTRIBUTING.md).`;
+            For more details, see the [Contributing Guide](https://github.com/pope523/att-fiber-gateway/blob/main/CONTRIBUTING.md).`;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,

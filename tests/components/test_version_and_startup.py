@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 
-from custom_components.cable_modem_monitor.const import VERSION
+from custom_components.bgw320.const import VERSION
 
 
 class TestVersion:

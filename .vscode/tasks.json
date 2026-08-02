@@ -91,7 +91,7 @@
     {
       "label": "🧪 Test: Cable Modem Monitor (HA)",
       "type": "shell",
-      "command": "${workspaceFolder}/.venv/bin/pytest tests/ -o addopts= -q --tb=short --strict-markers --cov=custom_components/cable_modem_monitor --cov-report=term:skip-covered --cov-fail-under=70",
+      "command": "${workspaceFolder}/.venv/bin/pytest tests/ -o addopts= -q --tb=short --strict-markers --cov=custom_components/bgw320 --cov-report=term:skip-covered --cov-fail-under=70",
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -209,7 +209,7 @@
     {
       "label": "🔎 HA: Check Integration Status",
       "type": "shell",
-      "command": "docker exec ha-cable-modem-test bash -c 'echo \"=== Integration Files ===\"; ls -la /config/custom_components/cable_modem_monitor/ 2>&1 | head -10; echo \"\"; echo \"=== Recent Integration Logs ===\"; grep -i cable_modem /config/home-assistant.log 2>&1 | tail -10 || echo \"No logs found (HA may not have started yet)\"'",
+      "command": "docker exec ha-cable-modem-test bash -c 'echo \"=== Integration Files ===\"; ls -la /config/custom_components/bgw320/ 2>&1 | head -10; echo \"\"; echo \"=== Recent Integration Logs ===\"; grep -i bgw320 /config/home-assistant.log 2>&1 | tail -10 || echo \"No logs found (HA may not have started yet)\"'",
       "dependsOn": ["🐳 Check Docker Status"],
       "group": "none",
       "presentation": {

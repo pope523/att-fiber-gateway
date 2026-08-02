@@ -12,7 +12,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from homeassistant.core import HomeAssistant
 
-from custom_components.cable_modem_monitor.migrations import (
+from custom_components.bgw320.migrations import (
     _discover_migrations,
     async_run_migrations,
 )
@@ -52,7 +52,7 @@ def _patch_glob_with(stem: str):
     mock_path_cls.return_value.parent.glob.return_value = [mock_file]
 
     return patch(
-        "custom_components.cable_modem_monitor.migrations.Path",
+        "custom_components.bgw320.migrations.Path",
         mock_path_cls,
     )
 
@@ -81,11 +81,11 @@ def test_discover_skips_file_without_async_migrate(caplog: pytest.LogCaptureFixt
 
     with (
         patch(
-            "custom_components.cable_modem_monitor.migrations.Path",
+            "custom_components.bgw320.migrations.Path",
             mock_path_cls,
         ),
         patch(
-            "custom_components.cable_modem_monitor.migrations.importlib.import_module",
+            "custom_components.bgw320.migrations.importlib.import_module",
             return_value=mock_module,
         ),
     ):
@@ -110,7 +110,7 @@ async def test_run_migrations_success(hass: HomeAssistant) -> None:
         return True
 
     with patch(
-        "custom_components.cable_modem_monitor.migrations.MIGRATIONS",
+        "custom_components.bgw320.migrations.MIGRATIONS",
         {2: _ok_migrate},
     ):
         result = await async_run_migrations(hass, entry, target_version=2)
@@ -128,7 +128,7 @@ async def test_run_migrations_failure_from_handler(hass: HomeAssistant) -> None:
         return False
 
     with patch(
-        "custom_components.cable_modem_monitor.migrations.MIGRATIONS",
+        "custom_components.bgw320.migrations.MIGRATIONS",
         {2: _failing_migrate},
     ):
         result = await async_run_migrations(hass, entry, target_version=2)
@@ -149,7 +149,7 @@ async def test_run_migrations_skips_when_already_current(hass: HomeAssistant) ->
         return True
 
     with patch(
-        "custom_components.cable_modem_monitor.migrations.MIGRATIONS",
+        "custom_components.bgw320.migrations.MIGRATIONS",
         {2: _migrate},
     ):
         result = await async_run_migrations(hass, entry, target_version=2)

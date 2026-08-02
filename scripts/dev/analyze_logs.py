@@ -29,7 +29,7 @@ from solentlabs.cable_modem_monitor_core.analysis import (
 )
 
 # ---------------------------------------------------------------------------
-# HA-specific patterns — custom_components.cable_modem_monitor loggers
+# HA-specific patterns — custom_components.bgw320 loggers
 # ---------------------------------------------------------------------------
 
 _TS = r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})"

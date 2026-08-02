@@ -8,13 +8,13 @@ from __future__ import annotations
 
 import pytest
 
-from custom_components.cable_modem_monitor.channel_bond_notifier import (
+from custom_components.bgw320.channel_bond_notifier import (
     ChannelTotals,
     evaluate,
     format_change_message,
     format_onboarding_message,
 )
-from custom_components.cable_modem_monitor.channel_bond_storage import BondState
+from custom_components.bgw320.channel_bond_storage import BondState
 
 # ---------------------------------------------------------------------
 # evaluate() — decision table
@@ -104,7 +104,7 @@ def test_onboarding_message_includes_counts_and_service():
     assert "TPS-2000" in message
     assert "24 downstream" in message
     assert "4 upstream" in message
-    assert "cable_modem_monitor.generate_dashboard" in message
+    assert "bgw320.generate_dashboard" in message
 
 
 def test_change_message_reports_only_changed_direction():
@@ -113,7 +113,7 @@ def test_change_message_reports_only_changed_direction():
     message = format_change_message(model="TPS-2000", prior=prior, current=current)
     assert "downstream 24 → 23" in message
     assert "upstream" not in message
-    assert "cable_modem_monitor.generate_dashboard" in message
+    assert "bgw320.generate_dashboard" in message
 
 
 def test_change_message_reports_both_when_both_shift():

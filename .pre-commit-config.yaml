@@ -168,7 +168,7 @@ repos:
         entry: scripts/dev/run-python.sh scripts/dev/check-translations-sync.py
         language: script
         pass_filenames: false
-        files: (custom_components/cable_modem_monitor/(strings\.json|translations/.*\.json)$)
+        files: (custom_components/bgw320/(strings\.json|translations/.*\.json)$)
 
       - id: check-md-no-emphasis-evasion
         name: Check markdown for HTML emphasis-evasion (sub/small)
