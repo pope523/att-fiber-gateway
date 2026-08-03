@@ -1,0 +1,140 @@
+# TG3442DE parser config.
+#
+# Channel data is in JSON arrays assigned to JS variables inside <script>
+# tags at /php/status_docsis_data.php.  The js_json format extracts these
+# directly. Lock status values (OPERATE, SUCCESS, ACTIVE) are mapped to
+# Core-standard values before conversion. PowerLevel is "dBmV/dBuV" —
+# the separator takes the first value (dBmV). Channel type values
+# (SC-QAM, OFDM, OFDMA) are mapped to canonical names via field map.
+#
+# System info uses javascript_vars format — simple JS variable
+# assignments (var x = 'value') extracted by Core.  js_Duration needs
+# reformatting ("D: X H: Y M: Z S: W" → "X days Y:Z:W") so parser.py
+# PostProcessor handles that one field.
+
+downstream:
+  format: javascript_json
+  resource: "/php/status_docsis_data.php"
+  filter:
+    lock_status: "locked"
+
+  mappings:
+    - key: ChannelID
+      field: channel_id
+      type: integer
+    # OFDM rows report Frequency as a "low~high" band; SC-QAM rows
+    # report a numeric MHz value. separator_index 0 picks the lower
+    # edge for OFDM (see FIELD_REGISTRY.md § frequency semantics);
+    # SC-QAM numeric values pass through (separator only applies to
+    # strings containing it).
+    - key: Frequency
+      field: frequency
+      type: frequency
+      separator: "~"
+      separator_index: 0
+    # OFDM channel_width from the same band range. range:span silently
+    # skips SC-QAM rows (no separator in the raw value).
+    - key: Frequency
+      field: channel_width
+      type: frequency
+      separator: "~"
+      range: span
+    - key: SNRLevel
+      field: snr
+      type: float
+    - key: Modulation
+      field: modulation
+      type: modulation
+    - key: LockStatus
+      field: lock_status
+      type: lock_status
+      map:
+        "ACTIVE": "Active"
+        "OPERATE": "Locked"
+        "SUCCESS": "Locked"
+    - key: ChannelType
+      field: channel_type
+      type: string
+      map:
+        "OFDM": "ofdm"
+        "SC-QAM": "qam"
+    - key: PowerLevel
+      field: power
+      type: float
+      separator: "/"
+      separator_index: 0
+  variable: "json_dsData"
+upstream:
+  format: javascript_json
+  resource: "/php/status_docsis_data.php"
+  filter:
+    lock_status: "locked"
+
+  mappings:
+    - key: ChannelID
+      field: channel_id
+      type: integer
+    # Same shape and convention as downstream — see comment above.
+    - key: Frequency
+      field: frequency
+      type: frequency
+      separator: "~"
+      separator_index: 0
+    - key: Frequency
+      field: channel_width
+      type: frequency
+      separator: "~"
+      range: span
+    - key: Modulation
+      field: modulation
+      type: modulation
+    - key: LockStatus
+      field: lock_status
+      type: lock_status
+      map:
+        "ACTIVE": "Active"
+        "OPERATE": "Locked"
+        "SUCCESS": "Locked"
+    - key: ChannelType
+      field: channel_type
+      type: string
+      map:
+        "OFDM": "ofdm"
+        "OFDMA": "ofdma"
+        "SC-QAM": "qam"
+    - key: PowerLevel
+      field: power
+      type: float
+      separator: "/"
+      separator_index: 0
+  variable: "json_usData"
+system_info:
+  sources:
+    - format: javascript_vars
+      resource: "/php/status_about_data.php"
+      fields:
+        - source: js_FWVersion
+          field: software_version
+          type: string
+    - format: javascript_vars
+      resource: "/php/status_status_data.php"
+      fields:
+        - source: js_HWTypeVersion
+          field: hardware_version
+          type: string
+        - source: js_Duration
+          field: system_uptime
+          type: uptime
+          format: "D: {days} H: {hours} M: {minutes} S: {seconds}"
+    - format: javascript_vars
+      resource: "/php/overview_data.php"
+      fields:
+        - source: js_isCmOperational
+          field: docsis_status
+          type: string
+          map:
+            "1": "Operational"
+            "0": "offline"
+        - source: js_hostNums
+          field: connected_devices
+          type: string

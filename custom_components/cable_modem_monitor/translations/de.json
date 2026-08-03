@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Kabelmodem-Monitor",
+        "description": "Hersteller auswählen oder 'Alle' wählen.",
+        "data": {
+          "manufacturer": "Hersteller"
+        }
+      },
+      "model": {
+        "title": "Modem auswählen",
+        "description": "Wähle ein {manufacturer}-Modemmodell. Mit * markierte Modelle sind nicht verifiziert.",
+        "data": {
+          "model": "Modemmodell",
+          "entity_prefix": "Entity ID-Präfix",
+          "channel_identity": "Channel Naming"
+        },
+        "data_description": {
+          "model": "Wähle dein Modemmodell aus der Liste.",
+          "entity_prefix": "Fügt Modellname oder IP zu Entity IDs hinzu. Erforderlich bei Überwachung mehrerer Modems.",
+          "channel_identity": "Channel Number names entities after the modem's row position (stable across reboots). Channel ID uses the DOCSIS Channel ID (matches ISP diagnostics but can change on reboot)."
+        }
+      },
+      "variant": {
+        "title": "Firmware-Variante",
+        "description": "Dein Modem hat mehrere Firmware-Varianten mit unterschiedlicher Authentifizierung. Wähle die passende für dein Setup.",
+        "data": {
+          "variant": "Variante"
+        },
+        "data_description": {
+          "variant": "Im Zweifelsfall die erste Option wählen. Mit * markierte Optionen wurden noch nicht auf echter Hardware verifiziert."
+        }
+      },
+      "connection": {
+        "title": "Verbindung",
+        "description": "Ausgewählte Variante: {variant}\n\nGib die Verbindungsdaten deines Modems ein.",
+        "data": {
+          "variant": "Variante",
+          "host": "Modem-IP-Adresse",
+          "username": "Benutzername",
+          "password": "Passwort"
+        },
+        "data_description": {
+          "variant": "Nur wechseln, wenn du glaubst, dass eine andere Variante zu deinem Modem passt.",
+          "host": "Normalerweise 192.168.100.1. Mit http:// oder https:// die Protokollerkennung überspringen.",
+          "username": "Leer lassen, wenn nicht erforderlich.",
+          "password": "Leer lassen, wenn nicht erforderlich."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Erneut authentifizieren",
+        "description": "Das Modem hat deine Anmeldedaten abgelehnt. Bitte gib sie erneut ein.",
+        "data": {
+          "host": "Modem-IP-Adresse",
+          "username": "Benutzername",
+          "password": "Passwort"
+        }
+      }
+    },
+    "error": {
+      "network_unreachable": "Modem nicht erreichbar.\n\nPrüfe:\n1. Du bist im Netzwerk des Modems (nicht Gäste-WiFi)\n2. VPN ist getrennt\n3. IP-Adresse ist korrekt (normalerweise 192.168.100.1)\n4. Modem-Weboberfläche ist in deinem Browser erreichbar",
+      "cannot_connect": "Modem antwortet nicht.\n\nPrüfe:\n1. IP-Adresse ist korrekt\n2. Versuche das Protokoll anzugeben (z. B. http://192.168.100.1)\n3. Modem-Weboberfläche ist vom Home Assistant-Netzwerk aus erreichbar",
+      "invalid_auth": "Anmeldung fehlgeschlagen.\n\nPrüfe:\n1. Benutzername ist korrekt (typischerweise 'admin')\n2. Passwort ist korrekt (siehe Modem-Etikett)\n3. Versuche dich zuerst über deinen Browser anzumelden, um die Anmeldedaten zu überprüfen",
+      "parse_failed": "Verbunden, aber Modemdaten konnten nicht gelesen werden.\n\nDies kann bedeuten, dass dein Modem eine andere Variantenauswahl benötigt. Gehe zurück und wähle eine andere Option, oder prüfe ob die Firmware deines Modems unterstützt wird.",
+      "unknown": "Unerwarteter Fehler. Überprüfe die Home Assistant-Logs für Details."
+    },
+    "abort": {
+      "already_configured": "Dieses Modem ist bereits konfiguriert.",
+      "missing_input": "Erforderliche Daten fehlen. Bitte starte die Einrichtung neu.",
+      "unknown_model": "Ausgewähltes Modem nicht im Katalog gefunden.",
+      "reauth_successful": "Erneute Authentifizierung erfolgreich.",
+      "reauth_failed": "Erneute Authentifizierung fehlgeschlagen. Bitte versuche es erneut."
+    },
+    "progress": {
+      "validate": "Verbinde mit Modem..."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kabelmodem-Einstellungen",
+        "description": "Verbindungsdaten und Abfrageintervalle aktualisieren.",
+        "data": {
+          "host": "Modem-IP-Adresse",
+          "username": "Benutzername",
+          "password": "Passwort",
+          "scan_interval": "Daten-Abfrageintervall",
+          "health_check_interval": "Erreichbarkeitsprüfung"
+        },
+        "data_description": {
+          "host": "Normalerweise 192.168.100.1",
+          "username": "Leer lassen, wenn nicht erforderlich.",
+          "password": "Leer = aktuelles Passwort behalten.",
+          "scan_interval": "Wie oft Modemdaten abgefragt werden. Standard 10 Minuten. Auf 00:00:00 setzen, um automatische Abfragen zu deaktivieren (nur manuell über den Aktualisieren-Button).",
+          "health_check_interval": "Wie oft die Erreichbarkeit des Modems geprüft wird. Standard 30 Sekunden. Auf 00:00:00 setzen, um Erreichbarkeitsprüfungen zu deaktivieren."
+        }
+      }
+    },
+    "error": {
+      "network_unreachable": "Modem nicht erreichbar. IP-Adresse und Netzwerkverbindung prüfen.",
+      "cannot_connect": "Modem antwortet nicht. IP-Adresse und Protokoll prüfen.",
+      "invalid_auth": "Anmeldung fehlgeschlagen. Benutzername und Passwort prüfen.",
+      "parse_failed": "Verbunden, aber Modemdaten konnten nicht gelesen werden.",
+      "unknown": "Unerwarteter Fehler. Home Assistant-Logs prüfen."
+    },
+    "progress": {
+      "validate": "Verbindung wird überprüft..."
+    }
+  },
+  "services": {
+    "generate_dashboard": {
+      "name": "Dashboard generieren",
+      "description": "Erzeugt gebrauchsfertiges Lovelace YAML für dein Kabelmodem-Dashboard. Kopiere die Ausgabe und füge sie in eine manuelle Karte ein.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to generate the dashboard for. Defaults to the first configured modem."
+        },
+        "include_status_card": {
+          "name": "Statuskarte",
+          "description": "Modemstatus, Betriebszeit, Kanalanzahl und Neustart-Schaltfläche."
+        },
+        "include_downstream_power": {
+          "name": "Downstream-Leistungsdiagramm",
+          "description": "Leistungspegel für alle Downstream-Kanäle."
+        },
+        "include_downstream_snr": {
+          "name": "Downstream-SNR-Diagramm",
+          "description": "Signal-Rausch-Verhältnis für alle Downstream-Kanäle."
+        },
+        "include_downstream_frequency": {
+          "name": "Downstream-Frequenzdiagramm",
+          "description": "Frequenz für alle Downstream-Kanäle."
+        },
+        "include_upstream_power": {
+          "name": "Upstream-Leistungsdiagramm",
+          "description": "Leistungspegel für alle Upstream-Kanäle."
+        },
+        "include_upstream_frequency": {
+          "name": "Upstream-Frequenzdiagramm",
+          "description": "Frequenz für alle Upstream-Kanäle."
+        },
+        "include_errors": {
+          "name": "Fehlerdiagramme",
+          "description": "Korrigierte und unkorrigierte Fehlerzähler (7-Tage-Ansicht)."
+        },
+        "include_error_rates": {
+          "name": "Fehlerratendiagramme",
+          "description": "Diagramme der Fehlerrate pro Minute hinzufügen (Fehler/Min., 7-Tage-Ansicht). Standardmäßig aus. Raten schwanken bei jeder Abfrage."
+        },
+        "include_latency": {
+          "name": "Latenzdiagramm",
+          "description": "Ping- und HTTP-Antwortzeiten (6-Stunden-Ansicht)."
+        },
+        "graph_hours": {
+          "name": "Diagramm-Historie (Stunden)",
+          "description": "Stunden an Verlaufsdaten für Leistungs-/SNR-Diagramme (Fehler und Latenz verwenden feste Zeiträume)."
+        },
+        "short_titles": {
+          "name": "Kurze Titel verwenden",
+          "description": "Kurz: 'DS Power (dBmV)' vs Lang: 'Downstream Power Levels (dBmV)'."
+        }
+      }
+    },
+    "request_refresh": {
+      "name": "Request Refresh",
+      "description": "Triggers an immediate modem data poll, bypassing any connectivity backoff. Use in automations to refresh modem data on demand."
+    },
+    "request_health_check": {
+      "name": "Request Health Check",
+      "description": "Triggers an immediate health check (ICMP and HTTP probes). Only works if health monitoring is enabled for the modem."
+    },
+    "convert_channel_identity": {
+      "name": "Convert Channel Identity",
+      "description": "Renames recorder statistics to match the current channel identity mode after re-adding the integration in the other mode. Modem must be online.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to convert. Defaults to the first configured modem."
+        }
+      }
+    },
+    "orphaned_statistics": {
+      "name": "Orphaned Statistics",
+      "description": "Finds recorder statistics for this modem that have no registered entity — left behind by a mode switch, channel rebonding (ID mode), or a prefix change. Without execute, returns a preview of orphaned entities. With execute: true, purges them all directly. Purge is permanent.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to inspect. Defaults to the first configured modem."
+        },
+        "execute": {
+          "name": "Execute",
+          "description": "Set to true to purge all orphaned statistics immediately. Default is false (preview only). Purge is permanent and cannot be undone."
+        }
+      }
+    }
+  }
+}

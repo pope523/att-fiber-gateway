@@ -1,0 +1,47 @@
+{
+  // Recommended VS Code extensions for Cable Modem Monitor development
+  // These are ESSENTIAL for development
+  "recommendations": [
+    // Python development (required)
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.black-formatter",
+    "charliermarsh.ruff",
+
+    // YAML support (required for HA configs)
+    "redhat.vscode-yaml",
+
+    // Spell checking (uses cspell.config.yaml for domain-specific terms)
+    "streetsidesoftware.code-spell-checker",
+
+    // Documentation
+    "yzhang.markdown-all-in-one",
+    "christoph.mermaid-preview"
+  ],
+
+  // Optional extensions (useful but not required)
+  // Install these manually if you want them - they won't auto-prompt
+  // - ms-vscode-remote.remote-containers (Dev Container support - requires Docker/WSL on Windows)
+  // - eamodio.gitlens (enhanced Git features)
+  // - github.vscode-codeql (security analysis)
+
+
+  // Extensions that are not needed or conflict with project setup
+  "unwantedRecommendations": [
+    // Designed for C/C++ build systems; prompts to install C++ tools for our Python task-runner Makefile
+    "ms-vscode.makefile-tools",
+    "gitkraken.gitlens",
+    // Replaced by Ruff (modern, fast linter)
+    "ms-python.pylint",
+    "ms-python.flake8",
+    "ms-python.isort",
+    "pycqa.pylint",
+
+    // Conflicts with native Python testing
+    "littlefoxteam.vscode-python-test-adapter",
+    "hbenl.vscode-test-explorer",
+
+    // Conflicts with Black formatter
+    "ms-python.autopep8"
+  ]
+}

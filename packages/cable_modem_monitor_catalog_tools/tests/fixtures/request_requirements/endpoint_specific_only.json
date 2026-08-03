@@ -1,0 +1,44 @@
+{
+  "_description": "Endpoint-specific params vary per request — not session-level (below 100% threshold)",
+  "_transport": "http",
+  "_auth_strategy": "form",
+  "_expected_query_params": {},
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/api/data?Req=ChannelCapacity",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "application/json"}],
+        "content": {"size": 2000, "mimeType": "application/json", "text": "{\"channels\": []}"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/api/data?Req=ConfigSettings",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "application/json"}],
+        "content": {"size": 1500, "mimeType": "application/json", "text": "{\"model\": \"T100\"}"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/api/data?Req=SystemInfo",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "application/json"}],
+        "content": {"size": 1000, "mimeType": "application/json", "text": "{\"firmware\": \"1.0\"}"}
+      }
+    }
+  ]
+}

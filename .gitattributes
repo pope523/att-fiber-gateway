@@ -1,0 +1,17 @@
+# Normalize all text files to LF line endings
+* text=auto eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.gz binary
+*.tar binary
+# Exclude test fixtures from GitHub language statistics
+# These are captured modem responses, not code we wrote
+**/fixtures/** linguist-vendored
+# HAR captures are stored in Git LFS (large test fixtures)
+*.har filter=lfs diff=lfs merge=lfs -text
+*.har linguist-vendored
+captures/** linguist-vendored

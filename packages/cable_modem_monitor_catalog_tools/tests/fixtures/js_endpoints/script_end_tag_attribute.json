@@ -1,0 +1,22 @@
+{
+  "_description": "HTML5 allows attribute-like junk on </script> end tags (e.g., </script foo=\"bar\">). The script block extractor must still find the JS body inside.",
+  "_expected_warnings": ["php/end_tag_attr.php"],
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {
+          "size": 200,
+          "mimeType": "text/html",
+          "text": "<html><head><script>$.ajax({type:\"POST\", url:\"php/end_tag_attr.php\", dataType:\"json\"});</script foo=\"bar\"></head><body></body></html>"
+        }
+      }
+    }
+  ]
+}

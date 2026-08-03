@@ -1,0 +1,23 @@
+{
+  "_description": "channel_type fixed value applied to every channel",
+  "_resource": "/api/upstream",
+  "_json": {
+    "nodes": [
+      {"name": "CH",   "index1": "0", "index2": "1"},
+      {"name": "Freq", "index1": "10.0", "index2": "20.0"}
+    ]
+  },
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "channel_type": {"fixed": "ofdma"},
+    "fields": [
+      {"label": "CH",   "field": "channel_id", "type": "integer"},
+      {"label": "Freq", "field": "frequency",  "type": "frequency", "unit": "MHz"}
+    ]
+  },
+  "_expected": [
+    {"channel_id": 0, "frequency": 10000000, "channel_type": "ofdma"},
+    {"channel_id": 1, "frequency": 20000000, "channel_type": "ofdma"}
+  ]
+}

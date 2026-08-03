@@ -1,0 +1,62 @@
+manufacturer: Sercomm
+model: DM1000
+transport: http
+default_host: "192.168.100.1"
+
+auth:
+  strategy: form
+  action: "/setup.cgi"
+  login_page: "/login.html"
+  username_field: login_user
+  password_field:
+    - pws
+    - passwd
+  encoding: base64
+  hidden_fields:
+    todo: "login"
+    this_file: "login.html"
+    next_file: ""
+    language: "en"
+    is_parent_window: "1"
+    message: ""
+    cur_passwd: ""
+
+hardware:
+  docsis_version: "3.1"
+  chipset: "Broadcom"
+
+status: awaiting_verification
+
+sources:
+  auth_config:
+    "[#92 Sercomm DM1000](https://github.com/solentlabs/cable_modem_monitor/issues/92)
+    — form POST with base64-encoded password"
+
+attribution:
+  contributors:
+    - github: https://github.com/B0ndo2
+      contribution: "HAR capture and Python parsing script (Issue #92)"
+
+isps:
+  - Koodo
+notes: |
+  DOCSIS 3.1 cable modem. JSON API via /setup.cgi?todo= endpoints.
+  IP-based session tracking (no cookies, no auth headers after login).
+  Content-Type: applation/json (typo in firmware). Upstream frequencies in MHz
+  (not Hz). Inactive channels: modulation=QAM_NONE, rep_power=-inf.
+
+  OFDM/OFDMA channels carry no `frequency` field. The firmware only
+  exposes single sercomm-specific values (`OFDMFreq` downstream,
+  `Center Freq SC0` upstream) with no subcarrier metadata, and the
+  test HAR shows the downstream OFDM value at 827.6 MHz overlapping
+  real SC-QAM channels at 825-861 MHz — physically impossible if it
+  were the active-band lower edge. Most likely it's the CMTS-assigned
+  channel placement frequency, the same concept as the DOCSIS 3.1
+  legacy `docsIfDownChannelTable` shadow frequency (see g54's
+  parser.yaml). Reporting nothing beats misreporting placement-as-edge;
+  hardware verification can revisit if firmware grows a real lower-edge
+  field.
+
+references:
+  issues:
+    - "[#92 — [Modem Request] Sercomm DM1000](https://github.com/solentlabs/cable_modem_monitor/issues/92)"

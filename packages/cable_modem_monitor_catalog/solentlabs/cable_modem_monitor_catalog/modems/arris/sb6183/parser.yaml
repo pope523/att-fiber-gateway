@@ -1,0 +1,110 @@
+downstream:
+  format: table
+  resource: /
+  tables:
+    - selector:
+        match: Downstream Bonded Channels
+        type: header_text
+      row_start: 2
+      columns:
+        - index: 0
+          field: channel_number
+          type: integer
+        - index: 1
+          field: lock_status
+          type: lock_status
+        - index: 2
+          field: modulation
+          type: string
+        - index: 3
+          field: channel_id
+          type: integer
+        - index: 4
+          field: frequency
+          type: frequency
+          unit: Hz
+        - index: 5
+          field: power
+          type: float
+          unit: dBmV
+        - index: 6
+          field: snr
+          type: float
+          unit: dB
+        - index: 7
+          field: corrected
+          type: integer
+        - index: 8
+          field: uncorrected
+          type: integer
+      channel_type:
+        field: modulation
+        map:
+          QAM256: qam
+upstream:
+  format: table
+  resource: /
+  tables:
+    - selector:
+        match: Upstream Bonded Channels
+        type: header_text
+      row_start: 2
+      columns:
+        - index: 0
+          field: channel_number
+          type: integer
+        - index: 1
+          field: lock_status
+          type: lock_status
+        - index: 3
+          field: channel_id
+          type: integer
+        - index: 4
+          field: symbol_rate
+          type: integer
+        - index: 5
+          field: frequency
+          type: frequency
+          unit: Hz
+        - index: 6
+          field: power
+          type: float
+          unit: dBmV
+      channel_type:
+        fixed: atdma
+system_info:
+  sources:
+    - format: html_fields
+      resource: /
+      fields:
+        - field: boot_status
+          label: Boot State
+          type: string
+        - field: connectivity_state
+          label: Connectivity State
+          type: string
+        - field: docsis_status
+          label: DOCSIS Network Access Enabled
+          type: string
+          map:
+            "Allowed": "Operational"
+        - field: security
+          label: Security
+          type: string
+    - format: html_fields
+      resource: /RgSwInfo.asp
+      fields:
+        - field: software_version
+          label: Software Version
+          type: string
+        - field: system_uptime
+          label: Up Time
+          type: uptime
+          format: "{days} days {hours}h:{minutes}m:{seconds}s"
+aggregate:
+  total_corrected:
+    channels: downstream
+    sum: corrected
+  total_uncorrected:
+    channels: downstream
+    sum: uncorrected

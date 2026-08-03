@@ -1,0 +1,18 @@
+{
+  "_description": "First row has no indexN columns — yields empty list",
+  "_resource": "/api/upstream",
+  "_json": {
+    "nodes": [
+      {"name": "CH", "value": "0"},
+      {"name": "Power", "value": "ON"}
+    ]
+  },
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH", "field": "channel_id", "type": "integer"}
+    ]
+  },
+  "_expected": []
+}

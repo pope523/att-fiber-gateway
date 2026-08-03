@@ -1,0 +1,25 @@
+{
+  "_description": "Custom name_field and index_prefix override the defaults",
+  "_resource": "/api/sectors",
+  "_json": {
+    "rows": [
+      {"metric": "CH",   "col1": "0",  "col2": "1"},
+      {"metric": "Freq", "col1": "10", "col2": "20"}
+    ]
+  },
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/sectors",
+    "array_path": "rows",
+    "name_field": "metric",
+    "index_prefix": "col",
+    "fields": [
+      {"label": "CH",   "field": "channel_id", "type": "integer"},
+      {"label": "Freq", "field": "frequency",  "type": "frequency", "unit": "MHz"}
+    ]
+  },
+  "_expected": [
+    {"channel_id": 0, "frequency": 10000000},
+    {"channel_id": 1, "frequency": 20000000}
+  ]
+}

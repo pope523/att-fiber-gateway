@@ -1,0 +1,25 @@
+name: HACS Validate
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/*"
+  pull_request:
+  schedule:
+    # Weekly Sunday 04:17 UTC — catches external state drift (brands repo,
+    # repo settings, HACS Action rule changes). Off-peak with a non-round
+    # minute to spread scheduler contention.
+    - cron: "17 4 * * 0"
+  workflow_dispatch:
+
+jobs:
+  hacs:
+    name: HACS Action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: HACS validation
+        uses: hacs/action@main
+        with:
+          category: integration

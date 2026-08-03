@@ -1,0 +1,55 @@
+{
+  "_expected_error": "child_aggregate 'provisioned_speed_down' filters on direction '2' but DOCSIS direction for downstream is '1'",
+  "_modem": {
+    "manufacturer": "Solent Labs", "model": "T300", "transport": "cbn",
+    "default_host": "192.168.100.1",
+    "auth": {"strategy": "form_cbn"},
+    "hardware": {"docsis_version": "3.0"},
+    "status": "awaiting_verification",
+    "attribution": {"contributors": [{"github": "tester", "contribution": "Test"}]},
+    "isps": ["Various"]
+  },
+  "_parser": {
+    "downstream": {
+      "format": "xml",
+      "tables": [{
+        "resource": "10",
+        "root_element": "downstream_table",
+        "child_element": "downstream",
+        "columns": [
+          {"source": "chid", "field": "channel_id", "type": "integer"},
+          {"source": "freq", "field": "frequency", "type": "frequency"}
+        ],
+        "channel_type": {"fixed": "qam"}
+      }]
+    },
+    "system_info": {
+      "sources": [{
+        "format": "xml",
+        "resource": "144",
+        "root_element": "cmstatus",
+        "fields": [
+          {"source": "provisioning_st", "field": "provisioning_status", "type": "string"}
+        ],
+        "child_aggregates": [
+          {
+            "child_element": "serviceflow",
+            "filter": {"direction": "2"},
+            "max": "pMaxTrafficRate",
+            "field": "provisioned_speed_down",
+            "type": "float",
+            "scale": 0.000001
+          },
+          {
+            "child_element": "serviceflow",
+            "filter": {"direction": "1"},
+            "max": "pMaxTrafficRate",
+            "field": "provisioned_speed_up",
+            "type": "float",
+            "scale": 0.000001
+          }
+        ]
+      }]
+    }
+  }
+}

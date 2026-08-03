@@ -1,0 +1,23 @@
+{
+  "_description": "Basic pivot — 2 columns, 3 named rows mapped to canonical fields",
+  "_resource": "/api/upstream",
+  "_json": {
+    "nodes": [
+      {"name": "CH",      "index1": "0",         "index2": "1"},
+      {"name": "Power",   "index1": "ON",        "index2": "OFF"},
+      {"name": "Freq",    "index1": "10.000000", "index2": "20.000000"}
+    ]
+  },
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH",   "field": "channel_id", "type": "integer"},
+      {"label": "Freq", "field": "frequency",  "type": "frequency", "unit": "MHz"}
+    ]
+  },
+  "_expected": [
+    {"channel_id": 0, "frequency": 10000000},
+    {"channel_id": 1, "frequency": 20000000}
+  ]
+}

@@ -1,0 +1,144 @@
+# pyproject.toml
+# This file defines formatting, linting, type-checking, and test configuration
+# for development consistency across the cable-modem-monitor project.
+
+[project]
+name = "cable-modem-monitor"
+version = "0.1.0"
+description = "Monitor and analyze cable modem metrics with Home Assistant integration."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"  # Pin to Python 3.12 for compatibility and reproducibility
+
+dependencies = [
+    # Runtime dependencies
+    "requests>=2.34.2",   # HTTP client for modem polling
+    "pydantic>=2.0",      # Data validation and modeling
+    "har-capture~=0.9.0", # HAR sanitization + PII validation; library API (custom_patterns kwarg) used in catalog scripts
+]
+
+[project.optional-dependencies]
+dev = [
+    # Development tools
+    "black>=26.5.1",      # Code formatter
+    "ruff>=0.15.15",      # Linter and import sorter
+    "mypy>=1.20",         # Static type checker
+    "pytest>=8.0",        # Test runner
+    "pytest-cov>=5.0",    # Coverage reporting
+]
+
+# -------------------------------
+# Black (code formatter)
+# -------------------------------
+[tool.black]
+line-length = 120                  # Match Ruff and improve readability
+target-version = ['py312']         # Align with runtime Python version
+include = '\.pyi?$'                # Format .py and .pyi files
+extend-exclude = '''
+/(
+  tests/.*\.html                   # Exclude test HTML fixture files
+)/
+'''
+
+# -------------------------------
+# Ruff (linter + import sorter)
+# -------------------------------
+[tool.ruff]
+line-length = 120                  # Match Black line length
+target-version = "py312"           # Align with runtime
+exclude = [
+    "tests/**/*.html",             # Ignore test fixtures
+    "__pycache__",                 # Skip Python cache
+    ".venv", "venv",               # Ignore virtual environments
+    ".git",                        # Skip Git metadata
+]
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "W", "C90", "I", "UP", "B", "SIM", "TID", "N",
+    "G",      # flake8-logging-format — lazy logging, no f-strings in log calls
+    "LOG",    # flake8-logging — non-format API misuse (deprecated .warn, exc_info consistency)
+    "RSE",    # flake8-raise — `raise Exception()` cleanup
+    "ASYNC",  # async/await correctness — important on an async-heavy HA integration
+    "PIE",    # flake8-pie — misc improvements
+    "RET",    # flake8-return — return statement clarity
+    "PLC",    # pylint convention (catches useless imports, etc.)
+    "PLE",    # pylint errors
+    "PLW",    # pylint warnings (catches self-assignment, redeclared names)
+]  # Enable key rule categories: style, complexity, import sorting, modern syntax
+# Note: F841 (unused variables) is already included via "F" (Pyflakes)
+# Note: ERA (commented-out code) disabled - too aggressive, flags format docs like "# cells[0] = Channel"
+# Note: Inline imports (imports inside functions) not caught by ruff - use CodeQL for that
+#
+# Deliberately skipped categories:
+# - INP (implicit-namespace-package): the project intentionally uses
+#   namespace packages in three places: tests/ dirs (per pytest's
+#   recommended convention — adding __init__.py causes rootdir and
+#   conftest scope issues), modem parser dirs under
+#   solentlabs/cable_modem_monitor_catalog/modems/* (loaded via
+#   importlib mechanisms that don't require __init__.py), and
+#   scripts/ dirs (run as scripts, not imported). Enabling INP would
+#   force __init__.py files into all of these and break pytest
+#   discovery for zero benefit.
+
+ignore = [
+    "B008",     # Allow function calls in default args (common in HA)
+    "B904",     # Allow bare `raise` for re-raising
+    "SIM108",   # Avoid forced ternary expressions
+    "TID252",   # Allow relative imports in HA custom components
+    "PLW0603",  # Allow global statement updates (used for caching)
+    "PLC0415",  # Allow imports inside functions (lazy loading for HA performance)
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10                # Keep functions readable
+
+[tool.ruff.lint.isort]
+known-first-party = ["custom_components.cable_modem_monitor"]  # Treat integration code as first-party
+split-on-trailing-comma = true
+force-wrap-aliases = true
+combine-as-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]           # Allow unused imports for package exposure
+"tests/**/*.py" = ["B011", "S101"] # Allow assert and safe eval in tests
+"scripts/**/*.py" = [
+    "T201",     # Allow print statements
+    "PLW1510",  # Allow subprocess.run without check (dev scripts handle errors manually)
+    "PLC0206",  # Allow dict iteration without .items() (readability preference)
+    "PLE0704",  # Allow bare raise in cleanup handlers
+]
+
+[tool.ruff.lint.flake8-type-checking]
+strict = false                     # Avoid strict import enforcement for type-checking
+
+# -------------------------------
+# Pytest (test runner)
+# -------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+norecursedirs = ["cable-modem-monitor-ql", ".git", "__pycache__", ".venv", "codeql"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-v --strict-markers --tb=short --disable-warnings"
+markers = [
+    "integration: Integration tests that may require network access",
+    "unit: Unit tests that don't require external dependencies",
+    "enable_socket: Allow socket operations in tests",
+]
+
+# -------------------------------
+# Coverage configuration
+# -------------------------------
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+]
+
+# -------------------------------
+# Note: mypy configuration lives in mypy.ini (the active config file).
+# -------------------------------

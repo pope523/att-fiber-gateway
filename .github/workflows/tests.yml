@@ -1,0 +1,337 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, "feature/*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          lfs: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          # Pinned to match Home Assistant's supported Python version.
+          # Both packages declare requires-python = ">=3.12". Update
+          # here when HA bumps its Python floor.
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tests/requirements.txt
+          pip install -e packages/cable_modem_monitor_core
+          pip install -e packages/cable_modem_monitor_catalog
+
+      - name: Run tests with coverage
+        run: |
+          pytest -v --tb=short --cov=custom_components/cable_modem_monitor --cov-report=xml --cov-report=term --cov-fail-under=95
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v6
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  test-packages:
+    name: Package Tests (Core + Catalog)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          lfs: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Core with extras
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e "packages/cable_modem_monitor_core[sjcl]"
+          pip install pytest pytest-socket pytest-cov
+
+      - name: Run Core tests
+        working-directory: packages/cable_modem_monitor_core
+        run: |
+          pytest tests/ -v --tb=short --cov=solentlabs/cable_modem_monitor_core --cov-report=term-missing --cov-fail-under=92
+
+      - name: Install Catalog
+        run: |
+          pip install -e packages/cable_modem_monitor_catalog
+
+      - name: Run Catalog tests
+        working-directory: packages/cable_modem_monitor_catalog
+        run: |
+          pytest tests/ -v --tb=short --cov=solentlabs/cable_modem_monitor_catalog --cov-report=term-missing --cov-fail-under=95
+
+      - name: Install Catalog Tools
+        run: |
+          pip install -e packages/cable_modem_monitor_catalog_tools
+
+      - name: Run Catalog Tools tests
+        working-directory: packages/cable_modem_monitor_catalog_tools
+        run: |
+          pytest tests/ -v --tb=short --cov=solentlabs/cable_modem_monitor_catalog_tools --cov-report=term-missing --cov-fail-under=90
+
+      - name: Intake pipeline accuracy
+        run: |
+          python packages/cable_modem_monitor_catalog_tools/scripts/intake_pipeline_regression.py -v --scorecard intake-pipeline-scorecard.json
+
+      - name: Upload intake pipeline scorecard
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: intake-pipeline-scorecard
+          path: intake-pipeline-scorecard.json
+          retention-days: 90
+
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff==0.15.2 black==26.1.0 mypy==2.1.0 types-requests types-PyYAML pytest-socket pydantic types-cryptography requests-mock har-capture>=0.5.0
+          pip install -e packages/cable_modem_monitor_core
+          pip install -e packages/cable_modem_monitor_catalog
+
+      - name: Lint with ruff
+        run: |
+          ruff check .
+
+      - name: Check code formatting with black
+        run: |
+          black --check .
+
+      - name: Type check with mypy
+        run: |
+          mypy . --config-file=mypy.ini
+
+  version-check:
+    name: Version Consistency
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Validate version consistency
+        run: |
+          # Get version from const.py (regex — avoids importing homeassistant)
+          VERSION_CONST=$(grep -oP '^VERSION\s*=\s*"\K[^"]+' custom_components/cable_modem_monitor/const.py)
+
+          # Get version from manifest.json
+          VERSION_MANIFEST=$(python -c "import json; print(json.load(open('custom_components/cable_modem_monitor/manifest.json'))['version'])")
+
+          echo "const.py version: $VERSION_CONST"
+          echo "manifest.json version: $VERSION_MANIFEST"
+
+          if [ "$VERSION_CONST" != "$VERSION_MANIFEST" ]; then
+            echo "Version mismatch detected!"
+            echo "Please run: python scripts/release.py <version>"
+            exit 1
+          fi
+
+          echo "All versions match: $VERSION_CONST"
+
+  pii-check:
+    name: PII/Credential Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          lfs: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install beautifulsoup4 har-capture>=0.5.0 pyyaml
+
+      - name: Check fixtures for PII
+        run: |
+          python packages/cable_modem_monitor_catalog/scripts/check_fixture_pii.py
+
+  spell-check:
+    name: Spell Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install cspell
+        run: npm install -g cspell@10
+
+      - name: Run spell check
+        # Scoped to catalog modem YAML; broader codebase (Python, docs) not yet audited.
+        run: |
+          cspell --config cspell.config.yaml \
+            "packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/**/*.yaml" \
+            --no-progress
+
+  suppression-check:
+    name: Suppression Discipline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          # Need full history so the scanner can diff against the
+          # base ref (origin/main or the PR target) to scope checks
+          # to lines added on this branch.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Determine base ref
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "ref=origin/${{ github.base_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            # Push to a branch — diff against origin/main as the trunk.
+            echo "ref=origin/main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run suppression discipline check
+        run: |
+          python scripts/check_suppression_discipline.py --branch "${{ steps.base.outputs.ref }}"
+
+  ha-compat-check:
+    name: HA Dependency Compatibility
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "homeassistant>=2025.1.0" packaging tomli
+
+      - name: Check Core/Catalog deps against HA constraints
+        run: |
+          python scripts/check_ha_compat.py
+
+  catalog-readme:
+    name: Catalog README
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+          pip install -e packages/cable_modem_monitor_core
+
+      - name: Check catalog README is up to date
+        run: |
+          python packages/cable_modem_monitor_catalog/scripts/generate_catalog_index.py --print > /tmp/catalog_readme.md
+          if ! diff -q packages/cable_modem_monitor_catalog/README.md /tmp/catalog_readme.md > /dev/null 2>&1; then
+            echo "::error::Catalog README is out of date. Run: python packages/cable_modem_monitor_catalog/scripts/generate_catalog_index.py"
+            diff --unified packages/cable_modem_monitor_catalog/README.md /tmp/catalog_readme.md || true
+            exit 1
+          fi
+          echo "Catalog README is up to date"
+
+  autoclose-check:
+    name: Auto-Close Keyword Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          # Full history so the scan can diff against the base ref.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Determine base ref
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "ref=origin/${{ github.base_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=origin/main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Scan commit bodies for auto-close keywords
+        run: |
+          python scripts/check_auto_close_keywords.py --base "${{ steps.base.outputs.ref }}"
+
+  link-check:
+    name: Markdown Link Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Check intra-repo Markdown links
+        run: |
+          python scripts/check_markdown_links.py

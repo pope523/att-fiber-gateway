@@ -1,0 +1,41 @@
+manufacturer: ARRIS
+model: TM1602A
+transport: http
+default_host: "192.168.100.1"
+
+auth:
+  strategy: none
+
+hardware:
+  docsis_version: "3.0"
+  chipset: Intel Puma 6
+
+status: confirmed
+
+sources:
+  auth_config: "HAR capture (#112) — no login required"
+  chipset: "[TechInfoDepot](https://techinfodepot.shoutwiki.com/wiki/Arris_TM1602A)"
+  verification: "User diagnostics capture on v3.14.0-alpha.14 (2026-04-13, Issue #112)"
+
+attribution:
+  contributors:
+    - github: https://github.com/jontires
+      contribution: "HAR capture and verification (Issue #112)"
+
+isps:
+  - Spectrum
+notes: |
+  DOCSIS 3.0 / PacketCable 2.0 Telephony Modem (released ~2016).
+  No authentication required — CGI endpoints are publicly accessible.
+  Same CGI structure as CM820B: /cgi-bin/status_cgi (channels + uptime)
+  and /cgi-bin/vers_cgi (firmware/hardware version). Version info
+  parsed from the "System:" blob via parser.yaml label/pattern rules.
+
+# TODO: New HAR capture needed for provisioned speed
+# CM3500B (same CGI family) has /cgi-bin/config_params_cgi with
+# SfMaxTrafficRate service flow values. Current capture does not
+# include that endpoint. Re-capture to confirm TM1602A exposes it too.
+
+references:
+  issues:
+    - "[#112 — [Modem Request] Arris TM1602A](https://github.com/solentlabs/cable_modem_monitor/issues/112)"

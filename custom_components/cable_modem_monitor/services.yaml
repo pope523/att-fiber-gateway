@@ -1,0 +1,91 @@
+generate_dashboard:
+  fields:
+    device_id:
+      required: false
+      selector:
+        device:
+          integration: cable_modem_monitor
+    include_status_card:
+      default: true
+      selector:
+        boolean:
+    include_downstream_power:
+      default: true
+      selector:
+        boolean:
+    include_downstream_snr:
+      default: true
+      selector:
+        boolean:
+    include_downstream_frequency:
+      default: true
+      selector:
+        boolean:
+    include_upstream_power:
+      default: true
+      selector:
+        boolean:
+    include_upstream_frequency:
+      default: true
+      selector:
+        boolean:
+    include_errors:
+      default: true
+      selector:
+        boolean:
+    include_error_rates:
+      default: false
+      selector:
+        boolean:
+    include_latency:
+      default: true
+      selector:
+        boolean:
+    graph_hours:
+      default: 24
+      selector:
+        number:
+          min: 1
+          max: 168
+          unit_of_measurement: hours
+    short_titles:
+      default: true
+      selector:
+        boolean:
+
+request_refresh:
+  fields:
+    device_id:
+      required: false
+      selector:
+        device:
+          integration: cable_modem_monitor
+
+request_health_check:
+  fields:
+    device_id:
+      required: false
+      selector:
+        device:
+          integration: cable_modem_monitor
+
+convert_channel_identity:
+  fields:
+    device_id:
+      required: false
+      selector:
+        device:
+          integration: cable_modem_monitor
+
+orphaned_statistics:
+  fields:
+    device_id:
+      required: false
+      selector:
+        device:
+          integration: cable_modem_monitor
+    execute:
+      required: false
+      default: false
+      selector:
+        boolean:

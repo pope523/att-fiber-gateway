@@ -1,0 +1,24 @@
+{
+  "_description": "JavaScript JSON variable with downstream channel data routes through JS JSON assembly",
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/php/status_docsis_data.php",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {
+          "size": 500,
+          "mimeType": "text/html",
+          "text": "<html><body><script type=\"text/javascript\">\njson_dsData = [{\"ChannelType\":\"SC-QAM\",\"Modulation\":\"QAM256\",\"Frequency\":\"507 MHz\",\"PowerLevel\":\"3.2 dBmV\",\"SNRLevel\":\"38.5 dB\",\"LockStatus\":\"Locked\",\"ChannelID\":\"1\"},{\"ChannelType\":\"SC-QAM\",\"Modulation\":\"QAM256\",\"Frequency\":\"513 MHz\",\"PowerLevel\":\"3.1 dBmV\",\"SNRLevel\":\"37.8 dB\",\"LockStatus\":\"Locked\",\"ChannelID\":\"2\"}];\n</script></body></html>"
+        }
+      }
+    }
+  ],
+  "_transport": "http",
+  "_expected_direction": "downstream",
+  "_expected_format": "javascript_json"
+}

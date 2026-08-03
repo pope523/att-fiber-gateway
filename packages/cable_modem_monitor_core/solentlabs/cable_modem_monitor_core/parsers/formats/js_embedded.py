@@ -1,0 +1,259 @@
+"""JSEmbeddedParser — extract channel data from JavaScript-embedded strings.
+
+Modem web pages embed channel data as pipe-delimited strings inside
+JavaScript function bodies. The ``tagValueList`` variable holds a
+flat string of delimited values: the first value is the channel count,
+followed by ``fields_per_channel`` values per channel.
+
+Parameterized by a ``JSFunction`` from parser.yaml. The coordinator
+iterates the functions list and concatenates channels.
+
+See PARSING_SPEC.md JSEmbeddedParser section.
+"""
+
+from __future__ import annotations
+
+import functools
+import logging
+import re
+from typing import Any
+
+from bs4 import BeautifulSoup
+
+from ...models.parser_config.javascript import JSFunction
+from ..base import BaseParser
+from ..filter import passes_filter
+from ..type_conversion import convert_value
+
+_logger = logging.getLogger(__name__)
+
+# Regex to find ``var tagValueList = 'value'`` or ``"value"`` inside
+# a function body. Handles optional whitespace and both quote styles.
+_TAG_VALUE_RE = re.compile(
+    r"var\s+tagValueList\s*=\s*[\"']([^\"']*)[\"']",
+)
+
+# Regex to strip ``//``-style line comments. Matches ``//`` followed by
+# everything up to end-of-line. Applied after block-comment removal so
+# that commented-out example ``tagValueList`` lines don't shadow real ones.
+_LINE_COMMENT_RE = re.compile(r"//[^\n]*")
+
+# Regex to strip ``/* ... */`` block comments (including multi-line).
+_BLOCK_COMMENT_RE = re.compile(r"/\*.*?\*/", re.DOTALL)
+
+
+def _strip_js_comments(text: str) -> str:
+    """Strip both block and line comments from JavaScript source text."""
+    text = _BLOCK_COMMENT_RE.sub("", text)
+    return _LINE_COMMENT_RE.sub("", text)
+
+
+@functools.cache
+def _get_func_body_re(func_name: str) -> re.Pattern[str]:
+    """Return a compiled regex for extracting a named function body.
+
+    Handles both ``\\n`` and ``\\r\\n`` line endings, and closing braces
+    at any indentation level (some firmware indents the entire function).
+    """
+    return re.compile(
+        rf"function\s+{re.escape(func_name)}\s*\([^)]*\)\s*\{{(.*?)\n\s*\}}",
+        re.DOTALL,
+    )
+
+
+class JSEmbeddedParser(BaseParser):
+    """Extract channel data from a single JS function's tagValueList.
+
+    Each instance handles one ``JSFunction`` config. The coordinator
+    creates one instance per function entry in the section's functions list.
+
+    Args:
+        resource: URL path key in the resource dict.
+        function: JS function config from parser.yaml.
+    """
+
+    def __init__(self, resource: str, function: JSFunction) -> None:
+        self._resource = resource
+        self._function = function
+
+    def parse(self, resources: dict[str, Any]) -> list[dict[str, Any]]:
+        """Extract channels from the configured JS function.
+
+        Args:
+            resources: Resource dict (path -> BeautifulSoup).
+
+        Returns:
+            List of channel dicts with converted field values.
+        """
+        soup = resources.get(self._resource)
+        if soup is None:
+            _logger.warning("Resource '%s' not found", self._resource)
+            return []
+
+        raw_data = _extract_tag_value_list(soup, self._function.name)
+        if raw_data is None:
+            _logger.warning(
+                "Function '%s' not found in resource '%s'",
+                self._function.name,
+                self._resource,
+            )
+            return []
+
+        return self._parse_delimited(raw_data)
+
+    def _parse_delimited(self, raw_data: str) -> list[dict[str, Any]]:
+        """Split delimited tagValueList into channel dicts.
+
+        Algorithm per PARSING_SPEC:
+        1. Split by delimiter
+        2. First value is channel count
+        3. For each channel: read fields_per_channel consecutive values
+        4. Map by offset, apply channel_type, apply filter
+        """
+        values = raw_data.split(self._function.delimiter)
+        if not values:
+            return []
+
+        try:
+            channel_count = int(values[0])
+        except (ValueError, IndexError):
+            _logger.warning("Cannot parse channel count from '%s'", values[0] if values else "")
+            return []
+
+        fpc = self._function.fields_per_channel
+        channels: list[dict[str, Any]] = []
+        idx = 1  # Start after channel count
+
+        for i in range(channel_count):
+            if idx + fpc > len(values):
+                _logger.debug(
+                    "Incomplete data for channel %d (need %d values at offset %d, have %d total)",
+                    i + 1,
+                    fpc,
+                    idx,
+                    len(values),
+                )
+                break
+
+            segment = values[idx : idx + fpc]
+            channel = self._extract_channel(segment)
+            idx += fpc
+
+            if channel is None:
+                continue
+
+            _apply_channel_type(channel, self._function.channel_type)
+
+            if not passes_filter(channel, self._function.filter):
+                continue
+
+            channels.append(channel)
+
+        return channels
+
+    def _extract_channel(
+        self,
+        segment: list[str],
+    ) -> dict[str, Any] | None:
+        """Extract field values from one channel's segment by offset.
+
+        Returns ``None`` if no fields could be extracted.
+        """
+        channel: dict[str, Any] = {}
+
+        for mapping in self._function.fields:
+            offset = mapping.offset if mapping.offset is not None else mapping.index
+            if offset is None or offset >= len(segment):
+                _logger.debug(
+                    "Segment too short for offset %s (has %d fields)",
+                    offset,
+                    len(segment),
+                )
+                continue
+
+            raw_value = segment[offset].strip()
+            value = convert_value(
+                raw_value,
+                mapping.type,
+                unit=mapping.unit,
+                map_config=mapping.map,
+                scale=mapping.scale,
+                input_format=mapping.format,
+            )
+
+            if value is not None:
+                channel[mapping.field] = value
+
+        return channel if channel else None
+
+
+def _extract_tag_value_list(soup: BeautifulSoup, func_name: str) -> str | None:
+    """Find and extract tagValueList from a JS function or top-level scope.
+
+    When ``func_name`` is non-empty, searches for the variable inside a
+    named function body.  When ``func_name`` is empty, searches the
+    entire ``<script>`` text for a top-level variable assignment.
+
+    Args:
+        soup: Parsed HTML page.
+        func_name: JS function name to search for.  Empty string means
+            search top-level scope.
+
+    Returns:
+        The tagValueList string, or ``None`` if not found.
+    """
+    if not func_name:
+        return _extract_top_level_tag_value_list(soup)
+
+    func_re = _get_func_body_re(func_name)
+
+    for script in soup.find_all("script"):
+        text = script.string
+        if not text or func_name not in text:
+            continue
+
+        # Normalize CRLF → LF (some firmware serves \r\n line endings)
+        text = text.replace("\r\n", "\n")
+
+        func_match = func_re.search(text)
+        if not func_match:
+            continue
+
+        func_body = func_match.group(1)
+        func_body_clean = _strip_js_comments(func_body)
+
+        tag_match = _TAG_VALUE_RE.search(func_body_clean)
+        if tag_match:
+            return tag_match.group(1)
+
+    return None
+
+
+def _extract_top_level_tag_value_list(soup: BeautifulSoup) -> str | None:
+    """Find tagValueList as a top-level variable in any ``<script>`` tag.
+
+    Used when ``func_name`` is empty — the variable is assigned at script
+    scope rather than inside a function body.
+    """
+    for script in soup.find_all("script"):
+        text = script.string
+        if not text:
+            continue
+        clean = _strip_js_comments(text)
+        tag_match = _TAG_VALUE_RE.search(clean)
+        if tag_match:
+            return tag_match.group(1)
+    return None
+
+
+def _apply_channel_type(
+    channel: dict[str, Any],
+    channel_type: str,
+) -> None:
+    """Apply channel_type from the JSFunction config.
+
+    JSEmbeddedParser uses a fixed channel_type per function (declared
+    in parser.yaml). Does not overwrite if already present.
+    """
+    if "channel_type" not in channel and channel_type:
+        channel["channel_type"] = channel_type

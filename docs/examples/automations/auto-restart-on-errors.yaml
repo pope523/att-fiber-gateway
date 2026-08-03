@@ -1,0 +1,18 @@
+# Auto-restart the modem when uncorrected errors cross a hard threshold.
+# Use sparingly — modems take 2–5 minutes to come back, during which
+# all your internet is down. The 1000-error threshold is conservative;
+# tune to your line.
+automation:
+  - alias: "Cable Modem - Auto Restart on High Errors"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.cable_modem_total_uncorrected_errors
+        above: 1000
+    action:
+      - service: notify.notify
+        data:
+          title: "Cable Modem Alert"
+          message: "High error count detected. Restarting modem..."
+      - service: button.press
+        target:
+          entity_id: button.cable_modem_restart_modem

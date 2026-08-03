@@ -1,0 +1,71 @@
+manufacturer: Arris
+model: TG3442DE
+brands:
+  - Touchstone
+transport: http
+default_host: "192.168.0.1"
+auth:
+  strategy: form_sjcl
+  login_page: "/"
+  # Misleading Arris naming — this IS the login endpoint, not password
+  # change. Confirmed: base_95x.js login() calls it with AAD
+  # "loginPassword"; changePassword() was removed from the codebase.
+  login_endpoint: "/php/ajaxSet_Password.php"
+  ccm_tag_length: 16
+  cookie_name: "PHPSESSID"
+
+  csrf_header: "csrfNonce"
+  decrypt_aad: "nonce"
+  encrypt_aad: "loginPassword"
+  pbkdf2_iterations: 1000
+  pbkdf2_key_length: 128
+  session_validation_endpoint: "/php/ajaxSet_Session.php"
+session:
+  headers:
+    X-Requested-With: "XMLHttpRequest"
+    csrfNonce: "undefined"
+    # Modem rejects AJAX requests without a Referer matching its own
+    # origin — HTTP 400 on data fetches. {base_url} resolves at session
+    # build time to handle per-deployment host differences. See #86.
+    Referer: "{base_url}/"
+  # Arris firmware's base.js adds _n=<random> to every AJAX request
+  # via $.ajaxPrefilter. Server returns 400 without it. Value is a
+  # client-side cache-buster — server checks presence, not content.
+  query_params:
+    _n: "12345"
+
+actions:
+  logout:
+    type: http
+    method: POST
+    endpoint: "/php/logout.php"
+    requires_session: true
+
+hardware:
+  docsis_version: "3.1"
+  chipset: "Intel Puma 7 (FHCE2752M)"
+
+timeout: 10
+
+status: confirmed
+sources:
+  auth_config: "[#86 Arris TG3442DE](https://github.com/solentlabs/cable_modem_monitor/issues/86)"
+  chipset: "[TG3442DE Teardown](https://github.com/nox-x/TG3442DE-Teardown)"
+attribution:
+  contributors:
+    - github: https://github.com/samuelengelking
+      contribution: "HAR captures and initial modem request"
+isps:
+  - Vodafone DE
+notes: |
+  Arris Touchstone TG3442DE gateway (Vodafone Germany).
+  Firmware: 01.05.063.13.EURO.PC20.
+  Auth uses SJCL (Stanford JavaScript Crypto Library) AES-CCM
+  encryption with a PBKDF2-derived key. Server
+  provides per-session IV and salt in JS variables on the login page.
+  Login response body is encrypted — must decrypt to extract CSRF nonce.
+  Variant check: firmware has isModel6442 flag (this modem is NOT 6442).
+  Session timeout: 600s (logoutTime JS variable).
+references:
+  issues:
+    - "[#86 — [Modem Request] Arris Touchstone TG3442DE](https://github.com/solentlabs/cable_modem_monitor/issues/86)"

@@ -1,0 +1,158 @@
+name: Bug Report
+description: Report a bug or issue with Cable Modem Monitor
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out this form as completely as possible.
+
+        Before submitting, please check:
+        - [ ] You've searched existing issues to avoid duplicates
+        - [ ] You're using the latest version of the integration
+        - [ ] You've reviewed the [Troubleshooting Guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/TROUBLESHOOTING.md)
+
+  - type: input
+    id: version
+    attributes:
+      label: Integration Version
+      description: What version of Cable Modem Monitor are you running?
+      placeholder: "e.g., 3.14.0"
+    validations:
+      required: true
+
+  - type: input
+    id: ha-version
+    attributes:
+      label: Home Assistant Version
+      description: What version of Home Assistant are you running?
+      placeholder: "e.g., 2026.4.0"
+    validations:
+      required: true
+
+  - type: input
+    id: modem-model
+    attributes:
+      label: Modem Model
+      description: What cable modem model are you using?
+      placeholder: "e.g., Motorola MB7621, ARRIS SB6141, Technicolor XB7"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: modem-selection
+    attributes:
+      label: Modem Model Selection in Config
+      description: In the integration settings, which modem model did you select?
+      options:
+        - auto (automatic detection)
+        - Manually selected my specific model
+        - Not sure / Don't remember
+    validations:
+      required: false
+
+  - type: input
+    id: firmware-version
+    attributes:
+      label: Firmware Version
+      description: What firmware version is your modem running? Usually shown on the modem's status or about page, or in the diagnostics file.
+      placeholder: "e.g., 1.0.0.15, SB_KOMODO-1.0.7.26-180214-NOSH"
+    validations:
+      required: true
+
+  - type: input
+    id: isp
+    attributes:
+      label: Internet Service Provider (ISP)
+      description: Which ISP are you using?
+      placeholder: "e.g., Comcast/Xfinity, Spectrum, Cox, Virgin Media"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Tell us what you're experiencing
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Tell us what should have happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: dropdown
+    id: installation
+    attributes:
+      label: Installation Method
+      description: How did you install the integration?
+      options:
+        - HACS
+        - Manual
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics Download
+      description: |
+        Diagnostics include configuration, modem detection info, channel
+        data, recent logs (last 150 entries, sanitized), and error
+        information — everything needed to debug the report.
+
+        **How to download:**
+        1. Go to Settings → Devices & Services
+        2. Find Cable Modem Monitor
+        3. Click the three dots (⋮) → Download diagnostics
+        4. Attach the downloaded JSON file to this issue
+      placeholder: "Attach the diagnostics JSON file"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: |
+        Add any other context about the problem here — screenshots,
+        network setup details, anything unusual about your environment
+        that might be relevant.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched for similar issues and found none
+          required: true
+        - label: I have reviewed the troubleshooting guide
+          required: true
+        - label: I have provided all requested information
+          required: true
+        - label: I have removed any sensitive information (passwords, IP addresses if private)
+          required: true

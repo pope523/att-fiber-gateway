@@ -1,0 +1,76 @@
+{
+  "home_assistant": {
+    "version": "2026.4.4"
+  },
+  "custom_components": {
+    "cable_modem_monitor": {
+      "version": "3.14.0-test"
+    }
+  },
+  "data": {
+    "_solentlabs": {
+      "tool": "diag",
+      "version": "3.14.0-test"
+    },
+    "_review_before_sharing": {
+      "warning": "redact creds"
+    },
+    "config_entry": {
+      "title": "Solent Labs T100 (192.168.100.1)",
+      "host": "192.168.100.1",
+      "manufacturer": "Solent Labs",
+      "model": "T100",
+      "variant": null,
+      "protocol": "http",
+      "legacy_ssl": false,
+      "has_credentials": false,
+      "supports_icmp": true,
+      "supports_head": true,
+      "credential_encoding": "plain",
+      "channel_identity": "id"
+    },
+    "core_diagnostics": {
+      "poll_duration": 1.0,
+      "auth_failure_streak": 0,
+      "circuit_breaker_open": false,
+      "session_is_valid": true,
+      "auth_strategy": "none",
+      "connectivity_streak": 0,
+      "connectivity_backoff_remaining": 0,
+      "resource_fetches": [],
+      "last_poll_at": "2026-05-01T12:00:00+00:00"
+    },
+    "data_coordinator": {
+      "last_update_success": true,
+      "update_interval": "0:10:00"
+    },
+    "health_coordinator": {
+      "last_update_success": true,
+      "update_interval": "0:00:30"
+    },
+    "modem_data": {
+      "connection_status": "online",
+      "collector_signal": "ok",
+      "health_status": "responsive",
+      "icmp_latency_ms": 1.5,
+      "http_latency_ms": 5.0,
+      "error": ""
+    },
+    "system_info": {
+      "docsis_status": "Operational",
+      "system_uptime": "1 day",
+      "hardware_version": null,
+      "software_version": null,
+      "downstream_channel_count": 0,
+      "upstream_channel_count": 0,
+      "total_corrected": 0,
+      "total_uncorrected": 0
+    },
+    "downstream_channels": [],
+    "upstream_channels": [],
+    "recent_logs": {
+      "count": 0,
+      "logs": []
+    }
+  }
+}

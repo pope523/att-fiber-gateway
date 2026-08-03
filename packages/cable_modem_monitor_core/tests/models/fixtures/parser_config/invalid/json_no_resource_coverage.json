@@ -1,0 +1,23 @@
+{
+  "_expected_error": "either provide section-level 'resource' or give every array its own 'resource'",
+  "_config": {
+    "downstream": {
+      "format": "json",
+      "arrays": [
+        {
+          "resource": "/api/qam",
+          "array_path": "nodes",
+          "fields": [
+            {"key": "id", "field": "channel_id", "type": "integer"}
+          ]
+        },
+        {
+          "array_path": "nodes",
+          "fields": [
+            {"key": "id", "field": "channel_id", "type": "integer"}
+          ]
+        }
+      ]
+    }
+  }
+}

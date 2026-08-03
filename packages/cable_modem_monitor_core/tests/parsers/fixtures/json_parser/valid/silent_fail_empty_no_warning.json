@@ -1,0 +1,18 @@
+{
+  "_description": "Empty raw value is a sparse-data signal (unlocked channels, optional fields), not a silent fail — must skip silently to keep the WARN signal clean",
+  "_json": {"channels": [{"ChannelID": "1", "Frequency": ""}]},
+  "_resource": "/api/data",
+  "_config": {
+    "format": "json",
+    "resource": "/api/data",
+    "array_path": "channels",
+    "fields": [
+      {"key": "ChannelID", "field": "channel_id", "type": "integer"},
+      {"key": "Frequency", "field": "frequency", "type": "frequency"}
+    ]
+  },
+  "_expected": [
+    {"channel_id": 1}
+  ],
+  "_expected_warnings": []
+}

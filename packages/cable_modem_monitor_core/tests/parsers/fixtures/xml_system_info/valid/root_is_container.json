@@ -1,0 +1,18 @@
+{
+  "_description": "When XML root tag equals root_element, root itself is used as the container",
+  "_xml": "<cm_system_info><cm_docsis_mode>DOCSIS 3.1</cm_docsis_mode><cm_hardware_version>1.0</cm_hardware_version></cm_system_info>",
+  "_resource": "2",
+  "_config": {
+    "format": "xml",
+    "resource": "2",
+    "root_element": "cm_system_info",
+    "fields": [
+      {"source": "cm_docsis_mode", "field": "docsis_mode", "type": "string"},
+      {"source": "cm_hardware_version", "field": "hardware_version", "type": "string"}
+    ]
+  },
+  "_expected": {
+    "docsis_mode": "DOCSIS 3.1",
+    "hardware_version": "1.0"
+  }
+}

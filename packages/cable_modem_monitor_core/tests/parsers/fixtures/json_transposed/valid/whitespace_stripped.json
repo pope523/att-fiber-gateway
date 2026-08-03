@@ -1,0 +1,21 @@
+{
+  "_description": "Leading/trailing whitespace on indexed values is stripped before mapping",
+  "_resource": "/api/upstream",
+  "_json": {
+    "nodes": [
+      {"name": "CH",    "index1": " 7 "},
+      {"name": "STATE", "index1": " OPERATE"}
+    ]
+  },
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH",    "field": "channel_id", "type": "integer"},
+      {"label": "STATE", "field": "state",      "type": "string"}
+    ]
+  },
+  "_expected": [
+    {"channel_id": 7, "state": "OPERATE"}
+  ]
+}

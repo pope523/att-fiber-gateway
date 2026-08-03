@@ -1,0 +1,42 @@
+{
+  "_description": "Coordinator routes a json_transposed section through the full loader-equivalent pipeline (registry dispatch → JSONTransposedParser → channel_number assignment) — closes the end-to-end gap left by unit-only coverage of the new format.",
+  "_json": {
+    "/api/upstream": {
+      "nodes": [
+        {"name": "CH",         "index1": "1",         "index2": "2"},
+        {"name": "Power",      "index1": "ON",        "index2": "OFF"},
+        {"name": "Center Freq SC0", "index1": "10.0", "index2": "20.0"},
+        {"name": "rep power",  "index1": "43.4",      "index2": "0.0"}
+      ]
+    }
+  },
+  "_parser_config": {
+    "upstream": {
+      "format": "json_transposed",
+      "resource": "/api/upstream",
+      "channel_type": {"fixed": "ofdma"},
+      "fields": [
+        {"label": "CH",              "field": "channel_id", "type": "integer"},
+        {"label": "Center Freq SC0", "field": "frequency",  "type": "frequency", "unit": "MHz"},
+        {"label": "rep power",       "field": "power",      "type": "float", "unit": "dBmV"}
+      ],
+      "filter": {"Power": "ON"}
+    }
+  },
+  "_expected": {
+    "downstream": [],
+    "upstream": [
+      {
+        "channel_id": 1,
+        "channel_number": 1,
+        "channel_type": "ofdma",
+        "frequency": 10000000,
+        "power": 43.4
+      }
+    ],
+    "system_info": {
+      "downstream_channel_count": 0,
+      "upstream_channel_count": 1
+    }
+  }
+}

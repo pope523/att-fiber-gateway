@@ -1,0 +1,7 @@
+Welcome to Cable Modem Monitor!
+
+Quick setup:
+  ./scripts/setup.sh
+
+Windows users: run this from inside WSL2, not PowerShell.
+See docs/setup/GETTING_STARTED.md for setup instructions.

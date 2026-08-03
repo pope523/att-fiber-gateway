@@ -1,0 +1,20 @@
+{
+  "_description": "auth:none modem that unexpectedly sets a session cookie — session detection should flag this",
+  "_entries": [
+    {
+      "request": {"method": "GET", "url": "/status.html", "headers": [], "cookies": []},
+      "response": {
+        "status": 200,
+        "headers": [
+          {"name": "Set-Cookie", "value": "session_id=abc123; Path=/"}
+        ],
+        "cookies": [{"name": "session_id", "value": "abc123", "path": "/"}],
+        "content": {"size": 100, "text": "data"}
+      }
+    }
+  ],
+  "_transport": "http",
+  "_auth_strategy": "none",
+  "_expected_cookie": "session_id",
+  "_expected_warning": "detected on auth:none modem"
+}

@@ -1,0 +1,23 @@
+{
+  "system_info": {
+    "sources": [
+      {
+        "format": "html_fields",
+        "resource": "/info.html",
+        "fields": [
+          {"label": "Mem Total", "field": "memory_total", "type": "string"},
+          {"label": "Mem Free", "field": "memory_free", "type": "string"}
+        ]
+      }
+    ]
+  },
+  "computed": {
+    "memory_used_pct": {
+      "operation": "percent_used",
+      "inputs": {
+        "total": "memory_total",
+        "free": "memory_free"
+      }
+    }
+  }
+}

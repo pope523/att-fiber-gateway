@@ -1,0 +1,35 @@
+{
+  "downstream": {
+    "format": "hnap",
+    "response_key": "GetDownstreamChannelInfoResponse",
+    "data_key": "DownstreamChannel",
+    "record_delimiter": "|+|",
+    "field_delimiter": "^",
+    "fields": [
+      {
+        "index": 2,
+        "field": "channel_type",
+        "type": "string",
+        "map": {
+          "SC-QAM": "qam",
+          "OFDM": "ofdm"
+        }
+      },
+      {
+        "index": 3,
+        "field": "channel_id",
+        "type": "integer"
+      },
+      {
+        "index": 4,
+        "field": "frequency",
+        "type": "frequency"
+      }
+    ],
+    "filter": {
+      "channel_id": {
+        "not": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "_description": "Session-level query param (_n) on all 4 data-fetch entries — TG3442DE pattern",
+  "_transport": "http",
+  "_auth_strategy": "form_sjcl",
+  "_expected_query_params": {"_n": "13127"},
+  "_expected_warning": "session-level query parameters",
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/php/status_docsis_data.php?_n=13127",
+        "headers": [{"name": "X-Requested-With", "value": "XMLHttpRequest"}]
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 5000, "mimeType": "text/html", "text": "<script>var json_dsData=[{\"Frequency\":570}];</script>"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/php/overview_data.php?_n=44829",
+        "headers": [{"name": "X-Requested-With", "value": "XMLHttpRequest"}]
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 2000, "mimeType": "text/html", "text": "<script>var json_overview=[{\"Model\":\"TG3442DE\"}];</script>"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/php/status_about_data.php?_n=57670",
+        "headers": [{"name": "X-Requested-With", "value": "XMLHttpRequest"}]
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 1500, "mimeType": "text/html", "text": "<script>var json_about=[{\"Version\":\"01.05\"}];</script>"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/php/event_log_data.php?_n=98234",
+        "headers": [{"name": "X-Requested-With", "value": "XMLHttpRequest"}]
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 3000, "mimeType": "text/html", "text": "<script>var json_events=[{\"Time\":\"2026-01-01\"}];</script>"}
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "_description": "Filter on canonical channel field uses standard equality after type conversion",
+  "_resource": "/api/upstream",
+  "_json": {
+    "nodes": [
+      {"name": "CH",         "index1": "0",   "index2": "1"},
+      {"name": "modulation", "index1": "QAM", "index2": "QAM_NONE"}
+    ]
+  },
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH",         "field": "channel_id", "type": "integer"},
+      {"label": "modulation", "field": "modulation", "type": "string"}
+    ],
+    "filter": {"modulation": {"not": "QAM_NONE"}}
+  },
+  "_expected": [
+    {"channel_id": 0, "modulation": "QAM"}
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "_description": "Computed field skipped when input field is absent",
+  "_html": {
+    "/info.html": "<table><tr><td>Mem Total</td><td>1000</td></tr></table>"
+  },
+  "_parser_config": {
+    "system_info": {
+      "sources": [
+        {
+          "format": "html_fields",
+          "resource": "/info.html",
+          "fields": [
+            {"label": "Mem Total", "field": "memory_total", "type": "string"}
+          ]
+        }
+      ]
+    },
+    "computed": {
+      "memory_used_pct": {
+        "operation": "percent_used",
+        "inputs": {"total": "memory_total", "free": "memory_free"}
+      }
+    }
+  },
+  "_expected": {
+    "downstream": [],
+    "upstream": [],
+    "system_info": {
+      "memory_total": "1000",
+      "downstream_channel_count": 0,
+      "upstream_channel_count": 0
+    }
+  }
+}

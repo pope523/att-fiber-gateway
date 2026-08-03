@@ -1,0 +1,74 @@
+manufacturer: Motorola
+model: MB8611
+model_aliases:
+  - MB8612
+brands: []
+transport: hnap
+default_host: 192.168.100.1
+
+auth:
+  strategy: hnap
+  hmac_algorithm: md5
+
+actions:
+  restart:
+    type: hnap
+    action_name: SetStatusSecuritySettings
+    # "XXX" is NOT a placeholder. The firmware's MotoStatusSecurity.html
+    # really calls GetMotoStatusSecXXX and sends MotoStatusSecXXX: "XXX".
+    # Confirmed by cvonk's restart-flow HAR (issue #60, June 2026): modem
+    # replied SetStatusSecuritySettingsResult: OK, Action: REBOOT.
+    pre_fetch_action: GetMotoStatusSecXXX
+    params:
+      MotoStatusSecXXX: XXX
+      MotoStatusSecurityAction: "1"
+    response_key: SetStatusSecuritySettingsResponse
+    result_key: SetStatusSecuritySettingsResult
+    success_value: OK
+
+hardware:
+  docsis_version: "3.1"
+  chipset: Broadcom BCM3390
+  release_date: "2020"
+
+status: confirmed
+sources:
+  auth_config: "[#6 MB8611 fails to connect](https://github.com/solentlabs/cable_modem_monitor/issues/6)"
+  chipset: "[AfrozAhmad Review](https://afrozahmad.com/blog/motorola-mb8611-cable-modem-review/)"
+  detection_hints: "[#6 MB8611 fails to connect](https://github.com/solentlabs/cable_modem_monitor/issues/6)"
+  hardware: "[Motorola MB8611 page](https://www.motorola.com/us/mb8611)"
+  restart: "[#60 MB8611 restart button not working](https://github.com/solentlabs/cable_modem_monitor/issues/60)"
+attribution:
+  contributors:
+    - github: https://github.com/cvonk
+      contribution:
+        "HAR captures, debug logs, iterative testing (Issue #6, November 2025);
+        restart flow capture confirming SetStatusSecuritySettings (Issue #60, June 2026)"
+    - github: https://github.com/dlindnegm
+      contribution: "Original HTML page captures (Issue #4, October 2025)"
+    - github: https://github.com/BowlesCR
+      contribution: HNAP authentication implementation (Issue #40)
+    - github: https://github.com/kwschulz
+      contribution: "Maintainer"
+isps:
+  - Comcast
+  - Xfinity
+  - Cox
+  - Spectrum
+notes: |
+  HNAP Channel Data Format: Caret-delimited fields, pipe-separated records
+  Format: ID^Status^Mod^ChID^Freq^Power^SNR^Corr^Uncorr^|+|...
+
+  Default credentials: admin / motorola
+  Compatible: MB8600 (same parser and HNAP protocol).
+
+  Parser built from:
+  - User-submitted diagnostics JSON files
+  - MotoStatusConnection.html JavaScript analysis revealing HNAP actions
+  - External reference implementations (see references)
+references:
+  issues:
+    - "[#4 — All Entities Unavailable](https://github.com/solentlabs/cable_modem_monitor/issues/4)"
+    - "[#6 — Motorola MB8611 fails to connect](https://github.com/solentlabs/cable_modem_monitor/issues/6)"
+    - "[#40 — [Modem Request] MB8600 (Newer firmware?)](https://github.com/solentlabs/cable_modem_monitor/issues/40)"
+    - "[#60 — MB8611: Restart button not working on v3.9.1](https://github.com/solentlabs/cable_modem_monitor/issues/60)"

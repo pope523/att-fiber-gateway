@@ -1,0 +1,18 @@
+{
+  "_description": "Un-coercible raw value with no extractor declared surfaces as WARN — catches novel firmware shapes (e.g. TG3442DE OFDM range string before range:span was wired) without users having to enable DEBUG",
+  "_json": {"channels": [{"ChannelID": "1", "Frequency": "751~860"}]},
+  "_resource": "/api/data",
+  "_config": {
+    "format": "json",
+    "resource": "/api/data",
+    "array_path": "channels",
+    "fields": [
+      {"key": "ChannelID", "field": "channel_id", "type": "integer"},
+      {"key": "Frequency", "field": "frequency", "type": "frequency"}
+    ]
+  },
+  "_expected": [
+    {"channel_id": 1}
+  ],
+  "_expected_warnings": ["frequency", "751~860"]
+}

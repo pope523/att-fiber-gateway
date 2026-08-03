@@ -1,0 +1,52 @@
+manufacturer: Arris
+model: SB6183
+brands:
+  - SURFboard
+transport: http
+default_host: 192.168.100.1
+
+auth:
+  strategy: none
+
+hardware:
+  docsis_version: "3.0"
+  chipset: Broadcom BCM33843D
+  release_date: "2014"
+
+status: confirmed
+
+sources:
+  chipset: "[DeviWiki](https://deviwiki.com/wiki/Motorola_SURFboard_SB6183)"
+  hardware: "[SURFboard SB6183 product page](https://www.surfboard.com/products/cable-modems/sb6183/)"
+
+attribution:
+  contributors:
+    - github: https://github.com/liehann
+      contribution: "Fallback mode capture and page documentation (Issue #95)"
+    - github: https://github.com/fuxxociety
+      contribution: "Hardware confirmation on beta.10, Comcast/Xfinity (Issue #95)"
+
+isps:
+  - Comcast
+  - Cox
+  - Spectrum
+  - Xfinity
+  - Mediacom
+
+notes: |
+  No authentication required — status pages are openly accessible.
+
+  Firmware version from submitter: D30CM-OSPREY-2.4.0.3-GA-00-NOSH
+
+  Status page is the root page (/), which is equivalent to /RgConnect.asp.
+  Additional pages available but not parsed:
+  - /RgSwInfo.asp — software version, uptime
+  - /RgEventLog.asp — event log
+  - /RgAddress.asp — MAC, serial
+  - /RgConfiguration.asp — downstream frequency plan, upstream channel ID
+
+  16x4 channel bonding (16 downstream, 4 upstream).
+
+references:
+  issues:
+    - "[#95 — [Modem Request] Arris SB6183](https://github.com/solentlabs/cable_modem_monitor/issues/95)"

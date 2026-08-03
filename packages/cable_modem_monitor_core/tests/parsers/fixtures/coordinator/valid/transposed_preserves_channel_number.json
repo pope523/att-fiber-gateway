@@ -1,0 +1,58 @@
+{
+  "_description": "Auto-assign channel_number skips channels that already have it from parser.yaml",
+  "_html": {
+    "/status.html": "<html><body><table><tr><th>Downstream</th><th colspan=2>Value</th></tr><tr><td>Channel</td><td>3</td><td>4</td></tr><tr><td>Channel ID</td><td>10</td><td>11</td></tr><tr><td>Frequency</td><td>519000000 Hz</td><td>525000000 Hz</td></tr></table></body></html>"
+  },
+  "_parser_config": {
+    "downstream": {
+      "format": "table_transposed",
+      "resource": "/status.html",
+      "selector": {
+        "type": "header_text",
+        "match": "Downstream"
+      },
+      "rows": [
+        {
+          "label": "Channel",
+          "field": "channel_number",
+          "type": "integer"
+        },
+        {
+          "label": "Channel ID",
+          "field": "channel_id",
+          "type": "integer"
+        },
+        {
+          "label": "Frequency",
+          "field": "frequency",
+          "type": "frequency",
+          "unit": "Hz"
+        }
+      ],
+      "channel_type": {
+        "fixed": "qam"
+      }
+    }
+  },
+  "_expected": {
+    "downstream": [
+      {
+        "channel_number": 3,
+        "channel_id": 10,
+        "frequency": 519000000,
+        "channel_type": "qam"
+      },
+      {
+        "channel_number": 4,
+        "channel_id": 11,
+        "frequency": 525000000,
+        "channel_type": "qam"
+      }
+    ],
+    "upstream": [],
+    "system_info": {
+      "downstream_channel_count": 2,
+      "upstream_channel_count": 0
+    }
+  }
+}

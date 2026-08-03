@@ -1,0 +1,32 @@
+{
+  "_description": "HNAP transport — request requirements detection is skipped entirely",
+  "_transport": "hnap",
+  "_auth_strategy": "hnap",
+  "_expected_query_params": {},
+  "_entries": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.0.1/HNAP1/?_n=12345",
+        "headers": [{"name": "SOAPAction", "value": "GetMultipleHNAPs"}]
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/xml"}],
+        "content": {"size": 3000, "mimeType": "text/xml", "text": "<GetMultipleHNAPsResponse></GetMultipleHNAPsResponse>"}
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.0.1/HNAP1/?_n=67890",
+        "headers": [{"name": "SOAPAction", "value": "GetMultipleHNAPs"}]
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/xml"}],
+        "content": {"size": 2000, "mimeType": "text/xml", "text": "<GetMultipleHNAPsResponse></GetMultipleHNAPsResponse>"}
+      }
+    }
+  ]
+}

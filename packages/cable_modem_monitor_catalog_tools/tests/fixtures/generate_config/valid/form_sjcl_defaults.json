@@ -1,0 +1,53 @@
+{
+  "_description": "form_sjcl auth injects SJCL crypto defaults (iterations, key_length, tag_length)",
+  "_expected_auth_strategy": "form_sjcl",
+  "_expected_has_parser": false,
+  "_expected_auth_fields": {
+    "pbkdf2_iterations": 1000,
+    "pbkdf2_key_length": 128,
+    "ccm_tag_length": 16,
+    "login_page": "/",
+    "login_endpoint": "/php/ajaxSet_Password.php",
+    "session_validation_endpoint": "/php/ajaxSet_Session.php",
+    "csrf_header": "csrfNonce",
+    "encrypt_aad": "loginPassword",
+    "decrypt_aad": "nonce",
+    "cookie_name": "PHPSESSID"
+  },
+  "_analysis": {
+    "transport": "http",
+    "confidence": "high",
+    "auth": {
+      "strategy": "form_sjcl",
+      "fields": {
+        "login_page": "/",
+        "login_endpoint": "/php/ajaxSet_Password.php",
+        "session_validation_endpoint": "/php/ajaxSet_Session.php",
+        "csrf_header": "csrfNonce",
+        "encrypt_aad": "loginPassword",
+        "decrypt_aad": "nonce"
+      },
+      "confidence": "high"
+    },
+    "session": {
+      "cookie_name": "PHPSESSID",
+      "headers": {"X-Requested-With": "XMLHttpRequest"}
+    },
+    "actions": {
+      "logout": {"type": "http", "method": "POST", "endpoint": "/php/logout.php"},
+      "restart": null
+    },
+    "sections": null,
+    "warnings": [],
+    "hard_stops": []
+  },
+  "_metadata": {
+    "manufacturer": "Solent Labs",
+    "model": "T400",
+    "default_host": "192.168.0.1",
+    "hardware": {"docsis_version": "3.1"},
+    "status": "awaiting_verification",
+    "attribution": {"contributors": [{"github": "tester", "contribution": "Initial capture"}]},
+    "isps": ["Various"]
+  }
+}

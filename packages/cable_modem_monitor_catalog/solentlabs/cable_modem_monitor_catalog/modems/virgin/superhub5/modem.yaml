@@ -1,0 +1,56 @@
+manufacturer: Virgin Media
+model: Hub 5
+model_aliases:
+  - "SuperHub 5"
+  - "VMDG660"
+  - "F3896LG-VMB"
+transport: http
+default_host: "192.168.100.1"
+
+auth:
+  strategy: none
+
+actions:
+  restart:
+    type: http
+    method: POST
+    endpoint: "/rest/v1/system/reboot"
+    json_body:
+      reboot:
+        enable: true
+    action_auth:
+      strategy: bearer
+      login_endpoint: "/rest/v1/user/login"
+      token_path: "created.token"
+
+hardware:
+  docsis_version: "3.1"
+  chipset: "Broadcom BCM3390"
+  release_date: "2021-10"
+
+status: awaiting_verification
+
+sources:
+  auth_config: "Synthetic HAR — no authentication required"
+  action_config: "[Issue #82 comment by @edent](https://github.com/solentlabs/cable_modem_monitor/issues/82) — login endpoint, token shape, reboot body confirmed via curl"
+
+  chipset: "[ISPreview](https://www.ispreview.co.uk/index.php/2021/10/virgin-media-o2-officially-launches-hub-5-broadband-router.html)"
+  detection_hints: "[Issue #82](https://github.com/solentlabs/cable_modem_monitor/issues/82)"
+  hardware: "[ISPreview](https://www.ispreview.co.uk/index.php/2021/10/virgin-media-o2-officially-launches-hub-5-broadband-router.html)"
+attribution:
+  contributors:
+    - github: https://github.com/Dinth
+      contribution: "Initial Hub 5 support and REST API documentation"
+
+isps:
+  - Virgin Media UK
+notes: |
+  DOCSIS 3.1 gateway. OEM: Sagemcom F3896LG-VMB. Chipset: Broadcom BCM3390.
+  Also marketed as "Hub 5" or "SuperHub 5".
+  REST API at /rest/v1/cablemodem/ - no authentication required.
+  33 SC-QAM downstream + 1 OFDM, 5 ATDMA upstream + 1 OFDMA.
+  bootFilename shows "vmdg660" (Virgin's internal designation).
+  Default IP: 192.168.100.1 (modem mode) or 192.168.0.1 (router mode).
+references:
+  issues:
+    - "[#82 — [Modem Request] Virgin Media SuperHub - modem mode 5](https://github.com/solentlabs/cable_modem_monitor/issues/82)"

@@ -1,0 +1,129 @@
+# -----------------------------
+# Python bytecode and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.so
+
+# Python environment markers
+.Python
+
+# -----------------------------
+# IDE and editor files
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/README.md
+.idea/
+.DS_Store
+.claude/*
+!.claude/settings.json
+.aider*
+
+# Node (npx markdownlint-cli2)
+node_modules/
+
+# -----------------------------
+# Logs and temporary files
+*.log
+.pytest_cache/
+
+# -----------------------------
+# Python package and distribution files
+*.egg-info/
+dist/
+build/
+
+# -----------------------------
+# Virtual environments
+.venv
+venv
+env
+ENV
+
+# -----------------------------
+# Code quality and linting
+.ruff_cache/
+.mypy_cache/
+
+# -----------------------------
+# Test coverage reports
+.coverage
+coverage.xml
+htmlcov/
+
+# -----------------------------
+# Home Assistant test environment
+test-ha-config/
+*.db
+*.db-shm
+*.db-wal
+home-assistant.log*
+home-assistant_v2.db*
+.storage/
+.cloud/
+deps/
+tts/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# -----------------------------
+# CodeQL artifacts (exclude runtime/build artifacts, keep custom queries and config)
+codeql-pack.lock.yml
+db-*/
+*.testproj/
+.codeql/
+
+# CodeQL CLI installation (local development only)
+/codeql/
+/codeql-linux64.zip
+/codeql-osx64.zip
+/codeql-win64.zip
+
+# GitHub CodeQL workflow artifacts
+.github/codeql/databases/
+.github/codeql/results/
+
+# Keep custom queries and configuration
+!.github/codeql/queries/
+!.github/codeql/*.yml
+
+# CodeQL test outputs
+*.actual
+*.diff
+*.result
+*.sarif
+
+# -----------------------------
+# Auto-generated files (created by make sync)
+
+# Package init files for synced modems (created during sync for importlib)
+custom_components/cable_modem_monitor/modems/**/__init__.py
+
+# -----------------------------
+# Miscellaneous
+
+# HAR capture artifacts (may contain PII)
+captures/
+
+# Raw data from issue debugging (user-submitted logs, configs, etc.)
+RAW_DATA/
+.hold/
+
+# Claude Code temporary files
+tmpclaude-*
+
+# curl/libcurl cookie jars
+*.cookies
+cookies.txt
+
+# Regression test output (generated at runtime, never committed)
+*.actual.json
+regression_output.txt
+
+# Windows artifact from /dev/null writes
+nul

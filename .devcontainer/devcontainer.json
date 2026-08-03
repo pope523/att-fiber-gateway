@@ -1,0 +1,130 @@
+{
+  // The dev container is the supported development environment for
+  // this project. See docs/setup/GETTING_STARTED.md.
+
+  // Display name for the Dev Container
+  "name": "Cable Modem Monitor Development",
+
+  // Build the container using a custom Dockerfile
+  "build": {
+    "dockerfile": "Dockerfile",       // Use Dockerfile in this folder
+    "context": ".."                   // Build context is the parent directory
+  },
+
+  // Explicitly mount the workspace folder
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/cable_modem_monitor,type=bind",
+
+  // Folder inside the container where VS Code opens the workspace
+  "workspaceFolder": "/workspaces/cable_modem_monitor",
+
+  // VS Code customizations for extensions and settings
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Python support and language server
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+
+        // Formatters and linters
+        "ms-python.black-formatter",
+        "charliermarsh.ruff",
+
+        // YAML and spell checking
+        "esbenp.prettier-vscode",
+        "redhat.vscode-yaml",
+        "streetsidesoftware.code-spell-checker",
+
+        // CodeQL security testing (extensions removed, tests run via pre-commit)
+      ],
+      "settings": {
+        // Use the project venv (created by post-create.sh)
+        "python.defaultInterpreterPath": "/workspaces/cable_modem_monitor/.venv/bin/python",
+
+        // Enable linting and configure Ruff
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": false,
+        "python.linting.lintOnSave": true,
+        "python.linting.ruffEnabled": true,
+        "python.linting.ruffArgs": [
+          "--config",
+          "pyproject.toml"
+        ],
+
+        // Enable formatting on save using Black
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.black-formatter",
+
+        // Python-specific formatting and import organization
+        "[python]": {
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+          },
+          "editor.defaultFormatter": "ms-python.black-formatter"
+        },
+
+        // Enable pytest and configure test discovery
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestArgs": [
+          "tests",
+          "-v",
+          "--tb=short"
+        ],
+        "python.testing.autoTestDiscoverOnSaveEnabled": true,
+
+        // Configure Black formatter path and interpreter
+        "black-formatter.interpreter": [
+          "/workspaces/cable_modem_monitor/.venv/bin/python"
+        ],
+        "black-formatter.path": [
+          "/workspaces/cable_modem_monitor/.venv/bin/black"
+        ]
+      }
+    }
+  },
+
+  // Port forwarding for docker-in-docker
+  // Nested containers expose ports to the devcontainer, VS Code forwards them to the host
+  "portsAttributes": {
+    "8123": {
+      "label": "Home Assistant",
+      "onAutoForward": "silent"
+    }
+  },
+  // Let VS Code auto-forward other ports as needed
+  "otherPortsAttributes": {
+    "onAutoForward": "silent"
+  },
+
+  // Enable Docker-in-Docker for running docker commands inside the container
+  // This runs a Docker daemon INSIDE the container, works on all platforms (Windows, macOS, Linux)
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": false
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    }
+  },
+
+  // Required for docker-in-docker to run its own Docker daemon
+  "privileged": true,
+
+  // Pass the host workspace path as an environment variable
+  // This allows docker-compose to use the correct path for volume mounts
+  "remoteEnv": {
+    "HOST_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+  },
+
+  // Post-create command to install Python dependencies and CodeQL CLI
+  // This runs once when the container is first created
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  // Post-start command to show welcome message
+  // This runs every time the container starts (after reboot, etc.)
+  "postStartCommand": "bash .devcontainer/post-start.sh",
+
+  // Use root user inside the container (required for docker-in-docker)
+  "remoteUser": "root"
+}

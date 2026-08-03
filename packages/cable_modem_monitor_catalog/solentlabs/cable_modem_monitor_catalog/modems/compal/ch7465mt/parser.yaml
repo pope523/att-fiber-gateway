@@ -1,0 +1,131 @@
+downstream:
+  format: xml
+  tables:
+    - resource: "10"
+      root_element: downstream_table
+      child_element: downstream
+      columns:
+        - source: chid
+          field: channel_id
+          type: integer
+        - source: freq
+          field: frequency
+          type: frequency
+        - source: pow
+          field: power
+          type: float
+        - source: snr
+          field: snr
+          type: float
+        - source: mod
+          field: modulation
+          type: modulation
+        - source: PreRs
+          field: corrected
+          type: integer
+        - source: PostRs
+          field: uncorrected
+          type: integer
+      channel_type:
+        derive: from_modulation
+      lock_status:
+        all_of:
+          - IsQamLocked
+          - IsFECLocked
+          - IsMpegLocked
+      filter:
+        frequency:
+          not: 0
+
+upstream:
+  format: xml
+  tables:
+    - resource: "11"
+      root_element: upstream_table
+      child_element: upstream
+      columns:
+        - source: usid
+          field: channel_id
+          type: integer
+        - source: freq
+          field: frequency
+          type: frequency
+        - source: power
+          field: power
+          type: float
+        - source: srate
+          field: symbol_rate
+          type: float
+          scale: 1000
+        - source: mod
+          field: modulation
+          type: modulation
+      channel_type:
+        derive: from_modulation
+      fixed_fields:
+        lock_status: "locked"
+      filter:
+        frequency:
+          not: 0
+
+system_info:
+  sources:
+    - format: xml
+      resource: "1"
+      root_element: GlobalSettings
+      fields:
+        - source: SwVersion
+          field: software_version
+          type: string
+    - format: xml
+      resource: "2"
+      root_element: cm_system_info
+      fields:
+        - source: cm_hardware_version
+          field: hardware_version
+          type: string
+        - source: cm_system_uptime
+          field: system_uptime
+          type: uptime
+          format: "{days}day(s){hours}h:{minutes}m:{seconds}s"
+        - source: cm_network_access
+          field: docsis_status
+          type: string
+          map:
+            "Allowed": "Operational"
+    - format: xml
+      resource: "144"
+      root_element: cmstatus
+      fields:
+        - source: provisioning_st
+          field: boot_status
+          type: string
+      child_aggregates:
+        - child_element: serviceflow
+          filter: { direction: "1" }
+          max: pMaxTrafficRate
+          field: provisioned_speed_down
+          type: integer
+        - child_element: serviceflow
+          filter: { direction: "2" }
+          max: pMaxTrafficRate
+          field: provisioned_speed_up
+          type: integer
+        - child_element: serviceflow
+          filter: { direction: "1" }
+          max: pMaxTrafficBurst
+          field: provisioned_burst_down
+          type: integer
+        - child_element: serviceflow
+          filter: { direction: "2" }
+          max: pMaxTrafficBurst
+          field: provisioned_burst_up
+          type: integer
+
+aggregate:
+  total_corrected:
+    channels: downstream
+    sum: corrected
+  total_uncorrected:
+    channels: downstream
+    sum: uncorrected

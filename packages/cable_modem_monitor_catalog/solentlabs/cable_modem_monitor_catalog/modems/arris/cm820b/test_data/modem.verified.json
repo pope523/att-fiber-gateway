@@ -1,0 +1,94 @@
+{
+  "verified_at": "2026-04-07",
+  "version": "3.14.0-alpha.12",
+  "config_entry": {
+    "title": "ARRIS CM820B (192.168.100.1)",
+    "host": "192.168.100.1",
+    "manufacturer": "ARRIS",
+    "model_name": "CM820B",
+    "variant": null,
+    "protocol": "http",
+    "legacy_ssl": false,
+    "has_credentials": false,
+    "supports_icmp": false,
+    "supports_head": false
+  },
+  "core_diagnostics": {
+    "poll_duration": 1.1061223229626194,
+    "auth_failure_streak": 0,
+    "circuit_breaker_open": false,
+    "session_is_valid": true,
+    "auth_strategy": "none",
+    "connectivity_streak": 0,
+    "connectivity_backoff_remaining": 0,
+    "resource_fetches": [
+      {
+        "path": "/cgi-bin/status_cgi",
+        "duration_ms": 834.2,
+        "size_bytes": 5328,
+        "status_code": 200,
+        "content_type": "text/html"
+      },
+      {
+        "path": "/cgi-bin/vers_cgi",
+        "duration_ms": 95.2,
+        "size_bytes": 3466,
+        "status_code": 200,
+        "content_type": "text/html"
+      }
+    ],
+    "last_poll_timestamp": 280755.060064767
+  },
+  "data_coordinator": {
+    "last_update_success": true,
+    "update_interval": "0:05:00"
+  },
+  "health_coordinator": {
+    "last_update_success": true,
+    "update_interval": "0:00:30"
+  },
+  "modem_data": {
+    "connection_status": "online",
+    "docsis_status": "operational",
+    "collector_signal": "ok",
+    "downstream_channel_count": 8,
+    "upstream_channel_count": 4,
+    "total_corrected_errors": 7060266671,
+    "total_uncorrected_errors": 2863348,
+    "software_version": "9.1.103S5R",
+    "system_uptime": "55 d:  2 h: 25  m",
+    "health_status": "responsive",
+    "icmp_latency_ms": null,
+    "http_latency_ms": 8.151,
+    "error": ""
+  },
+  "system_info": {
+    "docsis_status": "OPERATIONAL",
+    "system_uptime": "55 d:  2 h: 25  m",
+    "firmware_name": "TS0901103S5R_112017_WBM760_CM820",
+    "firmware_build_time": "Mon Nov 20 11:04:06 EST 2017",
+    "hardware_version": "1",
+    "software_version": "9.1.103S5R",
+    "model_name": "CM820B",
+    "downstream_channel_count": 8,
+    "upstream_channel_count": 4,
+    "total_corrected": 7060266671,
+    "total_uncorrected": 2863348
+  },
+  "downstream_channels": [
+    {"channel_type": "qam", "channel_id": 73, "modulation": "256QAM", "frequency": 178000000, "power": 2.54, "snr": 35.25, "corrected": 1969144407, "uncorrected": 109875},
+    {"channel_type": "qam", "channel_id": 74, "modulation": "256QAM", "frequency": 186000000, "power": 3.01, "snr": 35.97, "corrected": 1444777200, "uncorrected": 401786},
+    {"channel_type": "qam", "channel_id": 75, "modulation": "256QAM", "frequency": 194000000, "power": 2.98, "snr": 35.42, "corrected": 215208525, "uncorrected": 458183},
+    {"channel_type": "qam", "channel_id": 76, "modulation": "256QAM", "frequency": 202000000, "power": 4.36, "snr": 35.42, "corrected": 259093824, "uncorrected": 848150},
+    {"channel_type": "qam", "channel_id": 77, "modulation": "256QAM", "frequency": 210000000, "power": 3.75, "snr": 37.09, "corrected": 394437893, "uncorrected": 607532},
+    {"channel_type": "qam", "channel_id": 78, "modulation": "256QAM", "frequency": 218000000, "power": 4.5, "snr": 36.61, "corrected": 46567339, "uncorrected": 76132},
+    {"channel_type": "qam", "channel_id": 79, "modulation": "256QAM", "frequency": 226000000, "power": 5.09, "snr": 36.61, "corrected": 2186104118, "uncorrected": 98857},
+    {"channel_type": "qam", "channel_id": 80, "modulation": "256QAM", "frequency": 234000000, "power": 4.42, "snr": 36.84, "corrected": 544933365, "uncorrected": 262833}
+  ],
+  "upstream_channels": [
+    {"channel_type": "atdma", "channel_id": 6, "modulation": "32QAM", "frequency": 47000000, "symbol_rate": 5120, "power": 45.0},
+    {"channel_type": "atdma", "channel_id": 8, "modulation": "32QAM", "frequency": 61000000, "symbol_rate": 5120, "power": 46.5},
+    {"channel_type": "atdma", "channel_id": 7, "modulation": "32QAM", "frequency": 54000000, "symbol_rate": 5120, "power": 45.0},
+    {"channel_type": "atdma", "channel_id": 5, "modulation": "32QAM", "frequency": 40000000, "symbol_rate": 5120, "power": 44.5}
+  ]
+}

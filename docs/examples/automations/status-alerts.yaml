@@ -1,0 +1,31 @@
+# Status-sensor alerts: notify when the modem becomes Unresponsive
+# or fails to lock DOCSIS. The 5-minute and 10-minute "for" durations
+# avoid notification spam during transient blips.
+automation:
+  - alias: "Cable Modem Status Alert"
+    trigger:
+      - platform: state
+        entity_id: sensor.cable_modem_status
+        to: "Unresponsive"
+        for:
+          minutes: 5
+    action:
+      - service: notify.mobile_app
+        data:
+          title: "Modem Offline"
+          message: "Cable modem is not responding. Check power and connections."
+
+  - alias: "Cable Modem DOCSIS Alert"
+    trigger:
+      - platform: state
+        entity_id: sensor.cable_modem_status
+        to:
+          - "Not Locked"
+          - "Partial Lock"
+        for:
+          minutes: 10
+    action:
+      - service: notify.mobile_app
+        data:
+          title: "Modem Connection Issue"
+          message: "Cable modem DOCSIS status: {{ states('sensor.cable_modem_status') }}"

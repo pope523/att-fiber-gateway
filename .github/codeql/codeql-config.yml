@@ -1,0 +1,110 @@
+name: "CodeQL Security Scanning Configuration"
+
+# Exclude tools directory from CodeQL scanning
+# Rationale: Tools are diagnostic scripts for local network cable modems that use
+# self-signed certificates. Same security reasoning as documented in const.py:
+# 1. Cable modems universally use self-signed certificates (no CA-signed option)
+# 2. Target environment is private LANs (192.168.x.x, 10.0.x.x)
+# 3. MITM risk acceptable in private network context
+# 4. Self-signed cert still provides encryption in transit
+# 5. These are diagnostic utilities, not production code
+paths-ignore:
+  - "tools/**"
+  - "scripts/**"
+  - "docs/**"
+  - "tests/parsers/**/fixtures/**"
+  - "cable-modem-monitor-ql/**" # Exclude development/testing query directory
+  - "**/parser_template.py" # Template intentionally has commented example code
+
+# Custom queries are loaded via workflow queries parameter
+# See .github/workflows/codeql.yml line 43
+
+# Query filters to reduce false positives
+query-filters:
+  # --- Security exclusions (intentional design decisions) ---
+  - exclude:
+      id: py/clear-text-logging-sensitive-data
+      # Rationale: Cable modem diagnostics intentionally log configuration
+      # for troubleshooting. Data is local to Home Assistant instance.
+  - exclude:
+      id: py/clear-text-storage-sensitive-data
+      # Rationale: Home Assistant handles credential encryption.
+      # Integration uses HA's built-in secure storage.
+  - exclude:
+      id: py/insecure-ssl-config
+      # Rationale: Cable modems use self-signed certificates on private LANs.
+      # verify=False is required for connectivity checks in config_flow.py.
+      # Security justification documented in code comments.
+  - exclude:
+      id: py/request-without-cert-validation
+      # Rationale: Cable modems use self-signed certificates on private LANs (192.168.x.x, 10.x.x.x).
+      # verify=False is required for connectivity checks and data fetching from cable modems.
+      # This is acceptable because: (1) modems don't offer CA-signed certs, (2) private LAN only,
+      # (3) MITM risk is acceptable in home network context, (4) encryption still provided.
+  - exclude:
+      id: py/insecure-protocol
+      # Rationale: Cable Modem Monitor connects to a fleet of consumer cable
+      # modems, many of which run old firmware that only negotiates TLSv1.0
+      # or TLSv1.1. Refusing those versions outright would make a sizeable
+      # portion of the supported catalog unmonitorable.
+      #
+      # The project's posture: probe-time tolerance, runtime correctness.
+      # connectivity._tls_handshake() (~line 180-214) accepts any TLS
+      # version on the *detection* path so we can observe what the modem
+      # actually speaks. The negotiated protocol version is then surfaced
+      # via the `legacy_ssl` flag on `ConnectivityResult`. At runtime, the
+      # data-fetch path applies `LegacySSLAdapter` only when `legacy_ssl=True`
+      # — modems that negotiated TLSv1.2+ get the strict requests/urllib3
+      # default. Modems that need legacy ciphers get them, but only because
+      # the probe confirmed that's what the firmware speaks.
+      #
+      # This is a documented architectural decision, not a security oversight.
+      # Same family as the existing `py/request-without-cert-validation`
+      # exclusion: connecting to LAN-side embedded devices that don't offer
+      # CA-signed certs or modern TLS is the project's defining constraint.
+
+  # --- False positive exclusions (CodeQL limitations) ---
+  - exclude:
+      id: py/empty-except
+      # Intentional: har_sanitizer.py uses `except json.JSONDecodeError: pass` for
+      # graceful degradation. If JSON parsing fails during sanitization, we skip it
+      # and leave content as-is rather than crashing the sanitizer.
+  - exclude:
+      id: py/unreachable-statement
+      # False positive: CodeQL doesn't understand pytest.raises() context manager.
+      # Code after `with pytest.raises():` IS reachable - the context manager catches
+      # the exception and continues execution. Standard pytest pattern.
+  - exclude:
+      id: py/import-and-import-from
+      # False positive in test files: Tests intentionally use both `import X as module`
+      # (to access internals like _PARSER_CACHE) and `from X import func` (for clean API).
+      # This is a valid testing pattern for verifying module-level state.
+  - exclude:
+      id: py/unused-global-variable
+      # False positive: CodeQL doesn't track `global` statement properly.
+      # parsers/__init__.py declares `global _PARSER_CACHE` before assignment.
+      # The variable IS used on subsequent function calls for caching.
+  - exclude:
+      id: py/commented-out-code
+      # Handled via paths-ignore for parser_template.py (intentional examples).
+      # Other instances are format documentation like "# cells[0] = Channel number"
+      # which are column mappings, not dead code.
+  - exclude:
+      id: py/polluting-import
+      # Rationale: conftest.py files use `from X import *` to make pytest fixtures
+      # available to test modules. This is standard pytest practice - fixtures must
+      # be importable by name and `import *` is the conventional way to re-export them.
+  - exclude:
+      id: py/weak-sensitive-data-hashing
+      # Rationale: Test fixtures simulate HNAP protocol authentication which mandates
+      # HMAC-MD5. We cannot change the algorithm - real modems expect this exact
+      # computation. This is protocol compliance, not a security implementation choice.
+  - exclude:
+      id: py/incomplete-url-substring-sanitization
+      # False positive: The flagged code checks HTML content for brand indicators
+      # (e.g., `"arris.com" in html_lower`), not URL validation. We're detecting
+      # manufacturer from page content, not sanitizing URLs for security purposes.
+
+# Enable all security-related query metadata
+# This ensures comprehensive coverage of CWE categories
+disable-default-queries: false

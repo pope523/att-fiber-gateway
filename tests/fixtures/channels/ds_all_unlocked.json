@@ -1,0 +1,18 @@
+[
+  {
+    "channel_number": 1,
+    "channel_id": null,
+    "channel_type": null,
+    "lock_status": "not_locked",
+    "power": null,
+    "snr": null
+  },
+  {
+    "channel_number": 2,
+    "channel_id": null,
+    "channel_type": null,
+    "lock_status": "not_locked",
+    "power": null,
+    "snr": null
+  }
+]

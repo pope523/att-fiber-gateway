@@ -1,0 +1,13 @@
+{
+  "_description": "Resource not present in resources dict yields empty list",
+  "_resource": "/api/elsewhere",
+  "_json": {"nodes": []},
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH", "field": "channel_id", "type": "integer"}
+    ]
+  },
+  "_expected": []
+}

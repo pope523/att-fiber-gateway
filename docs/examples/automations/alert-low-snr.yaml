@@ -1,0 +1,14 @@
+# Alert when a downstream channel's SNR drops below 30 dB.
+# Below 25 dB is "poor"; below 30 dB is the early-warning threshold.
+# Adjust the entity_id and channel number to match your modem.
+automation:
+  - alias: "Cable Modem - Low SNR Warning"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.cable_modem_ds_ch_1_snr
+        below: 30
+    action:
+      - service: notify.notify
+        data:
+          title: "Cable Modem Alert"
+          message: "Low signal quality detected on downstream channel 1."

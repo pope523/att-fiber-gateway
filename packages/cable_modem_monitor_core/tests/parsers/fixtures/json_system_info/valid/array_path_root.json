@@ -1,0 +1,28 @@
+{
+  "_description": "Root-level JSON array wrapped as {\"_raw\": [...]} with array_path navigation",
+  "_json": {
+    "_raw": [
+      {
+        "hwVersion": "1A",
+        "swVersion": "7.3.5.3.2b1",
+        "systemUptime": "479h:40m:38s"
+      }
+    ]
+  },
+  "_resource": "/data/getSysInfo.asp",
+  "_config": {
+    "format": "json",
+    "resource": "/data/getSysInfo.asp",
+    "array_path": "_raw",
+    "fields": [
+      {"key": "hwVersion", "field": "hardware_version", "type": "string"},
+      {"key": "swVersion", "field": "software_version", "type": "string"},
+      {"key": "systemUptime", "field": "system_uptime", "type": "string"}
+    ]
+  },
+  "_expected": {
+    "hardware_version": "1A",
+    "software_version": "7.3.5.3.2b1",
+    "system_uptime": "479h:40m:38s"
+  }
+}

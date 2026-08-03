@@ -1,0 +1,183 @@
+"""XML channel parser.
+
+Extracts channel data from XML responses where each resource is a
+``defusedxml.ElementTree.Element``. Navigates to a root element by
+tag name, iterates child elements, and extracts field values from
+sub-element text content.
+
+Supports:
+- Multiple tables per section (concatenation from different resources)
+- ``scale`` on column mappings (unit normalization after type conversion)
+- ``channel_type`` (fixed or mapped from another field)
+- ``lock_status`` (AND of multiple boolean XML fields)
+- ``fixed_fields`` (static values for every channel)
+- ``filter`` (exclude channels by field value)
+
+See PARSING_SPEC.md XMLParser section.
+"""
+
+from __future__ import annotations
+
+import logging
+from typing import Any
+from xml.etree.ElementTree import Element
+
+from ...models.parser_config.common import (
+    ChannelTypeConfig,
+    ChannelTypeFixed,
+    ChannelTypeMap,
+)
+from ...models.parser_config.xml_format import (
+    LockStatusAllOf,
+    XMLSection,
+    XMLTableDefinition,
+)
+from ..filter import passes_filter
+from ..type_conversion import convert_value
+
+_logger = logging.getLogger(__name__)
+
+
+class XMLChannelParser:
+    """Parse channel data from XML Elements.
+
+    Iterates over all tables in the section, fetches each table's
+    resource, and concatenates the extracted channels in order.
+
+    Args:
+        config: Validated ``XMLSection`` from parser.yaml.
+    """
+
+    def __init__(self, config: XMLSection) -> None:
+        self._config = config
+
+    def parse(self, resources: dict[str, Any]) -> list[dict[str, Any]]:
+        """Extract channels from all tables in the section.
+
+        Args:
+            resources: Dict keyed by fun parameter string, values are
+                ``Element`` objects from the CBN loader.
+
+        Returns:
+            List of channel dicts with canonical field names,
+            concatenated from all tables in order.
+        """
+        channels: list[dict[str, Any]] = []
+        for table in self._config.tables:
+            channels.extend(self._parse_table(table, resources))
+        return channels
+
+    def _parse_table(self, table: XMLTableDefinition, resources: dict[str, Any]) -> list[dict[str, Any]]:
+        """Extract channels from a single table definition."""
+        root = resources.get(table.resource)
+        if root is None:
+            _logger.debug(
+                "XML resource '%s' not found in resources",
+                table.resource,
+            )
+            return []
+
+        if not isinstance(root, Element):
+            _logger.debug(
+                "XML resource '%s' is not an Element (got %s)",
+                table.resource,
+                type(root).__name__,
+            )
+            return []
+
+        # Find the named root element
+        container = root.find(table.root_element)
+        if container is None:
+            # Root element might be the document root itself
+            if root.tag == table.root_element:
+                container = root
+            else:
+                _logger.debug(
+                    "XML root element '%s' not found",
+                    table.root_element,
+                )
+                return []
+
+        # Iterate child elements, apply filter
+        channels: list[dict[str, Any]] = []
+        for child in container.findall(table.child_element):
+            channel = _extract_channel(child, table)
+            if channel and passes_filter(channel, table.filter):
+                channels.append(channel)
+
+        return channels
+
+
+def _extract_channel(element: Element, table: XMLTableDefinition) -> dict[str, Any]:
+    """Extract field values from a single child element."""
+    channel: dict[str, Any] = {}
+
+    for col in table.columns:
+        value = _extract_column(element, col)
+        if value is not None:
+            channel[col.field] = value
+
+    _apply_channel_type(channel, table.channel_type)
+
+    if table.lock_status is not None:
+        ls = table.lock_status
+        if isinstance(ls, LockStatusAllOf):
+            channel["lock_status"] = _derive_lock_status(element, ls.all_of)
+
+    for field_name, field_value in table.fixed_fields.items():
+        channel[field_name] = field_value
+
+    return channel
+
+
+def _extract_column(element: Element, col: Any) -> Any:
+    """Extract and convert a single column value from an XML element."""
+    sub = element.find(col.source)
+    if sub is None or sub.text is None:
+        return None
+    value = convert_value(
+        sub.text.strip(),
+        col.type,
+        scale=col.scale,
+        input_format=col.format,
+    )
+    if col.map is not None and value in col.map:
+        value = col.map[value]
+    return value
+
+
+def _apply_channel_type(
+    channel: dict[str, Any],
+    channel_type: ChannelTypeConfig | None,
+) -> None:
+    """Apply fixed or mapped channel type to the channel dict.
+
+    ``ChannelTypeDerive`` is a no-op here — the coordinator applies
+    direction-aware derivation post-extraction (the format parser
+    doesn't know whether this is a downstream or upstream section).
+    """
+    if channel_type is None:
+        return
+    if isinstance(channel_type, ChannelTypeFixed):
+        channel["channel_type"] = channel_type.fixed
+    elif isinstance(channel_type, ChannelTypeMap):
+        source_val = str(channel.get(channel_type.field, ""))
+        mapped = channel_type.map.get(source_val)
+        if mapped is not None:
+            channel["channel_type"] = mapped
+
+
+def _derive_lock_status(element: Element, sources: list[str]) -> str:
+    """Derive lock_status from AND of boolean XML sub-elements.
+
+    Each source tag's text is converted to boolean. All must be true
+    for the result to be ``"locked"``.
+    """
+    for source in sources:
+        sub = element.find(source)
+        if sub is None or sub.text is None:
+            return "not_locked"
+        val = convert_value(sub.text.strip(), "boolean")
+        if not val:
+            return "not_locked"
+    return "locked"

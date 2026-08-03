@@ -1,0 +1,193 @@
+# Pre-commit hooks for Cable Modem Monitor
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Code formatting with Black
+  - repo: https://github.com/psf/black
+    rev: 26.3.1
+    hooks:
+      - id: black
+        language_version: python3
+        files: \.py$
+
+  # Linting with Ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
+    hooks:
+      - id: ruff
+        args: [--fix]
+        files: \.py$
+
+  # Commit message format validation (Conventional Commits) — same
+  # rules CI's commit-lint workflow enforces. Reads commitlint.config.js
+  # at repo root; failures surface here instead of at PR time.
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.25.0
+    hooks:
+      - id: commitlint
+        stages: [commit-msg]
+        additional_dependencies: ["@commitlint/config-conventional"]
+
+  # Type checking with mypy
+  # Only checks Core/Catalog source (packages/*/solentlabs/).
+  # HA adapter layer (custom_components/) requires the full homeassistant
+  # package for type resolution — too heavy for pre-commit's isolated env.
+  # CI and `mypy . --config-file=mypy.ini` (project venv) check everything.
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.20.2
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - pydantic
+          - types-requests
+          - types-PyYAML
+          - pytest-socket
+        files: ^packages/[^/]+/solentlabs/.*\.py$
+
+  # Type checking with Pyright (catches errors Pylance shows in VS Code)
+  # Uses the project venv — matches pyrightconfig.json at repo root.
+  # Worktree-aware: resolves pyright from main worktree's .venv.
+  # Scoped to the same paths as mypy (Core/Catalog source + tests).
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        entry: scripts/dev/run-pyright.sh
+        language: script
+        files: ^(packages/|custom_components/|tests/).*\.py$
+        pass_filenames: false
+
+  # Suppression discipline — quality-gate suppressions added in a
+  # change must carry a same-line justification comment. Catches the
+  # AI antipattern of reaching for `# type: ignore` as a first answer.
+  # See CLAUDE.md § Code Discipline (Suppression discipline).
+  - repo: local
+    hooks:
+      - id: suppression-discipline
+        name: suppression-discipline
+        entry: .venv/bin/python scripts/check_suppression_discipline.py
+        language: system
+        pass_filenames: false
+        files: \.py$
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^tests/.*\.html$
+      - id: end-of-file-fixer
+        exclude: ^tests/.*\.html$
+      - id: check-yaml
+        exclude: ^\.github/workflows/
+      - id: check-json
+        exclude: (devcontainer\.json|\.vscode/(settings|extensions)\.json)$
+      - id: check-added-large-files # default: 500KB; HAR files are in LFS
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      # Python-specific checks
+      - id: debug-statements
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-docstring-first
+
+  # Shell script formatting
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.13.1-1
+    hooks:
+      - id: shfmt
+        args: ["-i", "2", "-ci"]
+
+  # YAML formatting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v3.1.0"
+    hooks:
+      - id: prettier
+        types: [yaml]
+
+  # Local hooks
+  - repo: local
+    hooks:
+      - id: check-commit-email
+        name: Check for personal email in git config
+        entry: scripts/dev/check-commit-email.sh
+        language: script
+        always_run: true
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: codeql-test
+        name: Run CodeQL Tests
+        entry: scripts/dev/test-codeql.sh
+        language: script
+        files: \.(ql|qls)$
+
+      - id: check-changelog
+        name: Check CHANGELOG.md reminder
+        entry: scripts/dev/check-changelog.sh
+        language: script
+        always_run: true
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: validate-commit-msg
+        name: Validate commit message (conventional commits)
+        entry: scripts/dev/run-python.sh scripts/dev/validate.py --commit-msg-file
+        language: script
+        stages: [commit-msg]
+        always_run: true
+
+      - id: validate-code
+        name: Validate code (fallback for missing tools)
+        entry: scripts/dev/run-python.sh scripts/dev/validate.py --lint --format
+        language: script
+        pass_filenames: false
+        stages: [manual]
+        always_run: true
+
+      - id: check-local-path-refs
+        name: Check for local-only path references
+        entry: scripts/dev/check-local-path-refs.sh
+        language: script
+        always_run: true
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: check-fixture-pii
+        name: Check fixtures for PII
+        entry: scripts/dev/run-python.sh packages/cable_modem_monitor_catalog/scripts/check_fixture_pii.py
+        language: script
+        pass_filenames: false
+        files: (packages/cable_modem_monitor_catalog/.*\.(har|json|html|htm)$)
+
+      - id: check-translations-sync
+        name: Check strings.json / translations sync
+        entry: scripts/dev/run-python.sh scripts/dev/check-translations-sync.py
+        language: script
+        pass_filenames: false
+        files: (custom_components/cable_modem_monitor/(strings\.json|translations/.*\.json)$)
+
+      - id: check-md-no-emphasis-evasion
+        name: Check markdown for HTML emphasis-evasion (sub/small)
+        entry: scripts/dev/check-md-no-emphasis-evasion.sh
+        language: script
+        files: \.md$
+
+      - id: pre-push-lint
+        name: Full project lint check
+        entry: ruff check .
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        always_run: true
+
+      - id: pre-push-tests
+        name: Full test suite
+        entry: pytest
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        always_run: true

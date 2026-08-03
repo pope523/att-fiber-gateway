@@ -1,0 +1,22 @@
+{
+  "_description": "HTML5 lets </script> carry a self-closing slash before the >. Modems that emit </script/> still have a JS body that the extractor must surface.",
+  "_expected_warnings": ["php/end_tag_self_close.php"],
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {
+          "size": 200,
+          "mimeType": "text/html",
+          "text": "<html><head><script>$.ajax({type:\"POST\", url:\"php/end_tag_self_close.php\", dataType:\"json\"});</script/></head><body></body></html>"
+        }
+      }
+    }
+  ]
+}

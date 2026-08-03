@@ -1,0 +1,19 @@
+{
+  "_description": "Minimal restart HAR — POST /restart returns 200",
+  "log": {
+    "version": "1.2",
+    "entries": [
+      {
+        "request": {
+          "method": "POST",
+          "url": "http://192.168.100.1/restart"
+        },
+        "response": {
+          "status": 200,
+          "headers": [{"name": "Content-Type", "value": "text/plain"}],
+          "content": {"text": "OK", "mimeType": "text/plain"}
+        }
+      }
+    ]
+  }
+}

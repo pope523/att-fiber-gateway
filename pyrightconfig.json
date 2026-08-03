@@ -1,0 +1,29 @@
+{
+  "pythonVersion": "3.12",
+  "venvPath": ".",
+  "venv": ".venv",
+  "extraPaths": [
+    "packages/cable_modem_monitor_core",
+    "packages/cable_modem_monitor_catalog",
+    "packages/cable_modem_monitor_catalog_tools"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.*",
+    ".claude/worktrees",
+    "RAW_DATA",
+    "codeql",
+    "cable-modem-monitor-ql"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "packages/cable_modem_monitor_core",
+      "extraPaths": ["."]
+    },
+    {
+      "root": "packages/cable_modem_monitor_catalog_tools",
+      "extraPaths": [".", "packages/cable_modem_monitor_core"]
+    }
+  ]
+}

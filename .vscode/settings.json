@@ -1,0 +1,163 @@
+{
+  // ========================================
+  // Cable Modem Monitor - VSCode Settings
+  // For Linux, macOS, and WSL2 development
+  // Windows users: see docs/setup/WSL2_SETUP.md
+  // ========================================
+
+  // ========================================
+  // Task Auto-Run Permission
+  // ========================================
+
+  // Allow automatic tasks (Welcome message on folder open)
+  "task.allowAutomaticTasks": "on",
+
+  // ========================================
+  // Python Configuration
+  // ========================================
+  //
+  // First time opening? Run: ./scripts/setup.sh
+  // Or use Dev Container: F1 → "Reopen in Container"
+  // See WORKSPACE_VS_CONTAINER.md for comparison
+  //
+  // ========================================
+
+  // Path to the Python interpreter - must point to the binary, not the venv directory
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+
+  // Disable automatic venv activation (we handle it with custom wrapper script)
+  "python.terminal.activateEnvironment": false,
+
+  // Ruff extension — native server auto-discovers pyproject.toml
+  "ruff.nativeServer": true,
+
+  // ========================================
+  // Code Formatting
+  // ========================================
+
+  // Format files automatically on save
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "ms-python.black-formatter",
+
+  // Language-specific overrides for Python
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+
+  // Black formatter configuration
+  // Uses the selected Python interpreter automatically
+  "black-formatter.path": [
+    "black"
+  ],
+
+  // ========================================
+  // Testing Configuration
+  // ========================================
+
+  // Enable pytest and configure discovery
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": [
+    "tests",
+    "-v",
+    "--tb=short"
+  ],
+  "python.testing.autoTestDiscoverOnSaveEnabled": true,
+
+  // Exclude CodeQL test fixtures from pytest discovery
+  // These are sample Python files for CodeQL analysis, not actual tests
+  "python.testing.ignorePatterns": [
+    "**/cable-modem-monitor-ql/**",
+    "**/.venv/**",
+    "**/codeql/**"
+  ],
+
+  // ========================================
+  // File and Editor Settings
+  // ========================================
+
+  // Use LF (Unix-style) line endings (enforced by .gitattributes)
+  "files.eol": "\n",
+
+  // Rulers for code length (matching Black/Ruff config)
+  "editor.rulers": [88, 120],
+
+  // Trim trailing whitespace on save
+  "files.trimTrailingWhitespace": true,
+
+  // Insert final newline
+  "files.insertFinalNewline": true,
+
+  // Trim final newlines
+  "files.trimFinalNewlines": true,
+
+  // ========================================
+  // Python Language Server Configuration
+  // ========================================
+
+  // Pylance type checking
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.diagnosticMode": "workspace",
+  // Pylance exclude and extraPaths are in pyrightconfig.json
+
+  // ========================================
+  // CodeQL Configuration (Optional)
+  // ========================================
+  // CodeQL is OPTIONAL - only needed for security analysis development
+  // If you don't have the CodeQL extension, you can ignore these settings
+
+  // Let the CodeQL extension manage its own CLI installation (if extension is installed)
+  // The project uses a local CLI at ./codeql/codeql for command-line testing
+  // But the VS Code extension works best with its own managed installation
+  "codeQL.cli.executablePath.updateChannel": "latest",
+
+  // Enable CodeQL test discovery (if extension is installed)
+  "codeQL.runningTests.numberOfThreads": 1,
+
+  // Auto-save databases (if extension is installed)
+  "codeQL.runningQueries.autoSave": true,
+
+  // ========================================
+  // Terminal Configuration
+  // ========================================
+
+  // Automatically activate .venv (or show setup instructions if missing)
+  // Uses wrapper scripts that provide helpful guidance for new users
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "bash",
+      "icon": "terminal-bash",
+      "args": [
+        "--init-file",
+        "${workspaceFolder}/scripts/dev/activate_venv.sh"
+      ]
+    }
+  },
+  "terminal.integrated.profiles.osx": {
+    "bash": {
+      "path": "bash",
+      "icon": "terminal-bash",
+      "args": [
+        "--init-file",
+        "${workspaceFolder}/scripts/dev/activate_venv.sh"
+      ]
+    },
+    "zsh": {
+      "path": "zsh",
+      "icon": "terminal",
+      "args": [
+        "-c",
+        "source ${workspaceFolder}/scripts/dev/activate_venv.sh && exec zsh"
+      ]
+    }
+  },
+
+  // Set default profiles
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "makefile.configureOnOpen": false,
+}

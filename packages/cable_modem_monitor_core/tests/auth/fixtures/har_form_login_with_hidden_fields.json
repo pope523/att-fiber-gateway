@@ -1,0 +1,51 @@
+{
+  "_description": "Form auth with login page containing hidden fields for discovery",
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/login.html"
+      },
+      "response": {
+        "status": 200,
+        "headers": [
+          {"name": "Content-Type", "value": "text/html"}
+        ],
+        "content": {
+          "text": "<html><body><form action='/goform/login' method='POST'><input type='text' name='username' value=''><input type='password' name='password' value=''><input type='hidden' name='csrf_token' value='abc123'><input type='hidden' name='mode' value='login'></form></body></html>"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.100.1/goform/login"
+      },
+      "response": {
+        "status": 200,
+        "headers": [],
+        "content": {"text": "Login OK"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/status.html"
+      },
+      "response": {
+        "status": 200,
+        "headers": [
+          {"name": "Content-Type", "value": "text/html"}
+        ],
+        "content": {"text": "<html>Status</html>"}
+      }
+    }
+  ],
+  "_modem_config": {
+    "auth": {
+      "strategy": "form",
+      "action": "/goform/login",
+      "login_page": "/login.html"
+    }
+  }
+}

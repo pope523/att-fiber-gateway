@@ -1,0 +1,35 @@
+{
+  "_description": "form_cbn auth must NOT receive cookie_name from session (uses session_cookie_name instead)",
+  "_expected_auth_strategy": "form_cbn",
+  "_expected_has_parser": false,
+  "_analysis": {
+    "transport": "cbn",
+    "confidence": "high",
+    "auth": {
+      "strategy": "form_cbn",
+      "fields": {
+        "getter_endpoint": "/xml/getter.xml",
+        "setter_endpoint": "/xml/setter.xml"
+      },
+      "confidence": "high"
+    },
+    "session": {
+      "headers": {},
+      "cookie_name": "sessionToken"
+    },
+    "actions": {},
+    "sections": {},
+    "warnings": [],
+    "hard_stops": []
+  },
+  "_metadata": {
+    "manufacturer": "Solent Labs",
+    "model": "T100",
+    "default_host": "192.168.0.1",
+    "transport": "cbn",
+    "hardware": {"docsis_version": "3.0"},
+    "status": "awaiting_verification",
+    "attribution": {"contributors": [{"github": "tester", "contribution": "Initial capture"}]},
+    "isps": ["Various"]
+  }
+}

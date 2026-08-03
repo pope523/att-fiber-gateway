@@ -1,0 +1,22 @@
+{
+  "_description": "Some firmware <script> bodies contain HTML comments (e.g., legacy SCRIPT comment-hiding pattern). The extractor must preserve the raw script body verbatim — including the comment — so that AJAX patterns inside aren't lost.",
+  "_expected_warnings": ["php/inside_comment.php"],
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {
+          "size": 250,
+          "mimeType": "text/html",
+          "text": "<html><head><script><!-- legacy comment-hide -->\n$.ajax({type:\"POST\", url:\"php/inside_comment.php\", dataType:\"json\"});\n<!-- end --></script></head><body></body></html>"
+        }
+      }
+    }
+  ]
+}

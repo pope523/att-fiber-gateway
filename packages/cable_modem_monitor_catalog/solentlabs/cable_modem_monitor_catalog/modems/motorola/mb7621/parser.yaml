@@ -1,0 +1,109 @@
+downstream:
+  format: table
+  resource: "/MotoConnection.asp"
+  tables:
+    - selector:
+        match: "SNR"
+        type: header_text
+      row_start: 1
+      columns:
+        - index: 0
+          field: channel_number
+          type: integer
+        - index: 1
+          field: lock_status
+          type: lock_status
+        - index: 2
+          field: modulation
+          type: string
+        - index: 3
+          field: channel_id
+          type: integer
+        - index: 4
+          field: frequency
+          type: frequency
+          unit: MHz
+        - index: 5
+          field: power
+          type: float
+          unit: dBmV
+        - index: 6
+          field: snr
+          type: float
+          unit: dB
+        - index: 7
+          field: corrected
+          type: integer
+        - index: 8
+          field: uncorrected
+          type: integer
+      channel_type:
+        fixed: qam
+      filter:
+        lock_status: "locked"
+
+upstream:
+  format: table
+  resource: "/MotoConnection.asp"
+  tables:
+    - selector:
+        match: "Symb. Rate"
+        type: header_text
+      row_start: 1
+      columns:
+        - index: 0
+          field: channel_number
+          type: integer
+        - index: 1
+          field: lock_status
+          type: lock_status
+        - index: 2
+          field: channel_type
+          type: string
+          map:
+            "ATDMA": "atdma"
+            "TDMA": "tdma"
+        - index: 3
+          field: channel_id
+          type: integer
+        - index: 5
+          field: frequency
+          type: frequency
+          unit: MHz
+        - index: 6
+          field: power
+          type: float
+          unit: dBmV
+      filter:
+        lock_status: "locked"
+
+system_info:
+  sources:
+    - format: html_fields
+      resource: "/MotoConnection.asp"
+      fields:
+        - field: docsis_status
+          label: "Network Access"
+          type: string
+          map:
+            "Allowed": "Operational"
+        - field: system_uptime
+          label: "System Up Time"
+          type: uptime
+          format: "{days} days {hours}h:{minutes}m:{seconds}s"
+    - format: html_fields
+      resource: "/MotoSwInfo.asp"
+      fields:
+        - field: hardware_version
+          label: "Hardware Version"
+          type: string
+        - field: software_version
+          label: "Software Version"
+          type: string
+aggregate:
+  total_corrected:
+    channels: downstream
+    sum: corrected
+  total_uncorrected:
+    channels: downstream
+    sum: uncorrected

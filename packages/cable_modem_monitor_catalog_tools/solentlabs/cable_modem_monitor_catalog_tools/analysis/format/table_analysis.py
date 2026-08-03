@@ -1,0 +1,398 @@
+"""Table analysis for format classification and section assembly.
+
+Direction detection, selector detection, row start detection, and
+table orientation (standard vs transposed). Used by format.http
+for format classification and by the format dispatcher for section
+assembly.
+
+Per docs/ONBOARDING_SPEC.md Phase 5.
+"""
+
+from __future__ import annotations
+
+from ..mapping.registry_loader import get_channel_field_labels
+from ..types import FleetPatterns
+from .types import DetectedTable
+
+# -----------------------------------------------------------------------
+# Channel field labels (derived from field_registry.json)
+# -----------------------------------------------------------------------
+
+CHANNEL_FIELD_LABELS: tuple[str, ...] = get_channel_field_labels()
+
+
+# -----------------------------------------------------------------------
+# Table classification
+# -----------------------------------------------------------------------
+
+
+def is_channel_table(table: DetectedTable) -> bool:
+    """Check if a table contains channel data based on headers/labels.
+
+    Three strategies:
+    1. Header text matches known channel field labels.
+    2. First column of data rows matches (transposed tables).
+    3. Data values contain modulation strings (i18n fallback for pages
+       where headers are injected by JavaScript at runtime).
+    """
+    for header in table.headers:
+        if header.lower().strip() in CHANNEL_FIELD_LABELS:
+            return True
+
+    # For transposed: check first column of data rows
+    if any(row and row[0].lower().strip() in CHANNEL_FIELD_LABELS for row in table.rows):
+        return True
+
+    # Data-value fallback: modulation strings are distinctive to channel tables
+    return _has_modulation_values(table)
+
+
+# Modulation value patterns for data-based channel table detection.
+# These strings only appear in DOCSIS channel data — never in layout
+# or navigation tables.
+_MODULATION_TOKENS: frozenset[str] = frozenset({"qam", "ofdm", "ofdma", "atdma", "tdma", "scdma"})
+
+
+def _has_modulation_values(table: DetectedTable) -> bool:
+    """Check if data rows contain modulation strings.
+
+    Fallback for i18n pages where header text is empty and only
+    ``data-i18n`` keys are available. Modulation strings (QAM256,
+    OFDM, ATDMA, etc.) are unique to channel data tables.
+    """
+    for row in table.rows[:10]:
+        for cell in row:
+            lower = cell.lower().strip()
+            if any(token in lower for token in _MODULATION_TOKENS):
+                return True
+    return False
+
+
+def is_transposed(table: DetectedTable) -> bool:
+    """Determine if a table is transposed (rows=metrics, cols=channels).
+
+    If the first column of data rows contains
+    known field labels, it is transposed.
+    """
+    label_count = 0
+    for row in table.rows:
+        if row and row[0].lower().strip() in CHANNEL_FIELD_LABELS:
+            label_count += 1
+
+    # If most data rows have field labels in the first column, transposed
+    return bool(table.rows and label_count >= len(table.rows) * 0.5)
+
+
+# -----------------------------------------------------------------------
+# Table direction detection
+# -----------------------------------------------------------------------
+
+
+def detect_table_direction(
+    table: DetectedTable,
+    *,
+    fleet: FleetPatterns | None = None,
+) -> str:
+    """Detect whether a table is downstream or upstream.
+
+    Strategy cascade:
+    1. Text-based keyword matching (title, heading, headers, id)
+    2. DOCSIS abbreviation prefixes in header text (``_ds_`` / ``_us_``)
+    3. Codewords/error-stats tables (implicitly downstream)
+    4. Fleet pattern matching (selector text seen in existing fleet)
+
+    Returns "downstream", "upstream", or "unknown".
+    """
+    direction = _direction_from_text(table)
+    if direction:
+        return direction
+
+    direction = _keyword_match_header_prefix(table.headers)
+    if direction:
+        return direction
+
+    if _is_codewords_table(table):
+        return "downstream"
+
+    if fleet and fleet.selector_directions:
+        direction = _direction_from_fleet(table, fleet.selector_directions)
+        if direction:
+            return direction
+
+    return "unknown"
+
+
+def _direction_from_fleet(
+    table: DetectedTable,
+    selector_directions: dict[str, str],
+) -> str:
+    """Match direction from fleet-derived selector patterns.
+
+    Checks title row text and preceding text against proven
+    selector→direction mappings from the existing modem fleet.
+    """
+    for text in (table.title_row_text, table.preceding_text):
+        if text:
+            normalized = text.strip().lower()
+            if normalized in selector_directions:
+                return selector_directions[normalized]
+    return ""
+
+
+def _direction_from_text(table: DetectedTable) -> str:
+    """Match downstream/upstream from table text fields.
+
+    Tries title row, preceding heading, table id, and first header
+    in that order.
+    """
+    for text in (table.title_row_text, table.preceding_text):
+        if text:
+            direction = _keyword_match(text)
+            if direction:
+                return direction
+
+    if table.table_id:
+        direction = _keyword_match_id(table.table_id)
+        if direction:
+            return direction
+
+    if table.headers:
+        return _keyword_match(table.headers[0])
+
+    return ""
+
+
+_CODEWORD_KEYWORDS: frozenset[str] = frozenset({"codeword", "codewords", "errored", "unerrored"})
+
+
+def _is_codewords_table(table: DetectedTable) -> bool:
+    """Check if a table is a codewords/error-stats table.
+
+    Looks for codeword-related keywords in the title row, headers,
+    and first-column labels (transposed tables).
+    """
+    # Check title row
+    if table.title_row_text:
+        lower = table.title_row_text.lower()
+        if any(kw in lower for kw in _CODEWORD_KEYWORDS):
+            return True
+
+    # Check headers
+    for header in table.headers:
+        lower = header.lower()
+        if any(kw in lower for kw in _CODEWORD_KEYWORDS):
+            return True
+
+    # Check first column (transposed tables use row labels)
+    for row in table.rows:
+        if row:
+            lower = row[0].lower()
+            if any(kw in lower for kw in _CODEWORD_KEYWORDS):
+                return True
+
+    return False
+
+
+def _keyword_match(text: str) -> str:
+    """Match downstream/upstream keywords in text."""
+    lower = text.lower()
+    if "downstream" in lower:
+        return "downstream"
+    if "upstream" in lower:
+        return "upstream"
+    return ""
+
+
+def _keyword_match_header_prefix(headers: list[str]) -> str:
+    """Match downstream/upstream from DOCSIS abbreviation tokens.
+
+    Recognizes ``_ds_`` and ``_us_`` tokens embedded in header text —
+    standard DOCSIS abbreviations used in i18n keys
+    (e.g., ``ds_link_ds_ch_id`` vs ``ds_link_us_ch_id``).  Uses the
+    LAST occurrence of ``_ds_`` / ``_us_`` in each header to avoid
+    false positives from namespace prefixes (e.g., ``ds_link_``).
+    Requires majority consensus among headers.
+    """
+    ds_count = 0
+    us_count = 0
+    for header in headers:
+        lower = header.lower()
+        # Use rfind to match the last (most specific) token,
+        # ignoring namespace prefixes like ``ds_link_``.
+        ds_pos = lower.rfind("_ds_")
+        us_pos = lower.rfind("_us_")
+        if ds_pos > us_pos:
+            ds_count += 1
+        elif us_pos > ds_pos:
+            us_count += 1
+
+    if ds_count > us_count and ds_count > 0:
+        return "downstream"
+    if us_count > ds_count and us_count > 0:
+        return "upstream"
+    return ""
+
+
+def _keyword_match_id(table_id: str) -> str:
+    """Match downstream/upstream from table id attributes."""
+    lower = table_id.lower()
+    if lower.startswith("ds") or "downstream" in lower:
+        return "downstream"
+    if lower.startswith("us") or "upstream" in lower:
+        return "upstream"
+    return ""
+
+
+# -----------------------------------------------------------------------
+# Table selector detection
+# -----------------------------------------------------------------------
+
+
+def detect_table_selector(
+    table: DetectedTable,
+    all_tables: list[DetectedTable] | None = None,
+) -> dict[str, str]:
+    """Choose the best selector for a table.
+
+    Priority: id > title_row_text > unique_column_header >
+    preceding_text > css > nth.
+
+    When ``all_tables`` is provided, a unique column header is one
+    that appears in this table but not in any other table on the page.
+    Headers from the field registry are preferred as discriminators.
+
+    When a header candidate was extracted from a ``data-i18n``
+    attribute (visible text was empty, filled by JavaScript at
+    runtime), a CSS attribute selector is emitted instead of
+    ``header_text``.  A ``header_text`` match would fail at runtime
+    because the visible text remains empty in the live response.
+    """
+    if table.table_id:
+        return {"type": "id", "match": table.table_id}
+
+    if table.title_row_text:
+        if table.title_row_text in table.i18n_header_map:
+            tag = table.i18n_header_map[table.title_row_text]
+            return {"type": "css", "match": f"{tag}[data-i18n='{table.title_row_text}']"}
+        return {"type": "header_text", "match": table.title_row_text}
+
+    # Unique column header (requires knowing sibling tables)
+    if all_tables is not None:
+        unique = _find_unique_column_header(table, all_tables)
+        if unique:
+            if unique in table.i18n_header_map:
+                tag = table.i18n_header_map[unique]
+                return {"type": "css", "match": f"{tag}[data-i18n='{unique}']"}
+            return {"type": "header_text", "match": unique}
+
+    if table.preceding_text:
+        return {"type": "header_text", "match": table.preceding_text}
+
+    if table.css_class:
+        return {"type": "css", "match": f"table.{table.css_class.split()[0]}"}
+
+    return {"type": "nth", "match": str(table.table_index)}
+
+
+def _find_unique_column_header(
+    table: DetectedTable,
+    all_tables: list[DetectedTable],
+) -> str:
+    """Find a column header unique to this table among all page tables.
+
+    Prefers headers that are known channel field labels (from the
+    registry) over arbitrary text. Returns empty string if no unique
+    header is found.
+    """
+    my_headers = {h.strip() for h in table.headers if h.strip()}
+    if not my_headers:
+        return ""
+
+    # Collect headers from all other tables
+    other_headers: set[str] = set()
+    for other in all_tables:
+        if other is table:
+            continue
+        other_headers.update(h.strip() for h in other.headers if h.strip())
+
+    unique = my_headers - other_headers
+    if not unique:
+        return ""
+
+    # Prefer known field labels as discriminators, sorted for determinism
+    for header in sorted(unique):
+        if header.lower() in CHANNEL_FIELD_LABELS:
+            return header
+
+    # Fall back to first unique header (deterministic via sort)
+    return sorted(unique)[0]
+
+
+# -----------------------------------------------------------------------
+# Row start detection
+# -----------------------------------------------------------------------
+
+
+def detect_row_start(table: DetectedTable) -> int:
+    """Detect where data rows begin.
+
+    Returns the row index (0-based from full table including headers)
+    where actual data starts. The header row counts as row 0.
+    """
+    # Row 0 is the header row itself. Data rows start at index 1+
+    # but some tables have a title row first, then headers.
+    # We count from the start of all_rows (headers + data).
+
+    # Check if the header row is actually a title row (single cell)
+    skip = 1  # At least skip the header row
+
+    if table.title_row_text:
+        # Title row + header row = skip 2
+        skip = 2
+
+    # Check for additional non-data rows at the top of data_rows
+    for row in table.rows:
+        if is_data_row(row):
+            break
+        skip += 1
+
+    return skip
+
+
+_FOOTER_KEYWORDS: frozenset[str] = frozenset({"total", "sum", "summary", "subtotal", "average", "avg"})
+
+
+def is_data_row(row: list[str]) -> bool:
+    """Check if a row contains actual data (not headers/empty/dashes/footers)."""
+    if not row:
+        return False
+
+    # All empty
+    if all(not cell.strip() for cell in row):
+        return False
+
+    # All dashes
+    if all(cell.strip() in ("-", "--", "---", "N/A", "n/a") for cell in row):
+        return False
+
+    # Footer detection — first cell is a summary keyword
+    first_cell = row[0].strip().lower()
+    if first_cell in _FOOTER_KEYWORDS:
+        return False
+
+    # At least one cell with a numeric-looking value
+    for cell in row:
+        stripped = cell.strip()
+        if not stripped:
+            continue
+        # Try to parse as number (with possible unit suffix)
+        num_part = stripped.split()[0] if " " in stripped else stripped
+        try:
+            float(num_part)
+            return True
+        except ValueError:
+            continue
+
+    # Non-empty non-numeric row — could still be data (string values)
+    # If the first cell matches a field label, it is a header/label row
+    return row[0].lower().strip() not in CHANNEL_FIELD_LABELS

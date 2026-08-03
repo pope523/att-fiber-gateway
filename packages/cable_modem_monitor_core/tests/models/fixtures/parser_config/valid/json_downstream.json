@@ -1,0 +1,34 @@
+{
+  "downstream": {
+    "format": "json",
+    "resource": "/api/downstream",
+    "array_path": "downstream.channels",
+    "fields": [
+      {
+        "key": "channelId",
+        "field": "channel_id",
+        "type": "integer"
+      },
+      {
+        "key": "frequency",
+        "field": "frequency",
+        "type": "integer"
+      },
+      {
+        "key": "rxMer",
+        "field": "snr",
+        "type": "float",
+        "fallback_key": "snr"
+      },
+      {
+        "key": "channelType",
+        "field": "channel_type",
+        "type": "string",
+        "map": {
+          "sc-qam": "qam",
+          "ofdm": "ofdm"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "_description": "Root element not found and root tag does not match returns empty",
+  "_xml": "<response><other_wrapper><cm_docsis_mode>DOCSIS 3.0</cm_docsis_mode></other_wrapper></response>",
+  "_resource": "2",
+  "_config": {
+    "format": "xml",
+    "resource": "2",
+    "root_element": "cm_system_info",
+    "fields": [
+      {"source": "cm_docsis_mode", "field": "docsis_mode", "type": "string"}
+    ]
+  },
+  "_expected": {}
+}

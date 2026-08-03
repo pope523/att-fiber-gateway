@@ -1,0 +1,44 @@
+{
+  "_description": "jQuery cache:false adds _=<timestamp> to all AJAX requests — should be filtered",
+  "_transport": "http",
+  "_auth_strategy": "form",
+  "_expected_query_params": {},
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/api/downstream?_=1767478481675",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "application/json"}],
+        "content": {"size": 1000, "mimeType": "application/json", "text": "{\"channels\": []}"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/api/upstream?_=1767478481902",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "application/json"}],
+        "content": {"size": 800, "mimeType": "application/json", "text": "{\"channels\": []}"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/api/system?_=1767478482140",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "application/json"}],
+        "content": {"size": 500, "mimeType": "application/json", "text": "{\"model\": \"T100\"}"}
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "_description": "Both a session param (_n) and jQuery cache-buster (_) on all entries — only _n detected",
+  "_transport": "http",
+  "_auth_strategy": "form_sjcl",
+  "_expected_query_params": {"_n": "13127"},
+  "_expected_warning": "session-level query parameters",
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/php/status_docsis_data.php?_n=13127&_=1767478481675",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 5000, "mimeType": "text/html", "text": "<script>var json_dsData=[{\"Frequency\":570}];</script>"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/php/overview_data.php?_n=13127&_=1767478481902",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 2000, "mimeType": "text/html", "text": "<script>var json_overview=[{\"Model\":\"TG3442DE\"}];</script>"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/php/status_about_data.php?_n=13127&_=1767478482140",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 1500, "mimeType": "text/html", "text": "<script>var json_about=[{\"Version\":\"01.05\"}];</script>"}
+      }
+    }
+  ]
+}

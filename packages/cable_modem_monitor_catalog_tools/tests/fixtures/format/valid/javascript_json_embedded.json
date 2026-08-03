@@ -1,0 +1,21 @@
+{
+  "_description": "JavaScript-embedded JSON arrays from variable assignments (TG3442DE pattern)",
+  "_entry": {
+    "request": {
+      "method": "GET",
+      "url": "http://192.168.100.1/php/status_docsis_data.php",
+      "headers": []
+    },
+    "response": {
+      "status": 200,
+      "headers": [{"name": "Content-Type", "value": "text/html"}],
+      "content": {
+        "size": 500,
+        "mimeType": "text/html",
+        "text": "<html><body><script type=\"text/javascript\">\njs_dsNums = '4';\njs_usNums = '2';\njson_dsData = [{\"ChannelType\":\"SC-QAM\",\"Modulation\":\"QAM256\",\"Frequency\":\"507 MHz\",\"PowerLevel\":\"3.2 dBmV\",\"SNRLevel\":\"38.5 dB\",\"LockStatus\":\"Locked\",\"ChannelID\":\"1\"},{\"ChannelType\":\"SC-QAM\",\"Modulation\":\"QAM256\",\"Frequency\":\"513 MHz\",\"PowerLevel\":\"3.1 dBmV\",\"SNRLevel\":\"37.8 dB\",\"LockStatus\":\"Locked\",\"ChannelID\":\"2\"}];\njson_usData = [{\"ChannelType\":\"ATDMA\",\"Modulation\":\"QAM64\",\"Frequency\":\"37.7 MHz\",\"PowerLevel\":\"45.0 dBmV\",\"ChannelID\":\"1\"}];\n</script></body></html>"
+      }
+    }
+  },
+  "_expected_format": "javascript_json",
+  "_expected_js_json_variables": ["json_dsData", "json_usData"]
+}

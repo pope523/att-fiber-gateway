@@ -1,0 +1,96 @@
+downstream:
+  format: json
+  arrays:
+    - resource: "/setup.cgi?todo=RF_DS_param"
+      array_path: "nodes"
+      channel_type:
+        fixed: qam
+      fields:
+        - key: DCIDD
+          field: channel_id
+          type: integer
+        - key: FreqD
+          field: frequency
+          type: frequency
+          unit: "Hz"
+        - key: PowerD
+          field: power
+          type: float
+          unit: "dBmV"
+        - key: SNRD
+          field: snr
+          type: float
+          unit: "dB"
+        - key: qamD
+          field: modulation
+          type: string
+        - key: correctedsD
+          field: corrected
+          type: integer
+        - key: uncorrectedsD
+          field: uncorrected
+          type: integer
+    - resource: "/setup.cgi?todo=RF_DS_31_param"
+      array_path: "nodes"
+      channel_type:
+        fixed: ofdm
+      fields:
+        - key: num
+          field: channel_id
+          type: integer
+        # OFDMFreq is the only OFDM frequency-shaped value sercomm exposes
+        # and its semantic is sercomm-specific — under the lower-edge active-
+        # band convention (FIELD_REGISTRY.md § frequency semantics), the
+        # test HAR's value at 827.6 MHz overlaps real SC-QAM channels at
+        # 825-861 MHz, which is physically impossible. Most likely it's a
+        # CMTS-assigned channel placement frequency, not the active-band
+        # edge. Not mapping to canonical `frequency` to avoid misreporting.
+        - key: PLC_power
+          field: power
+          type: float
+          unit: "dBmV"
+        - key: AV_Data
+          field: snr
+          type: float
+          unit: "dB"
+
+upstream:
+  format: json
+  resource: "/setup.cgi?todo=RF_US_param"
+  array_path: "nodes"
+  fields:
+    - key: upstream
+      field: channel_id
+      type: integer
+    - key: Freq
+      field: frequency
+      type: frequency
+      unit: "MHz"
+    - key: rep_power
+      field: power
+      type: float
+      unit: "dBmV"
+    - key: modulation
+      field: modulation
+      type: string
+    - key: channelType
+      field: channel_type
+      type: string
+      map:
+        "DOCSIS 3.0": "atdma"
+  filter:
+    modulation:
+      not: "QAM_NONE"
+
+# System info and OFDMA upstream channels are extracted by parser.py
+# hooks; their resources are declared in PostProcessor.resources.
+
+# DOCSIS 3.1: aggregate QAM-only totals. OFDM LDPC codewords operate
+# at a vastly different scale and are not aggregated.
+aggregate:
+  total_corrected:
+    sum: corrected
+    channels: downstream.qam
+  total_uncorrected:
+    sum: uncorrected
+    channels: downstream.qam

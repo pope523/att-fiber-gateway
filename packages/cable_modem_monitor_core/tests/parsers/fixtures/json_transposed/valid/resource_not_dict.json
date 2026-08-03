@@ -1,0 +1,13 @@
+{
+  "_description": "Resource value is a list, not a dict — yields empty list",
+  "_resource": "/api/upstream",
+  "_json": ["not", "a", "dict"],
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH", "field": "channel_id", "type": "integer"}
+    ]
+  },
+  "_expected": []
+}

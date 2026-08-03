@@ -1,0 +1,20 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discuss an idea before filing
+    url: https://github.com/solentlabs/cable_modem_monitor/discussions/new?category=ideas
+    about: For new sensors, architecture changes, or anything spanning multiple files, start a Discussion first
+  - name: 📊 Check Supported Modems First
+    url: https://pypi.org/project/solentlabs-cable-modem-monitor-catalog/
+    about: See if your modem is already supported before opening an issue
+  - name: Troubleshooting Guide
+    url: https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/TROUBLESHOOTING.md
+    about: Check common issues and solutions
+  - name: Testing on Home Assistant
+    url: https://github.com/solentlabs/cable_modem_monitor/blob/main/CONTRIBUTING.md#test-on-local-ha
+    about: How to test a development branch on your HA instance
+  - name: Contributing Guide
+    url: https://github.com/solentlabs/cable_modem_monitor/blob/main/CONTRIBUTING.md
+    about: Learn how to contribute to the project
+  - name: Security Vulnerability
+    url: https://github.com/solentlabs/cable_modem_monitor/security/advisories/new
+    about: Report a security vulnerability (private disclosure)

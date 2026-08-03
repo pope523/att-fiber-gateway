@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Kabelmodem-monitor",
+        "description": "Välj en tillverkare eller välj 'Alla'.",
+        "data": {
+          "manufacturer": "Tillverkare"
+        }
+      },
+      "model": {
+        "title": "Välj modem",
+        "description": "Välj en {manufacturer}-modemmodell. Modeller markerade med * är overifierade.",
+        "data": {
+          "model": "Modemmodell",
+          "entity_prefix": "Entity ID-prefix",
+          "channel_identity": "Channel Naming"
+        },
+        "data_description": {
+          "model": "Välj din modemmodell från listan.",
+          "entity_prefix": "Lägger till modellnamn eller IP till Entity ID:n. Krävs vid övervakning av flera modem.",
+          "channel_identity": "Channel Number names entities after the modem's row position (stable across reboots). Channel ID uses the DOCSIS Channel ID (matches ISP diagnostics but can change on reboot)."
+        }
+      },
+      "variant": {
+        "title": "Firmware-variant",
+        "description": "Ditt modem har flera firmware-varianter med olika autentisering. Välj den som matchar din konfiguration.",
+        "data": {
+          "variant": "Variant"
+        },
+        "data_description": {
+          "variant": "Om du är osäker, prova det första alternativet. Alternativ markerade med * har ännu inte verifierats på riktig hårdvara."
+        }
+      },
+      "connection": {
+        "title": "Anslutning",
+        "description": "Vald variant: {variant}\n\nAnge modemets anslutningsuppgifter.",
+        "data": {
+          "variant": "Variant",
+          "host": "Modemets IP-adress",
+          "username": "Användarnamn",
+          "password": "Lösenord"
+        },
+        "data_description": {
+          "variant": "Byt bara om du tror att en annan variant passar ditt modem.",
+          "host": "Vanligtvis 192.168.100.1. Inkludera http:// eller https:// för att hoppa över protokolldetektering.",
+          "username": "Lämna tomt om det inte krävs.",
+          "password": "Lämna tomt om det inte krävs."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Återautentisera",
+        "description": "Modemet avvisade dina uppgifter. Ange dem på nytt.",
+        "data": {
+          "host": "Modemets IP-adress",
+          "username": "Användarnamn",
+          "password": "Lösenord"
+        }
+      }
+    },
+    "error": {
+      "network_unreachable": "Kan inte nå modemet.\n\nKontrollera:\n1. Du är på modemets nätverk (inte gäst-WiFi)\n2. VPN är frånkopplat\n3. IP-adressen är korrekt (vanligtvis 192.168.100.1)\n4. Modemets webbgränssnitt är tillgängligt i din webbläsare",
+      "cannot_connect": "Modemet svarar inte.\n\nKontrollera:\n1. IP-adressen är korrekt\n2. Försök inkludera protokollet (t.ex. http://192.168.100.1)\n3. Modemets webbgränssnitt är tillgängligt från Home Assistants nätverk",
+      "invalid_auth": "Inloggningen misslyckades.\n\nKontrollera:\n1. Användarnamnet är korrekt (vanligtvis 'admin')\n2. Lösenordet är korrekt (kontrollera modemets etikett)\n3. Försök logga in via din webbläsare först för att verifiera uppgifterna",
+      "parse_failed": "Ansluten men kunde inte läsa modemdata.\n\nDetta kan innebära att ditt modem behöver ett annat variantval. Försök gå tillbaka och välj ett annat alternativ, eller kontrollera att modemets firmware stöds.",
+      "unknown": "Oväntat fel. Kontrollera Home Assistant-loggarna för detaljer."
+    },
+    "abort": {
+      "already_configured": "Detta modem är redan konfigurerat.",
+      "missing_input": "Obligatorisk data saknas. Starta om konfigurationen.",
+      "unknown_model": "Vald modemmodell hittades inte i katalogen.",
+      "reauth_successful": "Återautentisering lyckades.",
+      "reauth_failed": "Återautentisering misslyckades. Försök igen."
+    },
+    "progress": {
+      "validate": "Ansluter till modem..."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kabelmodeminställningar",
+        "description": "Uppdatera anslutningsuppgifter och pollningsintervall.",
+        "data": {
+          "host": "Modemets IP-adress",
+          "username": "Användarnamn",
+          "password": "Lösenord",
+          "scan_interval": "Datapollningsintervall",
+          "health_check_interval": "Hälsokontrollintervall"
+        },
+        "data_description": {
+          "host": "Vanligtvis 192.168.100.1",
+          "username": "Lämna tomt om det inte krävs.",
+          "password": "Tomt behåller nuvarande lösenord.",
+          "scan_interval": "Hur ofta modemdata hämtas. Standard 10 minuter. Ställ in 00:00:00 för att inaktivera automatisk pollning (manuellt via Uppdatera-knappen).",
+          "health_check_interval": "Hur ofta modemets tillgänglighet kontrolleras. Standard 30 sekunder. Ställ in 00:00:00 för att inaktivera hälsokontroller."
+        }
+      }
+    },
+    "error": {
+      "network_unreachable": "Kan inte nå modemet. Kontrollera IP-adress och nätverksanslutning.",
+      "cannot_connect": "Modemet svarar inte. Kontrollera IP-adress och protokoll.",
+      "invalid_auth": "Inloggningen misslyckades. Kontrollera användarnamn och lösenord.",
+      "parse_failed": "Ansluten men kunde inte läsa modemdata.",
+      "unknown": "Oväntat fel. Kontrollera Home Assistant-loggarna."
+    },
+    "progress": {
+      "validate": "Validerar anslutning..."
+    }
+  },
+  "services": {
+    "generate_dashboard": {
+      "name": "Generera dashboard",
+      "description": "Genererar användningsklar Lovelace YAML för ditt kabelmodemdashboard. Kopiera utdata och klistra in det i ett manuellt kort.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to generate the dashboard for. Defaults to the first configured modem."
+        },
+        "include_status_card": {
+          "name": "Statuskort",
+          "description": "Modemstatus, drifttid, kanalantal och omstartsknapp."
+        },
+        "include_downstream_power": {
+          "name": "Downstream-effektdiagram",
+          "description": "Effektnivåer för alla downstream-kanaler."
+        },
+        "include_downstream_snr": {
+          "name": "Downstream-SNR-diagram",
+          "description": "Signal-brusförhållande för alla downstream-kanaler."
+        },
+        "include_downstream_frequency": {
+          "name": "Downstream-frekvensdiagram",
+          "description": "Frekvens för alla downstream-kanaler."
+        },
+        "include_upstream_power": {
+          "name": "Upstream-effektdiagram",
+          "description": "Effektnivåer för alla upstream-kanaler."
+        },
+        "include_upstream_frequency": {
+          "name": "Upstream-frekvensdiagram",
+          "description": "Frekvens för alla upstream-kanaler."
+        },
+        "include_errors": {
+          "name": "Feldiagram",
+          "description": "Korrigerade och okorrigerade felräknare (7-dagarsvy)."
+        },
+        "include_error_rates": {
+          "name": "Felfrekvensdiagram",
+          "description": "Lägger till diagram över felfrekvens per minut (fel/min, 7-dagarsvy). Avstängt som standard. Frekvenser varierar mellan pollningar."
+        },
+        "include_latency": {
+          "name": "Latensdiagram",
+          "description": "Ping- och HTTP-svarstider (6-timmarsvy)."
+        },
+        "graph_hours": {
+          "name": "Diagramhistorik (timmar)",
+          "description": "Timmar av historik för effekt-/SNR-diagram (fel och latens använder fasta tidsperioder)."
+        },
+        "short_titles": {
+          "name": "Använd korta titlar",
+          "description": "Kort: 'DS Power (dBmV)' vs Lång: 'Downstream Power Levels (dBmV)'."
+        }
+      }
+    },
+    "request_refresh": {
+      "name": "Request Refresh",
+      "description": "Triggers an immediate modem data poll, bypassing any connectivity backoff. Use in automations to refresh modem data on demand."
+    },
+    "request_health_check": {
+      "name": "Request Health Check",
+      "description": "Triggers an immediate health check (ICMP and HTTP probes). Only works if health monitoring is enabled for the modem."
+    },
+    "convert_channel_identity": {
+      "name": "Convert Channel Identity",
+      "description": "Renames recorder statistics to match the current channel identity mode after re-adding the integration in the other mode. Modem must be online.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to convert. Defaults to the first configured modem."
+        }
+      }
+    },
+    "orphaned_statistics": {
+      "name": "Orphaned Statistics",
+      "description": "Finds recorder statistics for this modem that have no registered entity — left behind by a mode switch, channel rebonding (ID mode), or a prefix change. Without execute, returns a preview of orphaned entities. With execute: true, purges them all directly. Purge is permanent.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to inspect. Defaults to the first configured modem."
+        },
+        "execute": {
+          "name": "Execute",
+          "description": "Set to true to purge all orphaned statistics immediately. Default is false (preview only). Purge is permanent and cannot be undone."
+        }
+      }
+    }
+  }
+}

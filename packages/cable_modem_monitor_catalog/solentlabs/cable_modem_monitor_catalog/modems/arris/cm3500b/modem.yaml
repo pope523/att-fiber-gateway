@@ -1,0 +1,45 @@
+manufacturer: ARRIS
+model: CM3500B
+transport: http
+default_host: "192.168.100.1"
+
+auth:
+  strategy: form
+  action: "/cgi-bin/login_cgi"
+  username_field: username
+  password_field: password
+  cookie_name: "credential"
+
+hardware:
+  docsis_version: "3.1"
+  chipset: unknown
+  release_date: "2016"
+
+status: confirmed
+
+sources:
+  auth_config: "[#73 CM3500B HAR capture](https://github.com/solentlabs/cable_modem_monitor/issues/73)"
+
+  release_date: "[ARRIS CM3500 Datasheet](https://vectortechsolutions.com/wp-content/uploads/import/files/1314/231004_cm3500_datasheet.pdf)"
+attribution:
+  contributors:
+    - github: https://github.com/ChBi89
+      contribution: "HAR capture and initial parser (Issue #73)"
+    - github: https://github.com/quietsche
+      contribution: "Verification diagnostics (Issue #73)"
+
+isps:
+  - Vodafone Germany
+  - Vodafone
+notes: |
+  EuroDOCSIS 3.1 cable modem. HTTPS with self-signed certificate.
+  4 table sections: DS QAM (24ch), DS OFDM (2ch), US QAM (4ch), US OFDMA (1ch).
+  DS OFDM table has a sub-header row (Pilot/PLC/Data MER columns).
+  US OFDMA has a firmware quirk: 9 data cells vs 7 header columns —
+  extra cells are subcarrier indices not present in the header.
+  parser.py combines first/last subcarrier frequencies into the canonical
+  pair: `frequency` (lower edge) and `channel_width` (band span).
+
+references:
+  issues:
+    - "[#73 — [Modem Request] Arris CM3500B](https://github.com/solentlabs/cable_modem_monitor/issues/73)"

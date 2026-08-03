@@ -1,0 +1,56 @@
+{
+  "_description": "Session with query_params — verify session.query_params emitted in modem dict",
+  "_expected_auth_strategy": "form_sjcl",
+  "_expected_has_parser": true,
+  "_expected_format": "table",
+  "_expected_has_session": true,
+  "_expected_no_cookie": false,
+  "_expected_session_query_params": {"_n": "13127"},
+  "_analysis": {
+    "transport": "http",
+    "confidence": "high",
+    "auth": {
+      "strategy": "form_sjcl",
+      "fields": {
+        "login_endpoint": "/php/ajaxSet_Password.php",
+        "login_page": "/"
+      },
+      "confidence": "high"
+    },
+    "session": {
+      "headers": {"X-Requested-With": "XMLHttpRequest"},
+      "query_params": {"_n": "13127"},
+      "cookie_name": "PHPSESSID"
+    },
+    "actions": {
+      "logout": {"type": "http", "method": "POST", "endpoint": "/php/logout.php"},
+      "restart": null
+    },
+    "sections": {
+      "downstream": {
+        "format": "table",
+        "resource": "/php/status_docsis_data.php",
+        "mappings": [
+          {"field": "channel_id", "type": "integer", "index": 0},
+          {"field": "frequency", "type": "frequency", "unit": "Hz", "index": 1},
+          {"field": "power", "type": "float", "unit": "dBmV", "index": 2}
+        ],
+        "selector": {"type": "header_text", "match": "Downstream"},
+        "row_start": 1,
+        "channel_type": {"fixed": "qam"},
+        "channel_count": 32
+      }
+    },
+    "warnings": [],
+    "hard_stops": []
+  },
+  "_metadata": {
+    "manufacturer": "Solent Labs",
+    "model": "T300",
+    "default_host": "192.168.0.1",
+    "hardware": {"docsis_version": "3.1"},
+    "status": "awaiting_verification",
+    "attribution": {"contributors": [{"github": "tester", "contribution": "Initial capture"}]},
+    "isps": ["Various"]
+  }
+}

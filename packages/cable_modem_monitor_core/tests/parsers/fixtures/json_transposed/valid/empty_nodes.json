@@ -1,0 +1,13 @@
+{
+  "_description": "Empty nodes array yields no channels",
+  "_resource": "/api/upstream",
+  "_json": {"nodes": []},
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH", "field": "channel_id", "type": "integer"}
+    ]
+  },
+  "_expected": []
+}

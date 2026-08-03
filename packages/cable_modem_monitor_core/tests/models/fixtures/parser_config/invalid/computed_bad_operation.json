@@ -1,0 +1,23 @@
+{
+  "_config": {
+    "system_info": {
+      "sources": [
+        {
+          "format": "html_fields",
+          "resource": "/info.html",
+          "fields": [
+            {"label": "Mem Total", "field": "memory_total", "type": "string"}
+          ]
+        }
+      ]
+    },
+    "computed": {
+      "memory_used_pct": {
+        "operation": "average",
+        "total_field": "memory_total",
+        "free_field": "memory_free"
+      }
+    }
+  },
+  "_expected_error": "Input should be 'percent_used'"
+}

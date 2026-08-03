@@ -1,0 +1,16 @@
+manufacturer: Solent Labs
+model: T100
+transport: hnap
+default_host: 192.168.100.1
+auth:
+  strategy: hnap
+  hmac_algorithm: md5
+hardware:
+  docsis_version: "3.1"
+status: awaiting_verification
+attribution:
+  contributors:
+    - github: test-user
+      contribution: Initial capture
+isps:
+  - Various

@@ -1,0 +1,44 @@
+{
+  "_description": "Standard modem with no query params on data-fetch requests",
+  "_transport": "http",
+  "_auth_strategy": "form",
+  "_expected_query_params": {},
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/status.html",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 4000, "mimeType": "text/html", "text": "<table><tr><td>Channel</td></tr></table>"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/info.html",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 2000, "mimeType": "text/html", "text": "<table><tr><td>Model</td></tr></table>"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/cmconnectionstatus.html",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 3000, "mimeType": "text/html", "text": "<table><tr><td>Frequency</td></tr></table>"}
+      }
+    }
+  ]
+}

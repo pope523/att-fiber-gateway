@@ -1,0 +1,45 @@
+{
+  "_description": "url_token auth — ct_ prefixed params are auth-managed, not session query_params",
+  "_transport": "http",
+  "_auth_strategy": "url_token",
+  "_token_prefix": "ct_",
+  "_expected_query_params": {},
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/cgi-bin/status?ct_abc123def456=",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 4000, "mimeType": "text/html", "text": "<table><tr><td>Channel</td></tr></table>"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/cgi-bin/info?ct_abc123def456=",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 2000, "mimeType": "text/html", "text": "<table><tr><td>Model</td></tr></table>"}
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.100.1/cgi-bin/about?ct_abc123def456=",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {"size": 1500, "mimeType": "text/html", "text": "<table><tr><td>Firmware</td></tr></table>"}
+      }
+    }
+  ]
+}

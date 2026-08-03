@@ -1,0 +1,33 @@
+{
+  "_description": "Scale multiplier on JSON field - integer-tenths to float dBmV",
+  "_json": {
+    "downstream": {
+      "channels": [
+        {
+          "channelId": 1,
+          "power": 85,
+          "lockStatus": true
+        },
+        {
+          "channelId": 2,
+          "power": 53,
+          "lockStatus": true
+        }
+      ]
+    }
+  },
+  "_resource": "/api/downstream",
+  "_config": {
+    "format": "json",
+    "resource": "/api/downstream",
+    "array_path": "downstream.channels",
+    "fields": [
+      {"key": "channelId", "field": "channel_id", "type": "integer"},
+      {"key": "power", "field": "power", "type": "float", "scale": 0.1}
+    ]
+  },
+  "_expected": [
+    {"channel_id": 1, "power": 8.5},
+    {"channel_id": 2, "power": 5.3}
+  ]
+}

@@ -1,0 +1,57 @@
+name: "CodeQL Security Scanning"
+
+on:
+  push:
+    branches: ["main", "feature/*"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    # Run CodeQL every Monday at 9:00 AM UTC
+    - cron: "0 9 * * 1"
+
+jobs:
+  analyze:
+    name: Analyze Code Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      # Required for all workflows
+      security-events: write
+      # Required to fetch internal or private CodeQL packs
+      packages: read
+      # Only required for workflows in private repositories
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["python"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          # Specify CodeQL query suites
+          # security-extended: Includes all security queries (high + medium precision)
+          # security-and-quality: Adds code quality checks
+          # Note: Custom queries removed due to CodeQL API compatibility issues
+          queries: security-extended,security-and-quality
+          # Use custom configuration to exclude intentional design decisions
+          config-file: .github/codeql/codeql-config.yml
+          # Enable debug mode for troubleshooting (can be disabled in production)
+          debug: false
+
+      # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
+      # For Python, this step is not strictly necessary but included for completeness
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{matrix.language}}"

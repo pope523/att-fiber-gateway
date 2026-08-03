@@ -1,0 +1,13 @@
+{
+  "_description": "Configured array_path missing from response yields empty list",
+  "_resource": "/api/upstream",
+  "_json": {"other_key": []},
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH", "field": "channel_id", "type": "integer"}
+    ]
+  },
+  "_expected": []
+}

@@ -1,0 +1,14 @@
+{
+  "_expected_error": "range 'span' requires 'separator' to be set",
+  "_config": {
+    "downstream": {
+      "format": "json",
+      "resource": "/api/data",
+      "array_path": "channels",
+      "fields": [
+        {"key": "id", "field": "channel_id", "type": "integer"},
+        {"key": "freq", "field": "channel_width", "type": "frequency", "range": "span"}
+      ]
+    }
+  }
+}

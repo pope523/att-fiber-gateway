@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Kabelmodem Monitor",
+        "description": "Selecteer een fabrikant of kies 'Alle'.",
+        "data": {
+          "manufacturer": "Fabrikant"
+        }
+      },
+      "model": {
+        "title": "Modem Selecteren",
+        "description": "Kies een {manufacturer} modemmodel. Modellen gemarkeerd met * zijn niet geverifieerd.",
+        "data": {
+          "model": "Modemmodel",
+          "entity_prefix": "Entity ID-voorvoegsel",
+          "channel_identity": "Channel Naming"
+        },
+        "data_description": {
+          "model": "Selecteer uw modemmodel uit de lijst.",
+          "entity_prefix": "Voegt modelnaam of IP toe aan Entity ID's. Vereist bij het monitoren van meerdere modems.",
+          "channel_identity": "Channel Number names entities after the modem's row position (stable across reboots). Channel ID uses the DOCSIS Channel ID (matches ISP diagnostics but can change on reboot)."
+        }
+      },
+      "variant": {
+        "title": "Firmwarevariant",
+        "description": "Uw modem heeft meerdere firmwarevarianten met verschillende authenticatie. Selecteer degene die bij uw installatie past.",
+        "data": {
+          "variant": "Variant"
+        },
+        "data_description": {
+          "variant": "Bij twijfel de eerste optie proberen. Opties gemarkeerd met * zijn nog niet geverifieerd op echte hardware."
+        }
+      },
+      "connection": {
+        "title": "Verbinding",
+        "description": "Geselecteerde variant: {variant}\n\nVoer de verbindingsgegevens van uw modem in.",
+        "data": {
+          "variant": "Variant",
+          "host": "Modem IP-adres",
+          "username": "Gebruikersnaam",
+          "password": "Wachtwoord"
+        },
+        "data_description": {
+          "variant": "Wissel alleen als je denkt dat een andere variant bij je modem past.",
+          "host": "Meestal 192.168.100.1. Voeg http:// of https:// toe om protocoldetectie over te slaan.",
+          "username": "Leeg laten indien niet vereist.",
+          "password": "Leeg laten indien niet vereist."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Opnieuw Authenticeren",
+        "description": "De modem heeft uw inloggegevens geweigerd. Voer ze opnieuw in.",
+        "data": {
+          "host": "Modem IP-adres",
+          "username": "Gebruikersnaam",
+          "password": "Wachtwoord"
+        }
+      }
+    },
+    "error": {
+      "network_unreachable": "Kan modem niet bereiken.\n\nControleer:\n1. U bent op het netwerk van de modem (niet gast-WiFi)\n2. VPN is uitgeschakeld\n3. IP-adres is correct (meestal 192.168.100.1)\n4. De webinterface van de modem is toegankelijk in uw browser",
+      "cannot_connect": "Modem reageert niet.\n\nControleer:\n1. IP-adres is correct\n2. Probeer het protocol toe te voegen (bijv. http://192.168.100.1)\n3. De webinterface van de modem is toegankelijk vanuit het Home Assistant-netwerk",
+      "invalid_auth": "Aanmelding mislukt.\n\nControleer:\n1. Gebruikersnaam is correct (meestal 'admin')\n2. Wachtwoord is correct (controleer het label van de modem)\n3. Probeer eerst in te loggen via uw browser om de inloggegevens te controleren",
+      "parse_failed": "Verbonden, maar kon de modemgegevens niet lezen.\n\nDit kan betekenen dat uw modem een andere variantselectie nodig heeft. Probeer terug te gaan en een andere optie te kiezen, of controleer of de firmware van uw modem wordt ondersteund.",
+      "unknown": "Onverwachte fout. Controleer de Home Assistant-logs voor details."
+    },
+    "abort": {
+      "already_configured": "Deze modem is al geconfigureerd.",
+      "missing_input": "Verplichte gegevens ontbreken. Start de configuratie opnieuw.",
+      "unknown_model": "Geselecteerde modem niet gevonden in de catalogus.",
+      "reauth_successful": "Herauthenticatie geslaagd.",
+      "reauth_failed": "Herauthenticatie mislukt. Probeer opnieuw."
+    },
+    "progress": {
+      "validate": "Verbinden met modem..."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kabelmodem-instellingen",
+        "description": "Verbindingsgegevens en poll-intervallen bijwerken.",
+        "data": {
+          "host": "Modem IP-adres",
+          "username": "Gebruikersnaam",
+          "password": "Wachtwoord",
+          "scan_interval": "Data-poll-interval",
+          "health_check_interval": "Bereikbaarheidscontrole-interval"
+        },
+        "data_description": {
+          "host": "Meestal 192.168.100.1",
+          "username": "Leeg laten indien niet vereist.",
+          "password": "Leeg laten behoudt het huidige wachtwoord.",
+          "scan_interval": "Hoe vaak modemgegevens worden opgehaald. Standaard 10 minuten. Stel in op 00:00:00 om automatisch pollen uit te schakelen (alleen handmatig via de knop Bijwerken).",
+          "health_check_interval": "Hoe vaak de bereikbaarheid van de modem wordt gecontroleerd. Standaard 30 seconden. Stel in op 00:00:00 om bereikbaarheidscontroles uit te schakelen."
+        }
+      }
+    },
+    "error": {
+      "network_unreachable": "Kan modem niet bereiken. Controleer het IP-adres en de netwerkverbinding.",
+      "cannot_connect": "Modem reageert niet. Controleer het IP-adres en het protocol.",
+      "invalid_auth": "Aanmelding mislukt. Controleer gebruikersnaam en wachtwoord.",
+      "parse_failed": "Verbonden, maar kon de modemgegevens niet lezen.",
+      "unknown": "Onverwachte fout. Controleer de Home Assistant-logs."
+    },
+    "progress": {
+      "validate": "Verbinding valideren..."
+    }
+  },
+  "services": {
+    "generate_dashboard": {
+      "name": "Dashboard Genereren",
+      "description": "Genereert kant-en-klare Lovelace YAML voor uw kabelmodem-dashboard. Kopieer de uitvoer en plak deze in een Handmatige kaart.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to generate the dashboard for. Defaults to the first configured modem."
+        },
+        "include_status_card": {
+          "name": "Statuskaart",
+          "description": "Modemstatus, uptime, aantal kanalen en herstartknop."
+        },
+        "include_downstream_power": {
+          "name": "Downstream Vermogensgrafiek",
+          "description": "Vermogensniveaus voor alle downstreamkanalen."
+        },
+        "include_downstream_snr": {
+          "name": "Downstream SNR-grafiek",
+          "description": "Signaal-ruisverhouding voor alle downstreamkanalen."
+        },
+        "include_downstream_frequency": {
+          "name": "Downstream Frequentiegrafiek",
+          "description": "Frequentie van alle downstreamkanalen."
+        },
+        "include_upstream_power": {
+          "name": "Upstream Vermogensgrafiek",
+          "description": "Vermogensniveaus voor alle upstreamkanalen."
+        },
+        "include_upstream_frequency": {
+          "name": "Upstream Frequentiegrafiek",
+          "description": "Frequentie van alle upstreamkanalen."
+        },
+        "include_errors": {
+          "name": "Foutengrafieken",
+          "description": "Gecorrigeerde en ongecorrigeerde fouttellingen (7-dagen weergave)."
+        },
+        "include_error_rates": {
+          "name": "Foutpercentage Grafieken",
+          "description": "Voegt per-minuut foutpercentagegrafieken toe (fouten/min, 7-dagen weergave). Standaard uit. Percentages fluctueren bij elke poll."
+        },
+        "include_latency": {
+          "name": "Latentiegrafiek",
+          "description": "Ping- en HTTP-responstijden (6-uur weergave)."
+        },
+        "graph_hours": {
+          "name": "Grafiekgeschiedenis (uren)",
+          "description": "Uren geschiedenis voor vermogens-/SNR-grafieken (fouten en latentie gebruiken vaste perioden)."
+        },
+        "short_titles": {
+          "name": "Korte Titels Gebruiken",
+          "description": "Kort: 'DS Power (dBmV)' vs Lang: 'Downstream Power Levels (dBmV)'."
+        }
+      }
+    },
+    "request_refresh": {
+      "name": "Request Refresh",
+      "description": "Triggers an immediate modem data poll, bypassing any connectivity backoff. Use in automations to refresh modem data on demand."
+    },
+    "request_health_check": {
+      "name": "Request Health Check",
+      "description": "Triggers an immediate health check (ICMP and HTTP probes). Only works if health monitoring is enabled for the modem."
+    },
+    "convert_channel_identity": {
+      "name": "Convert Channel Identity",
+      "description": "Renames recorder statistics to match the current channel identity mode after re-adding the integration in the other mode. Modem must be online.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to convert. Defaults to the first configured modem."
+        }
+      }
+    },
+    "orphaned_statistics": {
+      "name": "Orphaned Statistics",
+      "description": "Finds recorder statistics for this modem that have no registered entity — left behind by a mode switch, channel rebonding (ID mode), or a prefix change. Without execute, returns a preview of orphaned entities. With execute: true, purges them all directly. Purge is permanent.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "Which modem to inspect. Defaults to the first configured modem."
+        },
+        "execute": {
+          "name": "Execute",
+          "description": "Set to true to purge all orphaned statistics immediately. Default is false (preview only). Purge is permanent and cannot be undone."
+        }
+      }
+    }
+  }
+}

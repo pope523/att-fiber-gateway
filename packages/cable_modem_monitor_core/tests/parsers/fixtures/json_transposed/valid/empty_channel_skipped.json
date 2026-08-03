@@ -1,0 +1,21 @@
+{
+  "_description": "Column where every mapped label is empty/missing yields no channel",
+  "_resource": "/api/upstream",
+  "_json": {
+    "nodes": [
+      {"name": "CH",   "index1": "0", "index2": ""},
+      {"name": "Freq", "index1": "10", "index2": ""}
+    ]
+  },
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH",   "field": "channel_id", "type": "integer"},
+      {"label": "Freq", "field": "frequency",  "type": "frequency", "unit": "MHz"}
+    ]
+  },
+  "_expected": [
+    {"channel_id": 0, "frequency": 10000000}
+  ]
+}

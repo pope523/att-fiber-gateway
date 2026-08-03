@@ -1,0 +1,24 @@
+#!/bin/sh
+# Optional pre-push hook: git-lfs push + local CI validation.
+#
+# Install with: make install-hooks
+#
+# This hook is opt-in. CI is the authoritative gate; this only provides
+# faster local feedback before the push goes out. To bypass once:
+#   git push --no-verify
+
+set -e
+
+# Git LFS push — required (repo uses LFS for HAR fixtures).
+# Mirrors the default LFS-installed pre-push hook.
+command -v git-lfs >/dev/null 2>&1 || {
+    printf >&2 "\nThis repository is configured for Git LFS but 'git-lfs' was not found on your path.\n"
+    exit 2
+}
+git lfs pre-push "$@"
+
+# Local CI mirror.
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+echo "Running make validate-ci before push..."
+make validate-ci

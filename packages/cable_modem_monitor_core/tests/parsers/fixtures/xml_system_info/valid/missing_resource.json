@@ -1,0 +1,14 @@
+{
+  "_description": "Resource key absent from resources dict returns empty",
+  "_xml": null,
+  "_resource": "2",
+  "_config": {
+    "format": "xml",
+    "resource": "2",
+    "root_element": "cm_system_info",
+    "fields": [
+      {"source": "cm_docsis_mode", "field": "docsis_mode", "type": "string"}
+    ]
+  },
+  "_expected": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_description": "Filter on raw row-name (Power == ON) drops disabled column without exposing the field on the channel dict",
+  "_resource": "/api/upstream",
+  "_json": {
+    "nodes": [
+      {"name": "CH",    "index1": "0",  "index2": "1"},
+      {"name": "Power", "index1": "ON", "index2": "OFF"},
+      {"name": "Freq",  "index1": "10.0", "index2": "20.0"}
+    ]
+  },
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH",   "field": "channel_id", "type": "integer"},
+      {"label": "Freq", "field": "frequency",  "type": "frequency", "unit": "MHz"}
+    ],
+    "filter": {"Power": "ON"}
+  },
+  "_expected": [
+    {"channel_id": 0, "frequency": 10000000}
+  ]
+}

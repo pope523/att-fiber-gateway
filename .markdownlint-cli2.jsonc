@@ -1,0 +1,9 @@
+{
+  // Directories excluded from markdownlint scans.
+  "ignores": [
+    ".venv/**",
+    "RAW_DATA/**",
+    "cable-modem-monitor-ql/**",
+    "codeql/**"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "_description": "Self-closed element with no text content is skipped without erroring",
+  "_xml": "<root><cm_info><cm_docsis_mode/><cm_mac_addr>AA:BB:CC:DD:EE:FF</cm_mac_addr></cm_info></root>",
+  "_resource": "2",
+  "_config": {
+    "format": "xml",
+    "resource": "2",
+    "root_element": "cm_info",
+    "fields": [
+      {"source": "cm_docsis_mode", "field": "docsis_mode", "type": "string"},
+      {"source": "cm_mac_addr", "field": "mac_address", "type": "string"}
+    ]
+  },
+  "_expected": {
+    "mac_address": "AA:BB:CC:DD:EE:FF"
+  }
+}

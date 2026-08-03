@@ -1,0 +1,14 @@
+# Alert when downstream uncorrected errors exceed a threshold.
+# A few corrected errors are normal; sustained uncorrected errors
+# indicate real signal trouble worth investigating.
+automation:
+  - alias: "Cable Modem - High Uncorrected Errors"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.cable_modem_total_uncorrected_errors
+        above: 100
+    action:
+      - service: notify.notify
+        data:
+          title: "Cable Modem Alert"
+          message: "High uncorrected errors detected. Check your cable connection."

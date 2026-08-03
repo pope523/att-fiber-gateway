@@ -1,0 +1,103 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for Cable Modem Monitor
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Before filing:** for new sensors, architecture changes, or anything spanning multiple files, please [open a Discussion](https://github.com/solentlabs/cable_modem_monitor/discussions/new?category=ideas) first. Issues are for features whose shape is already clear — Discussions are for shaping the idea.
+
+        Keep this form short. You don't need to commit to a design to file an idea.
+
+        Before submitting, please check:
+        - [ ] You've searched existing issues to avoid duplicates
+        - [ ] This feature aligns with the project's goals (monitoring cable modems via Home Assistant)
+
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: Feature Type
+      description: What type of feature are you requesting? (For new modem support, use the [New Modem Support Request](https://github.com/solentlabs/cable_modem_monitor/issues/new?template=modem_request.yml) template instead.)
+      options:
+        - New sensor/entity
+        - Enhancement to existing feature
+        - Performance improvement
+        - Developer experience improvement
+        - Documentation improvement
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: "I'm always frustrated when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Approaches you've considered (optional)
+      description: |
+        If you've already thought about how this might work, share that here. Skip this if you haven't gotten that far — the maintainer would rather shape the design with you than have you commit to one up front.
+      placeholder: Optional. Leave blank if you're still in the idea stage.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions or features you've considered
+      placeholder: What other approaches could solve this problem?
+    validations:
+      required: false
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: |
+        Describe your use case. How would this feature benefit you and other users?
+      placeholder: This would help me...
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: |
+        Add any other context, screenshots, mockups, or examples about the feature request here
+    validations:
+      required: false
+
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Contribution
+      description: How are you willing to help move this forward? Feature requests with no contributor commitment may not be prioritized.
+      options:
+        - "I can submit a PR"
+        - "I can help test"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched for similar feature requests and found none
+          required: true
+        - label: This feature aligns with the integration's purpose (cable modem monitoring)
+          required: true
+        - label: For changes spanning multiple files, I've opened a Discussion first or this issue links to one
+          required: true

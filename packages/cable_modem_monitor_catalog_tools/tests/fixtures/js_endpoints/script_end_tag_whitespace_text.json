@@ -1,0 +1,22 @@
+{
+  "_description": "HTML5 lets </script> carry trailing whitespace and any non-> characters before the >. The end-tag form </script\\t\\n bar> is rare but valid; the extractor must still find the JS body.",
+  "_expected_warnings": ["php/end_tag_ws_text.php"],
+  "_entries": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.0.1/",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "headers": [{"name": "Content-Type", "value": "text/html"}],
+        "content": {
+          "size": 200,
+          "mimeType": "text/html",
+          "text": "<html><head><script>$.ajax({type:\"POST\", url:\"php/end_tag_ws_text.php\", dataType:\"json\"});</script\t\n bar></head><body></body></html>"
+        }
+      }
+    }
+  ]
+}

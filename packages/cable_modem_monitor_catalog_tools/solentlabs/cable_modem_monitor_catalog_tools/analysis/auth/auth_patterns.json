@@ -1,0 +1,43 @@
+{
+  "login_url_patterns": [
+    "/goform/login",
+    "/goform/logon",
+    "/goform/genielogin",
+    "/goform/home",
+    "/cgi-bin/adv_pwd_cgi",
+    "/cgi-bin/",
+    "/login",
+    "/api/v1/session",
+    "/check.jst",
+    "/php/ajaxset_password",
+    "/setup.cgi"
+  ],
+  "nonce_prefixes": {
+    "success": "Url:",
+    "error": "Error:"
+  },
+  "pbkdf2_salt_triggers": [
+    "seeksalthash"
+  ],
+  "sjcl_page_variables": [
+    "myIv",
+    "mySalt",
+    "encryptflag"
+  ],
+  "sjcl_post_fields": [
+    "EncryptData",
+    "AuthData"
+  ],
+  "session_cookie_indicators": [
+    "sessionid",
+    "session",
+    "phpsessid",
+    "jsessionid",
+    "sid",
+    "uid",
+    "token",
+    "auth",
+    "credential",
+    "sec"
+  ]
+}

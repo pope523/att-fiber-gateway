@@ -1,0 +1,13 @@
+{
+  "_description": "Value at array_path is a dict, not a list — yields empty list",
+  "_resource": "/api/upstream",
+  "_json": {"nodes": {"name": "CH", "index1": "0"}},
+  "_config": {
+    "format": "json_transposed",
+    "resource": "/api/upstream",
+    "fields": [
+      {"label": "CH", "field": "channel_id", "type": "integer"}
+    ]
+  },
+  "_expected": []
+}

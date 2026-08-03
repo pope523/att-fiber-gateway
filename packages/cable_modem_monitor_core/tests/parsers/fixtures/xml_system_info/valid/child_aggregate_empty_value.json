@@ -1,0 +1,21 @@
+{
+  "_description": "Child aggregate skips matching children whose max sub-element is empty or whitespace",
+  "_xml": "<root><docsis_info><serviceflow><direction>Downstream</direction><rate></rate></serviceflow><serviceflow><direction>Downstream</direction><rate>   </rate></serviceflow></docsis_info></root>",
+  "_resource": "2",
+  "_config": {
+    "format": "xml",
+    "resource": "2",
+    "root_element": "docsis_info",
+    "fields": [],
+    "child_aggregates": [
+      {
+        "child_element": "serviceflow",
+        "filter": {"direction": "Downstream"},
+        "max": "rate",
+        "field": "ds_max_rate",
+        "type": "integer"
+      }
+    ]
+  },
+  "_expected": {}
+}

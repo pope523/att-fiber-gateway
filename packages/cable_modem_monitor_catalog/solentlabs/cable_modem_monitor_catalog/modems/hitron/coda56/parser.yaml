@@ -1,0 +1,94 @@
+downstream:
+  format: json
+  resource: "/data/dsinfo.asp"
+  # Response is root-level JSON array; loader wraps as {"_raw": [...]}
+  array_path: "_raw"
+  channel_type:
+    fixed: qam
+
+  fields:
+    - key: channelId
+      field: channel_id
+      type: integer
+    - key: frequency
+      field: frequency
+      type: frequency
+      unit: "Hz"
+    - key: signalStrength
+      field: power
+      type: float
+      unit: "dBmV"
+    - key: snr
+      field: snr
+      type: float
+      unit: "dB"
+    - key: modulation
+      field: modulation
+      type: modulation
+      # Source publishes integer codes (not modulation strings); the
+      # map translates code → value, then ``type: modulation`` validates
+      # the canonical form.
+      map:
+        "1": "QAM64"
+        "2": "QAM256"
+    - key: correcteds
+      field: corrected
+      type: integer
+    - key: uncorrect
+      field: uncorrected
+      type: integer
+upstream:
+  format: json
+  resource: "/data/usinfo.asp"
+  # Response is root-level JSON array; loader wraps as {"_raw": [...]}
+  array_path: "_raw"
+  fields:
+    - key: channelId
+      field: channel_id
+      type: integer
+    - key: frequency
+      field: frequency
+      type: frequency
+      unit: "Hz"
+    - key: signalStrength
+      field: power
+      type: float
+      unit: "dBmV"
+    - key: modtype
+      field: modulation
+      type: modulation
+    - key: scdmaMode
+      field: channel_type
+      type: string
+      map:
+        "ATDMA": "atdma"
+        "TDMA": "atdma"
+
+# System info from getSysInfo.asp. Response is a root-level JSON array;
+# the loader wraps it as {"_raw": [...]}.
+system_info:
+  sources:
+    - format: json
+      resource: "/data/getSysInfo.asp"
+      array_path: "_raw"
+      fields:
+        - key: hwVersion
+          field: hardware_version
+          type: string
+        - key: swVersion
+          field: software_version
+          type: string
+        - key: systemUptime
+          field: system_uptime
+          type: uptime
+          format: "{hours}h:{minutes}m:{seconds}s"
+
+# DOCSIS 3.1: aggregate QAM-only totals. OFDM LDPC codewords operate
+# at a vastly different scale and are not aggregated.
+aggregate:
+  total_corrected:
+    sum: corrected
+    channels: downstream.qam
+  total_uncorrected:
+    sum: uncorrected
+    channels: downstream.qam

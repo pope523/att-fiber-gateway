@@ -1,0 +1,26 @@
+{
+  "downstream": {
+    "format": "json",
+    "encoding": "base64",
+    "arrays": [
+      {
+        "resource": "/api/qam",
+        "array_path": "nodes",
+        "fields": [
+          {"key": "id", "field": "channel_id", "type": "integer"},
+          {"key": "freq", "field": "frequency", "type": "integer"}
+        ],
+        "channel_type": {"fixed": "qam"}
+      },
+      {
+        "resource": "/api/ofdm",
+        "array_path": "nodes",
+        "fields": [
+          {"key": "id", "field": "channel_id", "type": "integer"},
+          {"key": "pwr", "field": "power", "type": "float"}
+        ],
+        "channel_type": {"fixed": "ofdm"}
+      }
+    ]
+  }
+}

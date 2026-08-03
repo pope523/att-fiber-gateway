@@ -1,0 +1,38 @@
+{
+  "_description": "Native system_info value takes precedence over computed field",
+  "_html": {
+    "/info.html": "<table><tr><td>Mem Total</td><td>1000</td></tr><tr><td>Mem Free</td><td>250</td></tr><tr><td>Mem Used</td><td>99.9</td></tr></table>"
+  },
+  "_parser_config": {
+    "system_info": {
+      "sources": [
+        {
+          "format": "html_fields",
+          "resource": "/info.html",
+          "fields": [
+            {"label": "Mem Total", "field": "memory_total", "type": "string"},
+            {"label": "Mem Free", "field": "memory_free", "type": "string"},
+            {"label": "Mem Used", "field": "memory_used_pct", "type": "string"}
+          ]
+        }
+      ]
+    },
+    "computed": {
+      "memory_used_pct": {
+        "operation": "percent_used",
+        "inputs": {"total": "memory_total", "free": "memory_free"}
+      }
+    }
+  },
+  "_expected": {
+    "downstream": [],
+    "upstream": [],
+    "system_info": {
+      "memory_total": "1000",
+      "memory_free": "250",
+      "memory_used_pct": "99.9",
+      "downstream_channel_count": 0,
+      "upstream_channel_count": 0
+    }
+  }
+}

@@ -1,0 +1,20 @@
+manufacturer: Solent Labs
+model: T100
+transport: http
+default_host: 192.168.100.1
+auth:
+  strategy: none
+hardware:
+  docsis_version: "3.0"
+status: awaiting_verification
+attribution:
+  contributors:
+    - github: test-user
+      contribution: Initial capture
+isps:
+  - Various
+actions:
+  restart:
+    type: http
+    method: POST
+    endpoint: /restart
