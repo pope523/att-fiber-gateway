@@ -89,8 +89,8 @@ Fields that map to **firmware** (Technicolor-level):
 | CGA4236 HAR capture | Catalog test data | Analyzed |
 | CGA6444VF HAR capture | Catalog test data | Analyzed |
 | login.js (PBKDF2 flow) | HAR entries -- JavaScript source | Partially redacted in one HAR, visible in another |
-| Issue #115 | [CGA4236](https://github.com/solentlabs/cable_modem_monitor/issues/115) | Open |
-| Issue #120 | [CGA6444VF](https://github.com/solentlabs/cable_modem_monitor/issues/120) | Open |
+| Issue #115 | [CGA4236](https://github.com/pope523/att-fiber-gateway/issues/115) | Open |
+| Issue #120 | [CGA6444VF](https://github.com/pope523/att-fiber-gateway/issues/120) | Open |
 
 ## Modems
 

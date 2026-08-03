@@ -5,7 +5,7 @@ Common issues and solutions for Cable Modem Monitor.
 > **Authoritative references:**
 >
 > - [ORCHESTRATION_SPEC.md](../packages/cable_modem_monitor_core/docs/ORCHESTRATION_SPEC.md) — logging contracts, signal policy, health probes
-> - [ENTITY_MODEL_SPEC.md](../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md) — status cascade, entity model
+> - [ENTITY_MODEL_SPEC.md](../custom_components/bgw320/docs/ENTITY_MODEL_SPEC.md) — status cascade, entity model
 > - [RUNTIME_POLLING_SPEC.md](../packages/cable_modem_monitor_core/docs/RUNTIME_POLLING_SPEC.md) — polling behavior, backoff, circuit breaker
 
 ## Table of Contents
@@ -245,7 +245,7 @@ The three input signals are:
 - **health_status** — from lightweight health probes (ICMP, HTTP)
 - **pon_status** — from downstream channel lock status
 
-See [ENTITY_MODEL_SPEC.md § Status Sensor](../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md#status-sensor) for full details.
+See [ENTITY_MODEL_SPEC.md § Status Sensor](../custom_components/bgw320/docs/ENTITY_MODEL_SPEC.md#status-sensor) for full details.
 
 **Example Automation:**
 
@@ -337,7 +337,7 @@ See [ORCHESTRATION_SPEC.md § Logging Contract](../packages/cable_modem_monitor_
    - Settings > Devices & Services > Cable Modem Monitor
    - Click ... (three dots) > Reload
 
-If upstream sensors still don't appear, please [open an issue](https://github.com/solentlabs/cable_modem_monitor/issues) with:
+If upstream sensors still don't appear, please [open an issue](https://github.com/pope523/att-fiber-gateway/issues) with:
 
 - Your modem model
 - Debug logs showing parsing output
@@ -493,7 +493,7 @@ If you encounter issues not covered here:
    - Settings > Devices & Services > Cable Modem Monitor
    - Click ... > Download diagnostics
    - Includes: configuration, modem data, recent logs (sanitized), error details
-4. **Open an Issue**: [GitHub Issues](https://github.com/solentlabs/cable_modem_monitor/issues)
+4. **Open an Issue**: [GitHub Issues](https://github.com/pope523/att-fiber-gateway/issues)
    - Include your modem model
    - Attach diagnostics file (includes logs automatically)
    - If diagnostics aren't available, include manual logs

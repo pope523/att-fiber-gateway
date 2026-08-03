@@ -158,7 +158,7 @@ No sensor is created when the field is absent.
 The platform adapter composes `connection_status`, `pon_status`,
 and `health_status` (from the health pipeline) into a display state
 via a priority cascade. See
-[ENTITY_MODEL_SPEC.md](../../../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md#status-sensor)
+[ENTITY_MODEL_SPEC.md](../../../custom_components/bgw320/docs/ENTITY_MODEL_SPEC.md#status-sensor)
 for the HA implementation's cascade rules.
 
 ---
@@ -418,7 +418,7 @@ status derivation matrix.
 
 `health_status` is one of the three inputs to the Status sensor's
 priority cascade — see
-[ENTITY_MODEL_SPEC.md](../../../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md#status-sensor).
+[ENTITY_MODEL_SPEC.md](../../../custom_components/bgw320/docs/ENTITY_MODEL_SPEC.md#status-sensor).
 
 ---
 

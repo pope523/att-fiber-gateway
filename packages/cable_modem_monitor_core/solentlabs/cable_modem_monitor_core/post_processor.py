@@ -12,7 +12,7 @@ This module is the runtime extension point that turns "this modem
 ships a parser.py" into "the pipeline can call its hooks." It is a
 peer of ``config_loader.load_parser_config`` — both load per-modem
 artifacts during HA setup — and is consumed by both the runtime
-HA adapter (``custom_components/cable_modem_monitor``) and the
+HA adapter (``custom_components/bgw320``) and the
 test pipeline runner (``test_harness/runner.py``).
 """
 

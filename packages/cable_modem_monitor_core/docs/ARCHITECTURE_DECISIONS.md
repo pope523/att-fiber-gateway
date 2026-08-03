@@ -176,7 +176,7 @@ not always report natively (e.g., channel counts). User-side
 analytics — spreads, deltas, composed health grades, threshold-based
 classification — do not enter the Core schema. They belong in HA-side
 blueprints distributed alongside the integration per
-[BLUEPRINT_DISTRIBUTION_SPEC.md](../../../custom_components/cable_modem_monitor/docs/BLUEPRINT_DISTRIBUTION_SPEC.md).
+[BLUEPRINT_DISTRIBUTION_SPEC.md](../../../custom_components/bgw320/docs/BLUEPRINT_DISTRIBUTION_SPEC.md).
 
 **Rationale:** The catalog's authority comes from being a faithful
 record of what cable modems actually report. That authority
@@ -1049,6 +1049,6 @@ useful for future tooling and contributor reference.
 | `../../cable_modem_monitor_catalog_tools/docs/ONBOARDING_SPEC.md` | Catalog Tools modem onboarding |
 | `FIELD_REGISTRY.md` | Field naming authority |
 | `VERIFICATION_STATUS.md` | Parser status lifecycle |
-| `../../../custom_components/cable_modem_monitor/docs/CONFIG_FLOW_SPEC.md` | Setup wizard |
-| `../../../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md` | Core output → HA entities |
-| `../../../custom_components/cable_modem_monitor/docs/HA_ADAPTER_SPEC.md` | HA wiring — runtime data, coordinators, polling modes |
+| `../../../custom_components/bgw320/docs/CONFIG_FLOW_SPEC.md` | Setup wizard |
+| `../../../custom_components/bgw320/docs/ENTITY_MODEL_SPEC.md` | Core output → HA entities |
+| `../../../custom_components/bgw320/docs/HA_ADAPTER_SPEC.md` | HA wiring — runtime data, coordinators, polling modes |

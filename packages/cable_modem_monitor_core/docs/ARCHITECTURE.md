@@ -51,13 +51,13 @@ accelerator, never installed by HA or any runtime consumer. See
 packages/
 ├── cable_modem_monitor_core/           # runtime engine
 │   ├── pyproject.toml                  # name = "solentlabs-cable-modem-monitor-core"
-│   └── solentlabs/cable_modem_monitor_core/
+│   └── pope523/att-fiber-gateway_core/
 ├── cable_modem_monitor_catalog/        # modem data (pure content)
 │   ├── pyproject.toml                  # name = "solentlabs-cable-modem-monitor-catalog"
-│   └── solentlabs/cable_modem_monitor_catalog/
+│   └── pope523/att-fiber-gateway_catalog/
 └── cable_modem_monitor_catalog_tools/  # catalog authoring tools (never installed by HA)
     ├── pyproject.toml                  # name = "solentlabs-cable-modem-monitor-catalog-tools"
-    └── solentlabs/cable_modem_monitor_catalog_tools/
+    └── pope523/att-fiber-gateway_catalog_tools/
 custom_components/
 └── cable_modem_monitor/                # HA integration
 ```
@@ -137,7 +137,7 @@ optional post-processors invoked by Core's `ModemParserCoordinator`).
 | `tests/` | HAR captures and expected output golden files |
 
 ```text
-solentlabs/cable_modem_monitor_catalog/
+pope523/att-fiber-gateway_catalog/
 ├── __init__.py              # exposes CATALOG_PATH
 └── modems/
     └── {mfr}/{model}/
@@ -1281,7 +1281,7 @@ use that parser**, not just the modem being worked on. Enhancing
 Config flow, coordinator, entity model, device registry. Tests mock
 Core's engine interface — they verify HA-specific behavior (entity
 creation, state updates, availability) without running the real
-pipeline. See [HA_ADAPTER_SPEC.md § Testing](../../../custom_components/cable_modem_monitor/docs/HA_ADAPTER_SPEC.md#testing).
+pipeline. See [HA_ADAPTER_SPEC.md § Testing](../../../custom_components/bgw320/docs/HA_ADAPTER_SPEC.md#testing).
 
 ### No test code in Catalog
 
@@ -1424,6 +1424,6 @@ levels; Core only emits log records.
 <!-- Cross-package links: these relative paths work in the monorepo but
      will need updating if packages are published separately to PyPI. -->
 | `../../cable_modem_monitor_catalog_tools/docs/ONBOARDING_SPEC.md` | Catalog Tools modem onboarding workflow |
-| `../../../custom_components/cable_modem_monitor/docs/CONFIG_FLOW_SPEC.md` | Setup wizard step sequence |
-| `../../../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md` | Core output → HA entities, attributes, availability |
-| `../../../custom_components/cable_modem_monitor/docs/HA_ADAPTER_SPEC.md` | HA wiring — runtime data, coordinators, polling modes, restart, reauth |
+| `../../../custom_components/bgw320/docs/CONFIG_FLOW_SPEC.md` | Setup wizard step sequence |
+| `../../../custom_components/bgw320/docs/ENTITY_MODEL_SPEC.md` | Core output → HA entities, attributes, availability |
+| `../../../custom_components/bgw320/docs/HA_ADAPTER_SPEC.md` | HA wiring — runtime data, coordinators, polling modes, restart, reauth |

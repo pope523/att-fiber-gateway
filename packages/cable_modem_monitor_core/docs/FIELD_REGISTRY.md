@@ -250,7 +250,7 @@ determined by the data section it belongs to, not its tier:
   All remaining fields (any tier) become a dynamic
   `SystemInfoFieldSensor` entity.
 
-See [ENTITY_MODEL_SPEC.md § Field Pass-Through](../../../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md#field-pass-through)
+See [ENTITY_MODEL_SPEC.md § Field Pass-Through](../../../custom_components/bgw320/docs/ENTITY_MODEL_SPEC.md#field-pass-through)
 for the full mapping rules.
 
 ---

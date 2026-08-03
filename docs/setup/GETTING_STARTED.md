@@ -9,7 +9,7 @@ or native on macOS/Linux. A Dev Container option is also available — see
 ## TL;DR
 
 ```bash
-git clone https://github.com/solentlabs/cable_modem_monitor.git
+git clone https://github.com/pope523/att-fiber-gateway.git
 cd cable_modem_monitor
 git lfs install      # required for HAR test fixtures
 ./scripts/setup.sh   # creates .venv and installs all dependencies
@@ -247,4 +247,4 @@ exit                                 # log back in
 
 - Integration-level issues: [TROUBLESHOOTING.md](../TROUBLESHOOTING.md)
 - Workflow / PR guidelines: [CONTRIBUTING.md](../../CONTRIBUTING.md)
-- Bug report: [open an issue](https://github.com/solentlabs/cable_modem_monitor/issues)
+- Bug report: [open an issue](https://github.com/pope523/att-fiber-gateway/issues)

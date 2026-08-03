@@ -157,7 +157,7 @@ The codebase is split into three layers:
 |---------|------|----------------|
 | **Core** | `packages/cable_modem_monitor_core/` | Auth, HTTP loading, parsing, orchestration, test harness. Platform-agnostic — no HA imports. |
 | **Catalog** | `packages/cable_modem_monitor_catalog/` | Modem configs (`modem.yaml`), parsers (`parser.yaml` / `parser.py`), HAR fixtures and golden files. |
-| **HA Adapter** | `custom_components/cable_modem_monitor/` | Config flow, sensors, services, coordinators. Thin wrapper that imports from Core and Catalog. |
+| **HA Adapter** | `custom_components/bgw320/` | Config flow, sensors, services, coordinators. Thin wrapper that imports from Core and Catalog. |
 
 Core and Catalog are published to PyPI as standalone packages. The HA
 adapter declares them as dependencies in `manifest.json`.
@@ -165,7 +165,7 @@ adapter declares them as dependencies in `manifest.json`.
 **Specs** (authoritative design docs):
 
 - Core: [`packages/cable_modem_monitor_core/docs/`](packages/cable_modem_monitor_core/docs/) — architecture, auth, parsing, orchestration, onboarding
-- HA: [`custom_components/cable_modem_monitor/docs/`](custom_components/cable_modem_monitor/docs/) — config flow, entities, adapter wiring
+- HA: [`custom_components/bgw320/docs/`](custom_components/bgw320/docs/) — config flow, entities, adapter wiring
 
 **Tests:**
 

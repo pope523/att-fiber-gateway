@@ -56,7 +56,7 @@ This integration uses the domain `bgw320`, so it will not adopt entities from a
 previous `cable_modem_monitor` install. Entity history does not carry over.
 
 1. Settings → Devices & Services → **Cable Modem Monitor** → delete the entry.
-2. Remove it from HACS (or delete `config/custom_components/cable_modem_monitor/`).
+2. Remove it from HACS (or delete `config/custom_components/bgw320/`).
 3. Install this integration and add it fresh.
 4. Update dashboards and automations from `sensor.cable_modem_*` to
    `sensor.bgw320_*`. Note `docsis_status` is now `pon_status`, and the DS/US

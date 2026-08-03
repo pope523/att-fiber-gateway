@@ -255,12 +255,12 @@ only valid session mechanism. See
 | `Login.js` | HAR entries --- JavaScript source | Authoritative for challenge/login request shape and cookie setup |
 | `SOAPAction.js` | HAR entries --- JavaScript source | Authoritative for HNAP_AUTH header format and timestamp modulo |
 | `hmac_md5.js` / `hmac_sha256.js` | HAR entries --- JavaScript source | Authoritative for uppercase hex HMAC output |
-| Issue [#6 --- MB8611 fails to connect](https://github.com/solentlabs/cable_modem_monitor/issues/6) | GitHub | Closed --- HNAP auth implementation |
-| Issue [#40 --- MB8600 (newer firmware)](https://github.com/solentlabs/cable_modem_monitor/issues/40) | GitHub | MB8600 confirmed on v3.14.0-alpha.11 |
-| Issue [#98 --- S33v3](https://github.com/solentlabs/cable_modem_monitor/issues/98) | GitHub | Open --- SHA256 variant evidence |
-| Issue [#108 --- S34](https://github.com/solentlabs/cable_modem_monitor/issues/108) | GitHub | Open |
-| Issue [#117 --- S33v2 crashing when monitor enabled](https://github.com/solentlabs/cable_modem_monitor/issues/117) | GitHub | S33v2 confirmed; drives RUNTIME_POLLING_SPEC lockout backoff |
-| PR [#90 --- Add Arris S34 support](https://github.com/solentlabs/cable_modem_monitor/pull/90) | GitHub | Merged |
+| Issue [#6 --- MB8611 fails to connect](https://github.com/pope523/att-fiber-gateway/issues/6) | GitHub | Closed --- HNAP auth implementation |
+| Issue [#40 --- MB8600 (newer firmware)](https://github.com/pope523/att-fiber-gateway/issues/40) | GitHub | MB8600 confirmed on v3.14.0-alpha.11 |
+| Issue [#98 --- S33v3](https://github.com/pope523/att-fiber-gateway/issues/98) | GitHub | Open --- SHA256 variant evidence |
+| Issue [#108 --- S34](https://github.com/pope523/att-fiber-gateway/issues/108) | GitHub | Open |
+| Issue [#117 --- S33v2 crashing when monitor enabled](https://github.com/pope523/att-fiber-gateway/issues/117) | GitHub | S33v2 confirmed; drives RUNTIME_POLLING_SPEC lockout backoff |
+| PR [#90 --- Add Arris S34 support](https://github.com/pope523/att-fiber-gateway/pull/90) | GitHub | Merged |
 
 ## Modems
 

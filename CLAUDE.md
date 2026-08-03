@@ -19,7 +19,7 @@
 | Async / blocking I/O | `docs/CODE_REVIEW.md` § No Blocking I/O in Async Context |
 | Release flow (branching, merging, tagging) | `docs/reference/RELEASING.md` |
 | Process questions (where does X go? PR vs Discussion vs Issue?) | `CONTRIBUTING.md` |
-| Specs by package | core: `packages/cable_modem_monitor_core/docs/README.md` · catalog tools: `packages/cable_modem_monitor_catalog_tools/docs/README.md` · HA: `custom_components/cable_modem_monitor/docs/README.md` · project: `docs/README.md` |
+| Specs by package | core: `packages/cable_modem_monitor_core/docs/README.md` · catalog tools: `packages/cable_modem_monitor_catalog_tools/docs/README.md` · HA: `custom_components/bgw320/docs/README.md` · project: `docs/README.md` |
 | Reference test (table-driven exemplar) | `tests/modem_config/test_modem_yaml_validation.py` |
 
 ## Core Principles
@@ -54,7 +54,7 @@ surfaces. They are not duplicates to merge:
   links in it resolve from `.github/`, so a `./docs/X` resolves to
   `.github/docs/X` and 404s — use links that resolve from `.github/`,
   or absolute
-  `https://github.com/solentlabs/cable_modem_monitor/blob/main/...`
+  `https://github.com/pope523/att-fiber-gateway/blob/main/...`
   URLs.
 - The root `README.md` is what **HACS** renders in its panel. HACS
   does not resolve repo-relative paths, so this file must use
@@ -420,7 +420,7 @@ If the job name is listed as a required status check in the
 same time. The ruleset is a plain string match — it has no awareness
 of the workflow files. Rename drift silently breaks every subsequent
 PR (shows "Expected — Waiting for status to be reported" on required
-checks). Update via `gh api repos/solentlabs/cable_modem_monitor/rulesets/10547747 --method PUT --input <payload>`.
+checks). Update via `gh api repos/pope523/att-fiber-gateway/rulesets/10547747 --method PUT --input <payload>`.
 
 Exceptions: external GitHub Actions that can't be reasonably
 reproduced locally (e.g., `home-assistant/actions/hassfest@master`,

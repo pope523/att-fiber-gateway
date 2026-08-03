@@ -12,7 +12,7 @@ managed across the integration lifecycle.
 - **[MODEM_YAML_SPEC.md](./MODEM_YAML_SPEC.md)** — Modem configuration schema
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)** — Parser architecture
 - **[PARSING_SPEC.md](./PARSING_SPEC.md)** — Parser output format
-- **[ENTITY_MODEL_SPEC.md](../../../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md)** — HA entity naming and identity
+- **[ENTITY_MODEL_SPEC.md](../../../custom_components/bgw320/docs/ENTITY_MODEL_SPEC.md)** — HA entity naming and identity
 
 ---
 
@@ -544,7 +544,7 @@ See PARSING_SPEC.md § Field Guarantees for the output guarantee.
 ### ENTITY_MODEL_SPEC conflicts
 
 The following sections of
-[ENTITY_MODEL_SPEC.md](../../../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md)
+[ENTITY_MODEL_SPEC.md](../../../custom_components/bgw320/docs/ENTITY_MODEL_SPEC.md)
 must be updated to reflect the mapping manager architecture:
 
 1. **§ Channel Identity** — Currently keys channels by
@@ -620,21 +620,21 @@ buttons, availability, device model) is unaffected.
 ## References
 
 <!-- GitHub issues and discussions -->
-[d97]: https://github.com/solentlabs/cable_modem_monitor/discussions/97
-[i42]: https://github.com/solentlabs/cable_modem_monitor/issues/42
-[i94]: https://github.com/solentlabs/cable_modem_monitor/issues/94
-[i112]: https://github.com/solentlabs/cable_modem_monitor/issues/112
-[i112-comment]: https://github.com/solentlabs/cable_modem_monitor/issues/112#issuecomment-2999587412
+[d97]: https://github.com/pope523/att-fiber-gateway/discussions/97
+[i42]: https://github.com/pope523/att-fiber-gateway/issues/42
+[i94]: https://github.com/pope523/att-fiber-gateway/issues/94
+[i112]: https://github.com/pope523/att-fiber-gateway/issues/112
+[i112-comment]: https://github.com/pope523/att-fiber-gateway/issues/112#issuecomment-2999587412
 
 <!-- Catalog: parser.yaml files (source of field mappings) -->
-[s34-parser]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/arris/s34/parser.yaml
-[mb8611-parser]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/motorola/mb8611/parser.yaml
+[s34-parser]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/arris/s34/parser.yaml
+[mb8611-parser]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/motorola/mb8611/parser.yaml
 
 <!-- Catalog: verified/expected golden files (parsed output evidence) -->
-[s33v2-verified]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/arris/s33v2/test_data/modem.verified.json
-[cm1200-verified]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/netgear/cm1200/test_data/modem-basic.verified.json
-[mb8600-verified]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/motorola/mb8600/test_data/modem.verified.json
-[mb8611-expected]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/motorola/mb8611/test_data/modem.expected.json
+[s33v2-verified]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/arris/s33v2/test_data/modem.verified.json
+[cm1200-verified]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/netgear/cm1200/test_data/modem-basic.verified.json
+[mb8600-verified]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/motorola/mb8600/test_data/modem.verified.json
+[mb8611-expected]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/motorola/mb8611/test_data/modem.expected.json
 
 <!-- Note: Raw HNAP/HTML fixtures are in HAR captures (Git LFS).
      The findings in Section 3 were confirmed from HAR data and

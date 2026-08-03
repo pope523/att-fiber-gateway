@@ -44,7 +44,7 @@ _HA_WRAPPER_KEYS = frozenset(
 # audience (provenance, PII checklist, recent log context) and don't
 # belong in a clean hardware-confirmation fixture.
 #
-# These describe the shape of what ``custom_components/cable_modem_monitor/
+# These describe the shape of what ``custom_components/bgw320/
 # diagnostics.py`` emits. They are duplicated here because catalog_tools
 # must stay platform-agnostic and cannot import from custom_components/.
 # A future refactor could lift this shape into a shared schema module in
@@ -267,7 +267,7 @@ def _build_verified_json(
         payload["system_info"] = {k: v for k, v in system_info.items() if k not in _PII_SYSTEM_INFO_FIELDS}
 
     # Canonicalize channel key order — older diagnostics (pre-canonicalization
-    # in custom_components/cable_modem_monitor/diagnostics.py) emit channels
+    # in custom_components/bgw320/diagnostics.py) emit channels
     # in parser-determined order; we match the catalog convention regardless.
     for key in _CHANNEL_ARRAY_KEYS:
         if key in payload and isinstance(payload[key], list):

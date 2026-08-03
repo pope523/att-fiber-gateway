@@ -100,10 +100,10 @@ Fields that map to **firmware** (Compal-level):
 | CH7465MT HAR capture | Catalog test data | Analyzed |
 | SB8200v3 HAR capture | Catalog test data | Analyzed |
 | `encrypt_cryptoJS.js` | HAR entries --- JavaScript source | Authoritative for encryption format |
-| PR #129 | [CH7465MT support](https://github.com/solentlabs/cable_modem_monitor/pull/129) | Merged |
-| Issue #77 | [Compal CH7465 (Vodafone DE)](https://github.com/solentlabs/cable_modem_monitor/issues/77) | Open |
-| Issue #80 | [Compal CH7466CE (Vodafone DE)](https://github.com/solentlabs/cable_modem_monitor/issues/80) | Open |
-| Issue #109 | [Arris SB8200v3](https://github.com/solentlabs/cable_modem_monitor/issues/109) | Open |
+| PR #129 | [CH7465MT support](https://github.com/pope523/att-fiber-gateway/pull/129) | Merged |
+| Issue #77 | [Compal CH7465 (Vodafone DE)](https://github.com/pope523/att-fiber-gateway/issues/77) | Open |
+| Issue #80 | [Compal CH7466CE (Vodafone DE)](https://github.com/pope523/att-fiber-gateway/issues/80) | Open |
+| Issue #109 | [Arris SB8200v3](https://github.com/pope523/att-fiber-gateway/issues/109) | Open |
 
 ## Modems
 

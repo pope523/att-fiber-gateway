@@ -24,7 +24,7 @@ Languages are selected based on [Home Assistant user demographics](https://analy
 ## File Structure
 
 ```text
-custom_components/cable_modem_monitor/translations/
+custom_components/bgw320/translations/
 ├── en.json              # Source of truth (English)
 ├── de.json              # German
 ├── nl.json              # Dutch
@@ -99,7 +99,7 @@ Keep these terms unchanged:
 
 ```bash
 # Check all translation files are valid JSON
-for f in custom_components/cable_modem_monitor/translations/*.json; do
+for f in custom_components/bgw320/translations/*.json; do
   python3 -c "import json; json.load(open('$f'))" && echo "OK: $f"
 done
 ```
@@ -141,4 +141,4 @@ The translation files follow Home Assistant's [translation format](https://devel
 
 ## Questions?
 
-Open an issue or reach out on [GitHub](https://github.com/solentlabs/cable_modem_monitor).
+Open an issue or reach out on [GitHub](https://github.com/pope523/att-fiber-gateway).

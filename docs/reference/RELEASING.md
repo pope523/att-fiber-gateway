@@ -97,11 +97,11 @@ The tag push triggers `.github/workflows/release.yml` which:
 - Creates a GitHub Release
 - Attaches release notes from the tag message
 
-Verify at: <https://github.com/solentlabs/cable_modem_monitor/releases>
+Verify at: <https://github.com/pope523/att-fiber-gateway/releases>
 
 ## Release Tiers
 
-Two tiers ship: beta and stable. Both publish to PyPI and create
+Two tiers ship: beta and stable. Both create
 GitHub Releases with a zip asset. Beta tags carry the GitHub
 `prerelease` flag; stable tags don't.
 
@@ -139,7 +139,7 @@ cause of the beta.11 commitlint rewrite and force-push).
   "homeassistant": "2024.12.0",
   "hacs": "2.0.0",
   "zip_release": true,
-  "filename": "cable_modem_monitor.zip",
+  "filename": "bgw320.zip",
   "hide_default_branch": true
 }
 ```
@@ -176,7 +176,7 @@ users don't see the broken path.
 
 For developers who do need to run from a branch (rare — typically
 only the maintainer testing an unreleased commit), install outside
-HACS: clone the repo, symlink `custom_components/cable_modem_monitor`
+HACS: clone the repo, symlink `custom_components/bgw320`
 into the HA config dir, and `pip install -e` the Core and Catalog
 packages.
 
@@ -188,7 +188,7 @@ References:
 
 ### Rollback safety
 
-`zip_release: true` means HACS expects a `cable_modem_monitor.zip`
+`zip_release: true` means HACS expects a `bgw320.zip`
 asset on every release a user might roll back to. Older stable
 releases (v3.13.x and earlier) lack this asset because the zip
 wasn't built before the beta cut. Without a backfill of those older
@@ -224,7 +224,7 @@ to receive the new catalog version.
 
 | Package | Delivery | Contents |
 |---------|----------|----------|
-| HACS zip (`cable_modem_monitor.zip`) | GitHub release asset | HA adapter: config flow, coordinator, sensors, buttons, services, translations, icons |
+| HACS zip (`bgw320.zip`) | GitHub release asset | HA adapter: config flow, coordinator, sensors, buttons, services, translations, icons |
 | Core (`solentlabs-cable-modem-monitor-core`) | PyPI wheel | Auth, parsers, orchestration, loaders, protocol, MCP tools |
 | Catalog (`solentlabs-cable-modem-monitor-catalog`) | PyPI wheel | modem.yaml, parser.yaml for each supported modem |
 
@@ -234,8 +234,8 @@ ship to users.
 
 ### Install flow
 
-1. HACS downloads `cable_modem_monitor.zip` from the GitHub release
-2. HACS extracts the zip into `custom_components/cable_modem_monitor/`
+1. HACS downloads `bgw320.zip` from the GitHub release
+2. HACS extracts the zip into `custom_components/bgw320/`
 3. HA reads `manifest.json` → sees `requirements` pins
 4. HA pip-installs Core and Catalog from PyPI (exact `==` pins)
 5. Integration loads
@@ -374,7 +374,7 @@ Fix: update the ruleset to use the new job name. The current required
 checks live in ruleset ID `10547747`. Update via:
 
 ```bash
-gh api repos/solentlabs/cable_modem_monitor/rulesets/10547747 --method PUT --input <payload>
+gh api repos/pope523/att-fiber-gateway/rulesets/10547747 --method PUT --input <payload>
 ```
 
 where `<payload>` is the full ruleset JSON with the corrected `context`

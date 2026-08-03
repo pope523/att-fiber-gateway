@@ -36,6 +36,6 @@ authoring package — HA never installs it. See ARCHITECTURE_DECISIONS.md
 
 | Document | Governs |
 |----------|---------|
-| [CONFIG_FLOW_SPEC.md](../../../custom_components/cable_modem_monitor/docs/CONFIG_FLOW_SPEC.md) | Setup wizard — steps, config entry, variant resolution |
-| [ENTITY_MODEL_SPEC.md](../../../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md) | Core output → HA entities, attributes, availability |
-| [HA_ADAPTER_SPEC.md](../../../custom_components/cable_modem_monitor/docs/HA_ADAPTER_SPEC.md) | HA wiring — runtime data, coordinators, polling modes, restart, reauth |
+| [CONFIG_FLOW_SPEC.md](../../../custom_components/bgw320/docs/CONFIG_FLOW_SPEC.md) | Setup wizard — steps, config entry, variant resolution |
+| [ENTITY_MODEL_SPEC.md](../../../custom_components/bgw320/docs/ENTITY_MODEL_SPEC.md) | Core output → HA entities, attributes, availability |
+| [HA_ADAPTER_SPEC.md](../../../custom_components/bgw320/docs/HA_ADAPTER_SPEC.md) | HA wiring — runtime data, coordinators, polling modes, restart, reauth |

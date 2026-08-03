@@ -1211,7 +1211,7 @@ These use cases define Core's interface contract from the consumer's
 perspective. Any platform (Home Assistant, CLI, web service) follows the
 same component creation, polling, and teardown sequence. For HA-specific
 wiring (DataUpdateCoordinator, entity availability, options flow), see
-[HA_ADAPTER_SPEC.md](../../../custom_components/cable_modem_monitor/docs/HA_ADAPTER_SPEC.md).
+[HA_ADAPTER_SPEC.md](../../../custom_components/bgw320/docs/HA_ADAPTER_SPEC.md).
 
 ### UC-70: Consumer setup
 

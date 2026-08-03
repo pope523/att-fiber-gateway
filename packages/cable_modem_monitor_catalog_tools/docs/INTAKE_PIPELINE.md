@@ -12,7 +12,7 @@ How new modems go from a HAR capture to a tested catalog entry.
 
 | Role | What they do |
 | ------ | ------------- |
-| **HA user filing a request** | Captures a HAR with [har-capture](https://github.com/solentlabs/har-capture) and submits it via [modem request issue](https://github.com/solentlabs/cable_modem_monitor/issues/new?template=modem_request.yml). |
+| **HA user filing a request** | Captures a HAR with [har-capture](https://github.com/solentlabs/har-capture) and submits it via [modem request issue](https://github.com/pope523/att-fiber-gateway/issues/new?template=modem_request.yml). |
 | **Catalog contributor** | Runs the intake pipeline on their own HAR or on a submitted one, produces a draft catalog entry, opens a PR. AI assistance (e.g., [Claude Code](https://claude.com/claude-code)) is the expected helper for the judgment steps. See [MODEM_INTAKE_WORKFLOW.md](MODEM_INTAKE_WORKFLOW.md). |
 | **Maintainer** | Reviews and merges PRs, develops Core when a CoreGap is reported, ships releases. |
 | **MCP tools** | Orchestration accelerator for runs driven through an AI agent. Handle deterministic steps — HAR parsing, pattern matching, config generation, validation, test execution. |
@@ -133,7 +133,7 @@ Two JSON pattern files control what the pipeline recognizes. Adding support for 
 
 - **`action_patterns.json`** — known action URLs (logout, restart, reboot). When `analyze_har` sees POST requests matching patterns here, it maps them to modem actions.
 
-Both files live in Catalog Tools (`solentlabs/cable_modem_monitor_catalog_tools/analysis/`). Extending them is the first step when a CoreGap is reported for an unmatched endpoint.
+Both files live in Catalog Tools (`pope523/att-fiber-gateway_catalog_tools/analysis/`). Extending them is the first step when a CoreGap is reported for an unmatched endpoint.
 
 ---
 
@@ -141,12 +141,12 @@ Both files live in Catalog Tools (`solentlabs/cable_modem_monitor_catalog_tools/
 
 | Artifact | Location |
 | ---------- | ---------- |
-| Pipeline tools (validate, analyze, enrich, generate, test) | `packages/cable_modem_monitor_catalog_tools/solentlabs/cable_modem_monitor_catalog_tools/` |
+| Pipeline tools (validate, analyze, enrich, generate, test) | `packages/cable_modem_monitor_catalog_tools/pope523/att-fiber-gateway_catalog_tools/` |
 | Pattern files (auth, actions) | `.../catalog_tools/analysis/auth/` and `.../catalog_tools/analysis/actions/` |
-| Fleet scanner | `packages/cable_modem_monitor_catalog_tools/solentlabs/cable_modem_monitor_catalog_tools/fleet_scanner.py` |
+| Fleet scanner | `packages/cable_modem_monitor_catalog_tools/pope523/att-fiber-gateway_catalog_tools/fleet_scanner.py` |
 | Intake pipeline regression (accuracy tracking + auth audit) | `packages/cable_modem_monitor_catalog_tools/scripts/intake_pipeline_regression.py` |
-| Test harness (HAR replay, golden file comparison) | `packages/cable_modem_monitor_core/solentlabs/cable_modem_monitor_core/test_harness/` |
-| Modem catalog entries (output) | `packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/{manufacturer}/{model}/` |
+| Test harness (HAR replay, golden file comparison) | `packages/cable_modem_monitor_core/pope523/att-fiber-gateway_core/test_harness/` |
+| Modem catalog entries (output) | `packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/{manufacturer}/{model}/` |
 | Authoritative spec | `packages/cable_modem_monitor_catalog_tools/docs/ONBOARDING_SPEC.md` |
 | Runnable workflow | [MODEM_INTAKE_WORKFLOW.md](MODEM_INTAKE_WORKFLOW.md) |
 
@@ -227,10 +227,10 @@ tree and the new HAR is included automatically on the next run.
 
 The reusable machinery (scorecard building, result classification)
 lives in the unit-tested
-`solentlabs/cable_modem_monitor_catalog_tools/regression/` package and
+`pope523/att-fiber-gateway_catalog_tools/regression/` package and
 is generic over grade dimensions; the script supplies discovery,
 pipeline stages, and printing. The shared grade taxonomy is
-`solentlabs/cable_modem_monitor_catalog_tools/grading.py`.
+`pope523/att-fiber-gateway_catalog_tools/grading.py`.
 
 ---
 

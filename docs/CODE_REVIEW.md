@@ -249,9 +249,9 @@ packages/cable_modem_monitor_catalog/.../registry.py
     → packages/cable_modem_monitor_catalog/tests/test_registry.py
 
 # HA adapter
-custom_components/cable_modem_monitor/services.py
+custom_components/bgw320/services.py
     → tests/components/test_services.py
-custom_components/cable_modem_monitor/dev_tools.py
+custom_components/bgw320/dev_tools.py
     → tests/components/test_services.py
 ```
 

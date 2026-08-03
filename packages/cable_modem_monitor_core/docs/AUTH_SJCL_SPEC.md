@@ -113,7 +113,7 @@ Fields that map to **firmware** (Arris-level):
 | TG3442DE HAR capture (Apr 2026) | User attachment on #86 | Analyzed --- contains sjclCrypto.js |
 | `sjclCrypto.js` | HAR entry 3 (Apr 2026 capture) | Authoritative for encoding rules |
 | `base_95x.js` | HAR entry 10 (Apr 2026 capture) | Authoritative for wire format |
-| Issue | [#86 --- Arris Touchstone TG3442DE](https://github.com/solentlabs/cable_modem_monitor/issues/86) | Open, awaiting confirmation |
+| Issue | [#86 --- Arris Touchstone TG3442DE](https://github.com/pope523/att-fiber-gateway/issues/86) | Open, awaiting confirmation |
 
 ## Modems
 

@@ -25,7 +25,7 @@ pre-commit run --all-files
 .venv/bin/ruff check .
 
 # Run mypy (type checking)
-.venv/bin/mypy custom_components/cable_modem_monitor
+.venv/bin/mypy custom_components/bgw320
 ```
 
 ### CodeQL Security Scanning
