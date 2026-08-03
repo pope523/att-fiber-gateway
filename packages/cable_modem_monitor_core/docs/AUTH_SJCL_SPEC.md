@@ -6,7 +6,7 @@ SJCL (Stanford JavaScript Crypto Library) AES-CCM strategy. Encrypts
 credentials client-side with AES in CCM mode using a PBKDF2-derived key.
 Server response is also encrypted --- must decrypt to extract CSRF nonce.
 Requires the `cryptography` package
-(`pip install solentlabs-cable-modem-monitor-core[sjcl]`).
+(`pip install bgw320-engine-core[sjcl]`).
 
 ## Crypto Library
 

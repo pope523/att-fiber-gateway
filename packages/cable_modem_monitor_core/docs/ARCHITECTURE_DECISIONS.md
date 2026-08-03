@@ -156,7 +156,7 @@ was masked in practice because Home Assistant itself depends on
 pydantic and supplies it transitively. The carve-out corrects the
 declaration.
 
-**Constrains:** Anyone installing `solentlabs-cable-modem-monitor-core`
+**Constrains:** Anyone installing `bgw320-engine-core`
 receives pydantic as a transitive install. The `[mcp]` optional
 extra is removed; intake-pipeline heavy deps (ruamel.yaml and any
 future additions) live in `cable_modem_monitor_catalog_tools`.

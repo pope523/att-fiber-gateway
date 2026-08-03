@@ -208,7 +208,7 @@ def _import_aesccm() -> Any | AuthResult:
             error=(
                 "cryptography package required for form_sjcl auth. "
                 "Install with: pip install "
-                "solentlabs-cable-modem-monitor-core[sjcl]"
+                "bgw320-engine-core[sjcl]"
             ),
         )
 

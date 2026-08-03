@@ -225,8 +225,8 @@ to receive the new catalog version.
 | Package | Delivery | Contents |
 |---------|----------|----------|
 | HACS zip (`bgw320.zip`) | GitHub release asset | HA adapter: config flow, coordinator, sensors, buttons, services, translations, icons |
-| Core (`solentlabs-cable-modem-monitor-core`) | PyPI wheel | Auth, parsers, orchestration, loaders, protocol, MCP tools |
-| Catalog (`solentlabs-cable-modem-monitor-catalog`) | PyPI wheel | modem.yaml, parser.yaml for each supported modem |
+| Core (`bgw320-engine-core`) | PyPI wheel | Auth, parsers, orchestration, loaders, protocol, MCP tools |
+| Catalog (`bgw320-engine-catalog`) | PyPI wheel | modem.yaml, parser.yaml for each supported modem |
 
 The HACS zip contains only runtime files — `docs/` is excluded from
 the zip build. Spec files stay in the repo for contributors but don't

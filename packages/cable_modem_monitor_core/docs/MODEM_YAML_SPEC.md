@@ -660,7 +660,7 @@ CSRF nonce. Key is derived via PBKDF2 from the password and a
 per-session salt provided by the server.
 
 Requires the ``cryptography`` package. Install Core with the
-``[sjcl]`` extra: ``pip install solentlabs-cable-modem-monitor-core[sjcl]``.
+``[sjcl]`` extra: ``pip install bgw320-engine-core[sjcl]``.
 
 ```yaml
 auth:
@@ -798,7 +798,7 @@ session token cookie — each response rotates the token via
 `fun=N` parameters (same XML POST pattern used for data fetching).
 
 Requires the ``cryptography`` package. Install Core with the
-``[cbn]`` extra: ``pip install solentlabs-cable-modem-monitor-core[cbn]``.
+``[cbn]`` extra: ``pip install bgw320-engine-core[cbn]``.
 
 ```yaml
 auth:

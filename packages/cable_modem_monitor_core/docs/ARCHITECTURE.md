@@ -26,10 +26,10 @@ locked to the HACS store.
 
 ```mermaid
 graph TD
-    HA["<b>HA Integration</b><hr/>cable-modem-monitor"] --> Core["<b>pip package</b><hr/>solentlabs-cable-modem-monitor-core"]
-    HA --> Catalog["<b>pip package</b><hr/>solentlabs-cable-modem-monitor-catalog"]
+    HA["<b>HA Integration</b><hr/>cable-modem-monitor"] --> Core["<b>pip package</b><hr/>bgw320-engine-core"]
+    HA --> Catalog["<b>pip package</b><hr/>bgw320-engine-catalog"]
     Catalog --> Core
-    Tools["<b>pip package (dev only)</b><hr/>solentlabs-cable-modem-monitor-catalog-tools"] -.-> Core
+    Tools["<b>pip package (dev only)</b><hr/>bgw320-engine-catalog-tools"] -.-> Core
     Tools -.-> Catalog
     style Tools stroke-dasharray: 5 5
 ```
@@ -50,13 +50,13 @@ accelerator, never installed by HA or any runtime consumer. See
 ```text
 packages/
 ├── cable_modem_monitor_core/           # runtime engine
-│   ├── pyproject.toml                  # name = "solentlabs-cable-modem-monitor-core"
+│   ├── pyproject.toml                  # name = "bgw320-engine-core"
 │   └── pope523/att-fiber-gateway_core/
 ├── cable_modem_monitor_catalog/        # modem data (pure content)
-│   ├── pyproject.toml                  # name = "solentlabs-cable-modem-monitor-catalog"
+│   ├── pyproject.toml                  # name = "bgw320-engine-catalog"
 │   └── pope523/att-fiber-gateway_catalog/
 └── cable_modem_monitor_catalog_tools/  # catalog authoring tools (never installed by HA)
-    ├── pyproject.toml                  # name = "solentlabs-cable-modem-monitor-catalog-tools"
+    ├── pyproject.toml                  # name = "bgw320-engine-catalog-tools"
     └── pope523/att-fiber-gateway_catalog_tools/
 custom_components/
 └── cable_modem_monitor/                # HA integration
@@ -75,10 +75,10 @@ extras:
 
 | Extra | Install | What it adds | Who uses it |
 |-------|---------|--------------|-------------|
-| `[sjcl]` | `pip install solentlabs-cable-modem-monitor-core[sjcl]` | `cryptography>=41.0` | `form_sjcl` auth strategy (AES-CCM) |
-| `[cbn]` | `pip install solentlabs-cable-modem-monitor-core[cbn]` | `cryptography>=41.0` | `form_cbn` auth strategy (AES-256-CBC) |
+| `[sjcl]` | `pip install bgw320-engine-core[sjcl]` | `cryptography>=41.0` | `form_sjcl` auth strategy (AES-CCM) |
+| `[cbn]` | `pip install bgw320-engine-core[cbn]` | `cryptography>=41.0` | `form_cbn` auth strategy (AES-256-CBC) |
 
-### Core — `solentlabs-cable-modem-monitor-core`
+### Core — `bgw320-engine-core`
 
 The complete engine. Given a path to modem files and user credentials, Core
 does everything: loads config, authenticates, fetches data, parses responses,
@@ -123,7 +123,7 @@ Core could power any platform — Home Assistant, a Windows service, a CLI
 tool, a Prometheus exporter. The platform tells Core where the modem files
 are and provides credentials; Core does the rest.
 
-### Catalog — `solentlabs-cable-modem-monitor-catalog`
+### Catalog — `bgw320-engine-catalog`
 
 A content package. No business logic — just modem config files, parser
 overrides, and HAR evidence. Depends on Core only (parser.py files are
@@ -313,7 +313,7 @@ misconfigurations without preventing growth.
 
 ## Core Components
 
-Everything below lives in `solentlabs-cable-modem-monitor-core`. These are
+Everything below lives in `bgw320-engine-core`. These are
 generic — no modem-specific knowledge, no HA imports.
 
 ### Auth Manager

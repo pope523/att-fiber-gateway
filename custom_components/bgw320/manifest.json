@@ -17,8 +17,8 @@
     "solentlabs.cable_modem_monitor_catalog"
   ],
   "requirements": [
-    "solentlabs-cable-modem-monitor-core==1.0.0",
-    "solentlabs-cable-modem-monitor-catalog==1.0.0"
+    "bgw320-engine-core==1.0.0",
+    "bgw320-engine-catalog==1.0.0"
   ],
   "version": "1.0.0"
 }

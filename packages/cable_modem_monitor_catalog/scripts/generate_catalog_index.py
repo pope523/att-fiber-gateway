@@ -254,35 +254,29 @@ def generate_index(output_path: Path | None = None) -> str:
     model_count = len({m["path"] for m in supported})
 
     lines = [
-        "# Cable Modem Catalog",
+        "# Device Catalog",
         "",
-        "[![PyPI version](https://img.shields.io/pypi/v/solentlabs-cable-modem-monitor-catalog)]"
-        + "(https://pypi.org/project/solentlabs-cable-modem-monitor-catalog/)",
-        "[![Downloads](https://img.shields.io/pypi/dm/solentlabs-cable-modem-monitor-catalog)]"
-        + "(https://pypi.org/project/solentlabs-cable-modem-monitor-catalog/)",
-        "[![Python](https://img.shields.io/pypi/pyversions/solentlabs-cable-modem-monitor-catalog)]"
-        + "(https://pypi.org/project/solentlabs-cable-modem-monitor-catalog/)",
-        "[![CI](https://github.com/solentlabs/cable_modem_monitor/actions/workflows/tests.yml/badge.svg)]"
-        + "(https://github.com/solentlabs/cable_modem_monitor/actions/workflows/tests.yml)",
+        "[![CI](https://github.com/pope523/att-fiber-gateway/actions/workflows/tests.yml/badge.svg)]"
+        + "(https://github.com/pope523/att-fiber-gateway/actions/workflows/tests.yml)",
         "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)]"
         + "(https://opensource.org/licenses/MIT)",
         "",
-        "> **Internal dependency of [Cable Modem Monitor](https://github.com/solentlabs/cable_modem_monitor).**",
+        "> **Internal dependency of " + "[AT&T BGW320 Gateway](https://github.com/pope523/att-fiber-gateway).**",
         "> Not intended for direct use — install the HA integration via [HACS](https://hacs.xyz/).",
         ">",
-        "> This package contains modem configuration files, parser configs, and test fixtures",
-        "> for all supported DOCSIS cable modems. The table below is the canonical list of",
-        "> supported hardware.",
+        "> This package holds the device configuration, parser config, and test fixtures for",
+        "> the one device this integration targets. It is not published to PyPI; it is",
+        "> vendored into the HACS release artifact.",
         "",
         "---",
         "",
-        "Auto-generated index of the v3.14 modem catalog.",
+        "Auto-generated index of the device catalog.",
         "",
         "**Data Sources:**",
         "",
         "- `modem.yaml` — Single source of truth (manufacturer, model, hardware, ISPs, status)",
         "",
-        f"**{model_count} modems, {len(supported)} configurations**{summary}",
+        f"**{model_count} devices, {len(supported)} configurations**{summary}",
         "",
         f"**Auth strategies:** {auth_str}",
         "",

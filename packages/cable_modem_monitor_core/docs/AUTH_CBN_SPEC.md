@@ -2,7 +2,7 @@
 
 ## Overview
 
-CBN (Compal Broadband Networks) AES-256-CBC encrypted form auth. Compal modem firmwares use the CryptoJS library (v3.1.2) to encrypt the password client-side. The AES key and IV are derived from a rotating session token cookie --- each HTTP response rotates the token via `Set-Cookie`. Login is a form-encoded POST to a `setter.xml` endpoint with `fun=N` parameters. Requires the `cryptography` package (`pip install solentlabs-cable-modem-monitor-core[cbn]`).
+CBN (Compal Broadband Networks) AES-256-CBC encrypted form auth. Compal modem firmwares use the CryptoJS library (v3.1.2) to encrypt the password client-side. The AES key and IV are derived from a rotating session token cookie --- each HTTP response rotates the token via `Set-Cookie`. Login is a form-encoded POST to a `setter.xml` endpoint with `fun=N` parameters. Requires the `cryptography` package (`pip install bgw320-engine-core[cbn]`).
 
 ## Crypto Library
 

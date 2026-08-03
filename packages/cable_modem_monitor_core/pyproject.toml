@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "solentlabs-cable-modem-monitor-core"
+name = "bgw320-engine-core"
 version = "1.0.0"
 description = "Cable Modem Monitor Core — platform-agnostic DOCSIS monitoring engine"
 readme = "README.md"
@@ -33,11 +33,11 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/solentlabs/cable_modem_monitor"
-Repository = "https://github.com/solentlabs/cable_modem_monitor"
-Documentation = "https://github.com/solentlabs/cable_modem_monitor#readme"
-Issues = "https://github.com/solentlabs/cable_modem_monitor/issues"
-Changelog = "https://github.com/solentlabs/cable_modem_monitor/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/pope523/att-fiber-gateway"
+Repository = "https://github.com/pope523/att-fiber-gateway"
+Documentation = "https://github.com/pope523/att-fiber-gateway#readme"
+Issues = "https://github.com/pope523/att-fiber-gateway/issues"
+Changelog = "https://github.com/pope523/att-fiber-gateway/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 sjcl = ["cryptography>=44.0"]

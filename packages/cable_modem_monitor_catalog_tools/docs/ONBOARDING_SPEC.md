@@ -1463,13 +1463,13 @@ provides modem data; Core provides the infrastructure to analyze,
 validate, and test it.
 
 ```text
-Core (solentlabs-cable-modem-monitor-core)
+Core (bgw320-engine-core)
 ├── Pipeline: auth → load → parse
 ├── MCP server: onboarding tools (analyze, generate, validate)
 ├── Test harness: HARMockServer, golden file comparison
 └── Pydantic validation models (dev dependency)
 
-Catalog (solentlabs-cable-modem-monitor-catalog)
+Catalog (bgw320-engine-catalog)
 ├── modems/{mfr}/{model}/modem.yaml
 ├── modems/{mfr}/{model}/parser.yaml
 ├── modems/{mfr}/{model}/parser.py          (optional)

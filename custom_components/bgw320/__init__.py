@@ -91,8 +91,8 @@ def _get_package_versions() -> str:
     """
     parts = []
     for pkg, label in (
-        ("solentlabs-cable-modem-monitor-core", "core"),
-        ("solentlabs-cable-modem-monitor-catalog", "catalog"),
+        ("bgw320-engine-core", "core"),
+        ("bgw320-engine-catalog", "catalog"),
     ):
         try:
             parts.append(f"{label}: v{pkg_version(pkg)}")

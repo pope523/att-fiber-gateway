@@ -125,11 +125,11 @@ def update_manifest_requirements(repo_root: Path, version: str) -> bool:
         updated = []
         packages_found = 0
         for req in requirements:
-            if req.startswith("solentlabs-cable-modem-monitor-core=="):
-                updated.append(f"solentlabs-cable-modem-monitor-core=={version}")
+            if req.startswith("bgw320-engine-core=="):
+                updated.append(f"bgw320-engine-core=={version}")
                 packages_found += 1
-            elif req.startswith("solentlabs-cable-modem-monitor-catalog=="):
-                updated.append(f"solentlabs-cable-modem-monitor-catalog=={version}")
+            elif req.startswith("bgw320-engine-catalog=="):
+                updated.append(f"bgw320-engine-catalog=={version}")
                 packages_found += 1
             else:
                 updated.append(req)
@@ -271,8 +271,8 @@ def update_catalog_core_dependency(repo_root: Path, version: str) -> bool:
     try:
         content = pyproject_path.read_text(encoding="utf-8")
         new_content, count = re.subn(
-            r'"solentlabs-cable-modem-monitor-core==[^"]+"',
-            f'"solentlabs-cable-modem-monitor-core=={version}"',
+            r'"bgw320-engine-core==[^"]+"',
+            f'"bgw320-engine-core=={version}"',
             content,
         )
         if count != 1:
@@ -531,7 +531,7 @@ def _verify_dependency_pins(pkg: Path, version: str) -> bool:
     Catalog pins Core with `==`. Catalog Tools is a repo-only internal
     package and uses `>=` ranges instead — not checked here.
     """
-    core_pin = f'"solentlabs-cable-modem-monitor-core=={version}"'
+    core_pin = f'"bgw320-engine-core=={version}"'
     return _check_file_contains(
         pkg / "cable_modem_monitor_catalog" / "pyproject.toml",
         "catalog→core dependency",
@@ -569,8 +569,8 @@ def verify_version_consistency(repo_root: Path, version: str) -> bool:
     # Check manifest requirements pins
     if manifest is not None:
         for pkg_name in [
-            "solentlabs-cable-modem-monitor-core",
-            "solentlabs-cable-modem-monitor-catalog",
+            "bgw320-engine-core",
+            "bgw320-engine-catalog",
         ]:
             expected_pin = f"{pkg_name}=={version}"
             if expected_pin not in manifest.get("requirements", []):

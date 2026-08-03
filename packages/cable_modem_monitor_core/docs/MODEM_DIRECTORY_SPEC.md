@@ -1,7 +1,7 @@
 # Modem Directory Structure
 
 Each supported modem has a directory under `modems/{manufacturer}/{model}/`
-inside the `solentlabs-cable-modem-monitor-catalog` package.
+inside the `bgw320-engine-catalog` package.
 
 **Design principles:**
 

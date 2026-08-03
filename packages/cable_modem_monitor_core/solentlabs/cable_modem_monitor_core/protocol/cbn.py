@@ -38,8 +38,7 @@ def compal_encrypt(password: str, session_token: str) -> str:
         from cryptography.hazmat.primitives.padding import PKCS7
     except ImportError:
         raise ImportError(
-            "cryptography package required for form_cbn auth. "
-            "Install with: pip install solentlabs-cable-modem-monitor-core[cbn]"
+            "cryptography package required for form_cbn auth. " "Install with: pip install bgw320-engine-core[cbn]"
         ) from None
 
     # Derive key and IV from session token
