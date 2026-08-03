@@ -6,8 +6,8 @@ import pytest
 from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     CollectorSignal,
     ConnectionStatus,
-    DocsisStatus,
     HealthStatus,
+    PonStatus,
 )
 
 
@@ -44,17 +44,17 @@ class TestConnectionStatus:
 
 
 class TestDocsisStatus:
-    """DocsisStatus StrEnum values."""
+    """PonStatus StrEnum values."""
 
     def test_all_statuses_present(self) -> None:
         expected = {"Operational", "partial_lock", "not_locked", "unknown"}
-        actual = {s.value for s in DocsisStatus}
+        actual = {s.value for s in PonStatus}
         assert actual == expected
 
     def test_members_are_strings(self) -> None:
         """StrEnum members compare equal to their string values."""
-        assert DocsisStatus.OPERATIONAL == "Operational"
-        assert isinstance(DocsisStatus.OPERATIONAL, str)
+        assert PonStatus.OPERATIONAL == "Operational"
+        assert isinstance(PonStatus.OPERATIONAL, str)
 
 
 class TestHealthStatus:
@@ -71,7 +71,7 @@ class TestHealthStatus:
 # ├──────────────────┼─────────────┼──────────────────────────────┤
 # │ CollectorSignal  │ 8 members   │ Pipeline failure classes     │
 # │ ConnectionStatus │ 5 members   │ Derived from poll outcome    │
-# │ DocsisStatus     │ 4 members   │ Derived from lock_status     │
+# │ PonStatus     │ 4 members   │ Derived from lock_status     │
 # │ HealthStatus     │ 5 members   │ Derived from probes          │
 # └──────────────────┴─────────────┴──────────────────────────────┘
 #
@@ -79,7 +79,7 @@ class TestHealthStatus:
 ENUM_MEMBER_COUNTS = [
     (CollectorSignal,  8, "pipeline failure classes"),
     (ConnectionStatus, 5, "poll outcome statuses"),
-    (DocsisStatus,     4, "DOCSIS lock statuses"),
+    (PonStatus,     4, "DOCSIS lock statuses"),
     (HealthStatus,     5, "health probe statuses"),
 ]
 # fmt: on

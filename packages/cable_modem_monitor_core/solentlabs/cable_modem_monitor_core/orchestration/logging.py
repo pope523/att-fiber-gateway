@@ -254,7 +254,7 @@ def _format(event: OrchestratorEvent) -> str:  # noqa: PLR0911, C901
         return (
             f"Recovery window closed [{event.model}]"
             f" — elapsed: {event.elapsed_seconds:.0f}s,"
-            f" last snapshot docsis: {event.last_docsis_status}"
+            f" last snapshot docsis: {event.last_pon_status}"
         )
 
     if isinstance(event, RecoveryObserverException):

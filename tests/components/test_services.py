@@ -287,7 +287,7 @@ def test_build_status_card_yaml_passthrough_fields():
 # │ field                        │ expected entity-id substring              │
 # └──────────────────────────────┴───────────────────────────────────────────┘
 _PASSTHROUGH_FORMERLY_EXPLICIT_CASES = [
-    ("docsis_status", {"docsis_status": "operational"}, "sensor.modem_docsis_status"),
+    ("pon_status", {"pon_status": "operational"}, "sensor.modem_pon_status"),
     ("cpu_speed", {"cpu_speed": "1GHz"}, "sensor.modem_cpu_speed"),
     ("memory_total", {"memory_total": 1024}, "sensor.modem_memory_total"),
     ("memory_free", {"memory_free": 512}, "sensor.modem_memory_free"),
@@ -1180,12 +1180,12 @@ def _make_convert_runtime(mock_runtime_data, target_mode: str = "id"):
     from solentlabs.cable_modem_monitor_core.orchestration.models import ModemSnapshot
     from solentlabs.cable_modem_monitor_core.orchestration.signals import (
         ConnectionStatus,
-        DocsisStatus,
+        PonStatus,
     )
 
     snapshot = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data={
             "downstream": [
                 {"channel_id": 1, "channel_number": 1, "channel_type": "qam"},

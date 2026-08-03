@@ -39,10 +39,10 @@ from .restart import RestartNotSupportedError, run_restart
 from .signals import (
     CollectorSignal,
     ConnectionStatus,
-    DocsisStatus,
     HealthStatus,
+    PonStatus,
 )
-from .status import derive_connection_status, enrich_docsis_status
+from .status import derive_connection_status, enrich_pon_status
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -123,7 +123,7 @@ class Orchestrator:
         self._stats_last_reset: datetime | None = None
 
         # Field-set change detection (P25) — parser-level system_info keys
-        # after enrich_docsis_status, before _update_error_stats.
+        # after enrich_pon_status, before _update_error_stats.
         self._prev_system_info_fields: frozenset[str] | None = None
 
         # Diagnostics state
@@ -307,7 +307,7 @@ class Orchestrator:
             log_event(_logger, CircuitBreakerPollingBlocked(model=self._modem_config.model))
             return self._make_snapshot(
                 ConnectionStatus.AUTH_FAILED,
-                DocsisStatus.UNKNOWN,
+                PonStatus.UNKNOWN,
                 error="Circuit breaker open — reconfigure credentials",
             )
 
@@ -330,7 +330,7 @@ class Orchestrator:
         if self._policy.check_connectivity_backoff():
             return self._make_snapshot(
                 ConnectionStatus.UNREACHABLE,
-                DocsisStatus.UNKNOWN,
+                PonStatus.UNKNOWN,
                 error="Connectivity backoff active",
             )
 
@@ -417,7 +417,7 @@ class Orchestrator:
         self._detect_transition(status)
         return self._make_snapshot(
             status,
-            DocsisStatus.UNKNOWN,
+            PonStatus.UNKNOWN,
             collector_signal=result.signal,
             error=result.error,
         )
@@ -431,11 +431,11 @@ class Orchestrator:
 
         # Derive statuses
         connection_status = derive_connection_status(modem_data, model=self._modem_config.model)
-        enrich_docsis_status(modem_data)
-        docsis_status = modem_data.get("system_info", {}).get("docsis_status", DocsisStatus.UNKNOWN)
+        enrich_pon_status(modem_data)
+        pon_status = modem_data.get("system_info", {}).get("pon_status", PonStatus.UNKNOWN)
 
-        # Field-set change detection (P25) — snapshot after enrich_docsis_status
-        # so docsis_status is stable, but before _update_error_stats so
+        # Field-set change detection (P25) — snapshot after enrich_pon_status
+        # so pon_status is stable, but before _update_error_stats so
         # orchestrator-derived rate_* fields don't appear in the diff.
         current_fields = frozenset(modem_data.get("system_info", {}))
         if self._prev_system_info_fields is not None and current_fields != self._prev_system_info_fields:
@@ -473,7 +473,7 @@ class Orchestrator:
 
         return self._make_snapshot(
             connection_status,
-            docsis_status,
+            pon_status,
             modem_data=modem_data,
             health_info=health_info,
             collector_signal=CollectorSignal.OK,
@@ -648,7 +648,7 @@ class Orchestrator:
     def _make_snapshot(
         self,
         connection_status: ConnectionStatus,
-        docsis_status: str,
+        pon_status: str,
         *,
         modem_data: dict[str, Any] | None = None,
         health_info: HealthInfo | None = None,
@@ -659,7 +659,7 @@ class Orchestrator:
         """Build a ModemSnapshot with defaults."""
         return ModemSnapshot(
             connection_status=connection_status,
-            docsis_status=docsis_status,
+            pon_status=pon_status,
             modem_data=modem_data,
             health_info=health_info,
             collector_signal=collector_signal,

@@ -611,7 +611,7 @@ comparison.
         "hardware_version": str,
         "software_version": str,
         "model_name": str,
-        "docsis_status": str,            # "Operational" | "Not Synchronized"
+        "pon_status": str,            # "Operational" | "Not Synchronized"
 
         # Modem-specific fields pass through
         # e.g., "boot_status", "security_status", "docsis_version"
@@ -808,7 +808,7 @@ identity, status derivation, health checks, and DOCSIS lock detection:
   `"Inactive"`) are normalized via `map` in parser.yaml, same mechanism
   as `channel_type`. Modems that don't report lock status omit the
   field. The orchestrator uses normalized `lock_status` to derive
-  `docsis_status` — see
+  `pon_status` — see
   [RUNTIME_POLLING_SPEC.md](RUNTIME_POLLING_SPEC.md#status-derivation)
 - `channel_number` is always present, 1-based. Most formats auto-assign
   from row/element position when not mapped; HNAP requires explicit
@@ -1269,7 +1269,7 @@ canonical value.
 
 ```yaml
 computed:
-  docsis_status:
+  pon_status:
     operation: combined_status
     inputs:
       ds: downstream_status

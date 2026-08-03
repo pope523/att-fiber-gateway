@@ -23,8 +23,8 @@ from solentlabs.cable_modem_monitor_core.orchestration.models import (
 )
 from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     ConnectionStatus,
-    DocsisStatus,
     HealthStatus,
+    PonStatus,
 )
 
 from custom_components.bgw320.const import (
@@ -36,7 +36,6 @@ from custom_components.bgw320.sensor import (
     ChannelSensor,
     HttpLatencySensor,
     LanStatsSensor,
-    ModemChannelCountSensor,
     ModemErrorTotalSensor,
     ModemInfoSensor,
     ModemLastBootTimeSensor,
@@ -120,7 +119,7 @@ def _make_coord_and_entry(modem_data, runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=modem_data,
     )
     coord.last_update_success = True
@@ -155,7 +154,7 @@ def test_create_channel_sensors_position_mode(mock_runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=MOCK_MODEM_DATA,
     )
     coord.last_update_success = True
@@ -199,7 +198,7 @@ def _make_sensor(sensor_cls, mock_runtime_data, modem_data=None, **kwargs):
     """Helper to construct a sensor with mock coordinator."""
     snapshot = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=modem_data if modem_data is not None else MOCK_MODEM_DATA,
         health_info=HealthInfo(health_status=HealthStatus.RESPONSIVE, icmp_latency_ms=2.5, http_latency_ms=15.0),
     )
@@ -215,16 +214,22 @@ def _make_sensor(sensor_cls, mock_runtime_data, modem_data=None, **kwargs):
     return sensor_cls(coord, entry, **kwargs)
 
 
-def test_channel_count_sensor_value(mock_runtime_data):
-    """Channel count sensor reads from system_info."""
-    sensor = _make_sensor(ModemChannelCountSensor, mock_runtime_data, direction="downstream")
-    assert sensor.native_value == 2
+def test_no_channel_count_sensors_created(mock_runtime_data):
+    """DS/US channel-count sensors are never created.
 
+    The parser coordinator still emits downstream_channel_count and
+    upstream_channel_count, but this integration targets an XGS-PON
+    gateway with no DOCSIS channels, so they are permanently 0. They must
+    not surface as sensors, and must not leak through the dynamic
+    system_info pass-through either.
+    """
+    from custom_components.bgw320.sensor import _create_data_dependent_entities
 
-def test_channel_count_sensor_missing(mock_runtime_data):
-    """Channel count returns None when system_info missing."""
-    sensor = _make_sensor(ModemChannelCountSensor, mock_runtime_data, modem_data={}, direction="downstream")
-    assert sensor.native_value is None
+    coord, entry = _make_coord_and_entry(MOCK_MODEM_DATA, mock_runtime_data)
+    entities = _create_data_dependent_entities(coord, entry, MOCK_MODEM_DATA)
+
+    unique_ids = [str(e._attr_unique_id) for e in entities]
+    assert not [uid for uid in unique_ids if "channel_count" in uid]
 
 
 def test_error_total_sensor_value(mock_runtime_data):
@@ -328,7 +333,7 @@ def test_modem_status_sensor_operational(mock_runtime_data):
     """Status sensor shows Operational when all good."""
     snapshot = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=MOCK_MODEM_DATA,
         health_info=HealthInfo(health_status=HealthStatus.RESPONSIVE),
     )
@@ -352,7 +357,7 @@ def test_channel_sensor_native_value_id_mode(mock_runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=MOCK_MODEM_DATA,
     )
     coord.last_update_success = True
@@ -394,7 +399,7 @@ def test_channel_sensor_native_value_position_mode(mock_runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=MOCK_MODEM_DATA,
     )
     coord.last_update_success = True
@@ -438,7 +443,7 @@ def test_channel_sensor_not_found(mock_runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=MOCK_MODEM_DATA,
     )
 
@@ -634,7 +639,7 @@ def test_lan_stats_sensor_value(mock_runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=MODEM_DATA_LAN_SINGLE,
     )
     coord.last_update_success = True
@@ -776,7 +781,7 @@ def test_create_data_dependent_entities(mock_runtime_data):
     #   No lan_stats
     #
     # Expected entities:
-    #   2 channel counts (DS + US)
+    #   0 channel counts (DS/US removed — always 0 on an XGS-PON gateway)
     #   2 error totals (corrected + uncorrected)
     #   2 error rates (corrected + uncorrected)
     #   1 software version
@@ -784,8 +789,8 @@ def test_create_data_dependent_entities(mock_runtime_data):
     #   1 last boot time (uptime present)
     #   12 channel sensors (see test_create_channel_sensors_downstream)
     #   0 LAN sensors (no lan_stats)
-    # Total = 21
-    assert len(entities) == 21
+    # Total = 19
+    assert len(entities) == 19
 
     rate_sensors = [e for e in entities if isinstance(e, ModemErrorRateSensor)]
     assert len(rate_sensors) == 2
@@ -834,8 +839,8 @@ def test_create_data_dependent_entities_no_channels(mock_runtime_data):
     coord, entry = _make_coord_and_entry(minimal_data, mock_runtime_data)
     entities = _create_data_dependent_entities(coord, entry, minimal_data)
 
-    # 2 channel counts + 1 software version + 0 channels + 0 LAN = 3
-    assert len(entities) == 3
+    # 0 channel counts (removed) + 1 software version + 0 channels + 0 LAN = 1
+    assert len(entities) == 1
 
 
 def test_create_data_dependent_entities_with_passthrough(mock_runtime_data):
@@ -847,9 +852,9 @@ def test_create_data_dependent_entities_with_passthrough(mock_runtime_data):
     coord, entry = _make_coord_and_entry(MODEM_DATA_WITH_PASSTHROUGH, mock_runtime_data)
     entities = _create_data_dependent_entities(coord, entry, MODEM_DATA_WITH_PASSTHROUGH)
 
-    # Base case has 21 entities (see test_create_data_dependent_entities).
-    # MODEM_DATA_WITH_PASSTHROUGH adds 3 Tier 3 fields → 21 + 3 = 24.
-    assert len(entities) == 24
+    # Base case has 19 entities (see test_create_data_dependent_entities).
+    # MODEM_DATA_WITH_PASSTHROUGH adds 3 Tier 3 fields → 19 + 3 = 22.
+    assert len(entities) == 22
 
     passthrough = [e for e in entities if isinstance(e, SystemInfoFieldSensor)]
     assert len(passthrough) == 3
@@ -890,7 +895,7 @@ def test_deferred_creation_on_first_data(mock_runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.UNREACHABLE,
-        docsis_status=DocsisStatus.NOT_LOCKED,
+        pon_status=PonStatus.NOT_LOCKED,
         modem_data=None,
     )
 
@@ -914,7 +919,7 @@ def test_deferred_creation_on_first_data(mock_runtime_data):
     # Simulate coordinator update with valid data
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=MOCK_MODEM_DATA,
     )
     listener_fn()
@@ -922,7 +927,7 @@ def test_deferred_creation_on_first_data(mock_runtime_data):
     # Entities should be added
     add_entities.assert_called_once()
     created = add_entities.call_args[0][0]
-    assert len(created) == 21  # Same as test_create_data_dependent_entities
+    assert len(created) == 19  # Same as test_create_data_dependent_entities
 
 
 def test_deferred_creation_noop_while_no_data(mock_runtime_data):
@@ -938,7 +943,7 @@ def test_deferred_creation_noop_while_no_data(mock_runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.UNREACHABLE,
-        docsis_status=DocsisStatus.NOT_LOCKED,
+        pon_status=PonStatus.NOT_LOCKED,
         modem_data=None,
     )
 
@@ -1005,9 +1010,9 @@ def test_modem_sensor_unavailable_when_no_modem_data(mock_runtime_data):
 
 
 def test_system_info_sensor_returns_none_when_no_modem_data(mock_runtime_data):
-    """Channel count returns None when snapshot.modem_data is None."""
+    """_SystemInfoSensor reads None when snapshot.modem_data is None."""
     coord, entry = _make_coord_and_entry(None, mock_runtime_data)
-    sensor = ModemChannelCountSensor(coord, entry, direction="downstream")
+    sensor = ModemSoftwareVersionSensor(coord, entry)
     assert sensor.native_value is None
 
 
@@ -1023,7 +1028,7 @@ def test_last_boot_time_falls_back_to_stats_last_reset(mock_runtime_data):
     reset_time = datetime(2026, 1, 15, 8, 0, 0, tzinfo=UTC)
     snapshot = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data={"system_info": {}, "downstream": [], "upstream": []},
         stats_last_reset=reset_time,
     )
@@ -1044,7 +1049,7 @@ def test_last_boot_time_returns_none_when_no_uptime_or_reset(mock_runtime_data):
     """native_value returns None when both system_uptime and stats_last_reset are absent."""
     snapshot = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data={"system_info": {}, "downstream": [], "upstream": []},
     )
     coord = MagicMock()
@@ -1075,7 +1080,7 @@ def test_channel_sensor_native_value_none_when_no_modem_data(mock_runtime_data):
     # Replace coordinator data with a None-modem_data snapshot
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.UNREACHABLE,
-        docsis_status=DocsisStatus.NOT_LOCKED,
+        pon_status=PonStatus.NOT_LOCKED,
         modem_data=None,
     )
     assert sensor.native_value is None
@@ -1089,7 +1094,7 @@ def test_channel_sensor_attributes_empty_when_no_modem_data(mock_runtime_data):
 
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.UNREACHABLE,
-        docsis_status=DocsisStatus.NOT_LOCKED,
+        pon_status=PonStatus.NOT_LOCKED,
         modem_data=None,
     )
     assert sensor.extra_state_attributes == {}
@@ -1150,7 +1155,7 @@ def test_deferred_creation_cleanup_on_unload(mock_runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.UNREACHABLE,
-        docsis_status=DocsisStatus.NOT_LOCKED,
+        pon_status=PonStatus.NOT_LOCKED,
         modem_data=None,
     )
     coord.async_add_listener.return_value = unsub_fn
@@ -1188,7 +1193,7 @@ def test_deferred_creation_schedules_re_notification(mock_runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.UNREACHABLE,
-        docsis_status=DocsisStatus.NOT_LOCKED,
+        pon_status=PonStatus.NOT_LOCKED,
         modem_data=None,
     )
 
@@ -1205,7 +1210,7 @@ def test_deferred_creation_schedules_re_notification(mock_runtime_data):
     # Simulate coordinator update with valid data
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=MOCK_MODEM_DATA,
     )
     listener_fn()
@@ -1237,14 +1242,14 @@ async def test_deferred_re_notification_fires_coordinator_listeners(
 
     snapshot = ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=MOCK_MODEM_DATA,
     )
 
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.UNREACHABLE,
-        docsis_status=DocsisStatus.NOT_LOCKED,
+        pon_status=PonStatus.NOT_LOCKED,
         modem_data=None,
     )
 
@@ -1289,7 +1294,7 @@ def test_deferred_re_notification_not_scheduled_when_no_data(mock_runtime_data):
     coord = MagicMock()
     coord.data = ModemSnapshot(
         connection_status=ConnectionStatus.UNREACHABLE,
-        docsis_status=DocsisStatus.NOT_LOCKED,
+        pon_status=PonStatus.NOT_LOCKED,
         modem_data=None,
     )
 
@@ -1327,13 +1332,13 @@ def _setup_entry_inputs(
     snapshot = (
         ModemSnapshot(
             connection_status=ConnectionStatus.ONLINE,
-            docsis_status=DocsisStatus.OPERATIONAL,
+            pon_status=PonStatus.OPERATIONAL,
             modem_data=modem_data,
         )
         if modem_data is not None
         else ModemSnapshot(
             connection_status=ConnectionStatus.UNREACHABLE,
-            docsis_status=DocsisStatus.NOT_LOCKED,
+            pon_status=PonStatus.NOT_LOCKED,
             modem_data=None,
         )
     )

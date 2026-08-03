@@ -35,7 +35,7 @@ system_info:
       response_key: "GetCustomerStatusConnectionInfoResponse"
       fields:
         - source: "CustomerConnNetworkAccess"
-          field: docsis_status
+          field: pon_status
           type: string
 
     - format: hnap
@@ -82,7 +82,7 @@ system_info:
       resource: "/MotoConnection.asp"
       fields:
         - label: "Cable Modem Status"
-          field: docsis_status
+          field: pon_status
           type: string
 ```
 
@@ -92,7 +92,7 @@ system_info:
 system_info:
   sources:
     - format: html_fields
-      resource: "/DocsisStatus.asp"
+      resource: "/PonStatus.asp"
       fields:
         - id: "SystemUpTime"
           pattern: "System Up Time:\\s*(.*)"
@@ -169,7 +169,7 @@ system_info:
           type: string
           path: "cablemodem"
         - key: "status"
-          field: docsis_status
+          field: pon_status
           type: string
           path: "cablemodem"
 ```
@@ -237,7 +237,7 @@ to normalize modem-specific raw values to the canonical form.
 
 | Field | Canonical value | Raw examples | Purpose |
 |-------|----------------|--------------|---------|
-| `docsis_status` | `"Operational"` | `"Allowed"`, `"Connected"`, `"Good"`, `"success"`, `"online"` | Canonical success value. When the parser provides this field, the orchestrator uses it as-is. When absent, the orchestrator enriches `system_info` from channel `lock_status` (see RUNTIME_POLLING_SPEC § Status Derivation). |
+| `pon_status` | `"Operational"` | `"Allowed"`, `"Connected"`, `"Good"`, `"success"`, `"online"` | Canonical success value. When the parser provides this field, the orchestrator uses it as-is. When absent, the orchestrator enriches `system_info` from channel `lock_status` (see RUNTIME_POLLING_SPEC § Status Derivation). |
 
 **Diagnostic Pass-Through:** Values that represent in-progress or error
 states (e.g., `"Ranging"`, `"Scanning"`, `"Locked"`, `"In Progress"`,
@@ -247,8 +247,8 @@ Status sensor to show "Operational" when all is well, but preserve the
 specific modem-reported state during outages or startup.
 
 ```yaml
-# Example: normalize modem-specific docsis_status to canonical value
-- field: docsis_status
+# Example: normalize modem-specific pon_status to canonical value
+- field: pon_status
   label: "Network Access"
   type: string
   map:
@@ -515,7 +515,7 @@ system_info fields are organized into tiers that determine how they
 surface as HA entities.
 
 **Tier 1 — Canonical (4 fields):** `software_version`, `hardware_version`,
-`system_uptime`, `docsis_status`. Defined in `SYSTEM_INFO_FIELDS`
+`system_uptime`, `pon_status`. Defined in `SYSTEM_INFO_FIELDS`
 (field_registry.py). Always expected. Drive core behavior (status
 derivation, device info, uptime sensors).
 

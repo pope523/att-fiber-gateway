@@ -30,8 +30,8 @@
     "upstream_channel_count"
   ],
   "_expected_missing_system_info_fields": [
-    "docsis_status",
     "hardware_version",
+    "pon_status",
     "software_version",
     "system_uptime"
   ],

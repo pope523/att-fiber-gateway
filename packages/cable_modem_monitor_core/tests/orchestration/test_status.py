@@ -15,7 +15,7 @@ from typing import Any
 
 from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     ConnectionStatus,
-    DocsisStatus,
+    PonStatus,
 )
 from solentlabs.cable_modem_monitor_core.orchestration.status import (
     derive_connection_status,
@@ -35,20 +35,20 @@ class TestDeriveConnectionStatus:
 
     def test_channelless_operational_string_is_online(self) -> None:
         """Fiber gateway: no channels but an operational link string -> ONLINE."""
-        data = {"downstream": [], "upstream": [], "system_info": {"docsis_status": "Operational"}}
+        data = {"downstream": [], "upstream": [], "system_info": {"pon_status": "Operational"}}
         assert derive_connection_status(data) == ConnectionStatus.ONLINE
 
     def test_channelless_operational_enum_is_online(self) -> None:
         """The StrEnum member compares equal to the canonical string."""
-        data = {"downstream": [], "upstream": [], "system_info": {"docsis_status": DocsisStatus.OPERATIONAL}}
+        data = {"downstream": [], "upstream": [], "system_info": {"pon_status": PonStatus.OPERATIONAL}}
         assert derive_connection_status(data) == ConnectionStatus.ONLINE
 
     def test_channelless_non_operational_is_no_signal(self) -> None:
-        data = {"downstream": [], "upstream": [], "system_info": {"docsis_status": "Down"}}
+        data = {"downstream": [], "upstream": [], "system_info": {"pon_status": "Down"}}
         assert derive_connection_status(data) == ConnectionStatus.NO_SIGNAL
 
     def test_channelless_other_system_info_is_no_signal(self) -> None:
-        """system_info without docsis_status is not enough to be ONLINE."""
+        """system_info without pon_status is not enough to be ONLINE."""
         data = {"downstream": [], "upstream": [], "system_info": {"software_version": "6.34.7"}}
         assert derive_connection_status(data) == ConnectionStatus.NO_SIGNAL
 
@@ -57,7 +57,7 @@ class TestDeriveConnectionStatus:
         assert derive_connection_status(data) == ConnectionStatus.NO_SIGNAL
 
     def test_channels_present_beats_missing_status(self) -> None:
-        """Regression: channel presence wins even without docsis_status."""
+        """Regression: channel presence wins even without pon_status."""
         data = {"downstream": [{"channel_id": "1"}], "upstream": [{"channel_id": "2"}], "system_info": {}}
         assert derive_connection_status(data) == ConnectionStatus.ONLINE
 

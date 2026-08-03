@@ -365,7 +365,7 @@ class ZeroChannelsNoSystemInfo:
 class SystemInfoFieldsChanged:
     """system_info field set changed between polls — possible firmware update.
 
-    Only fires when the parser-level field set changes (docsis_status is
+    Only fires when the parser-level field set changes (pon_status is
     included; orchestrator-derived rate_* fields are excluded).
     """
 
@@ -436,7 +436,7 @@ class RecoveryWindowClosed:
 
     model: str
     elapsed_seconds: float
-    last_docsis_status: str
+    last_pon_status: str
     level: EventLevel = field(default=EventLevel.INFO, init=False)
 
 

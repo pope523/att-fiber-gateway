@@ -25,8 +25,8 @@ from solentlabs.cable_modem_monitor_core.orchestration.models import (
 from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     CollectorSignal,
     ConnectionStatus,
-    DocsisStatus,
     HealthStatus,
+    PonStatus,
 )
 
 from custom_components.bgw320.const import (
@@ -249,7 +249,7 @@ def mock_modem_snapshot(mock_health_info: HealthInfo) -> ModemSnapshot:
     """A complete ModemSnapshot with modem data."""
     return ModemSnapshot(
         connection_status=ConnectionStatus.ONLINE,
-        docsis_status=DocsisStatus.OPERATIONAL,
+        pon_status=PonStatus.OPERATIONAL,
         modem_data=MOCK_MODEM_DATA,
         health_info=mock_health_info,
         collector_signal=CollectorSignal.OK,

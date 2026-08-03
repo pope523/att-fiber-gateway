@@ -36,14 +36,14 @@ map directly to test cases. Grouped by concern area.
 | 7 | Collector returns `ModemResult(success=True)` | | |
 | 8 | Orchestrator: streak=0 (already 0) | | |
 | 9 | Orchestrator: derive connection_status | | ONLINE |
-| 10 | Orchestrator: derive docsis_status | | OPERATIONAL |
+| 10 | Orchestrator: derive pon_status | | OPERATIONAL |
 | 11 | Orchestrator: read HM.latest | | |
 | 12 | Return `ModemSnapshot` | last_status=ONLINE | |
 
 **Assertions:**
 
 - `snapshot.connection_status == ONLINE`
-- `snapshot.docsis_status == OPERATIONAL`
+- `snapshot.pon_status == OPERATIONAL`
 - `snapshot.modem_data` has 24 DS and 4 US channels
 - `snapshot.collector_signal == OK`
 - `orchestrator.status == ONLINE`
@@ -164,7 +164,7 @@ only one authenticated session.
 
 **Preconditions:** Various downstream channel lock_status combinations.
 
-| DS lock_status values | US present | Expected docsis_status |
+| DS lock_status values | US present | Expected pon_status |
 |-----------------------|-----------|----------------------|
 | All `"locked"` | Yes | `OPERATIONAL` |
 | All `"locked"` | No (0 US) | `PARTIAL_LOCK` |
@@ -460,7 +460,7 @@ any of its declared sources at all. UC-04: `fulfilled == expected`
 with empty channels. UC-19a: `fulfilled == 0` with `expected > 0`.
 
 **Background:** Issue #151. Surfaced on Netgear CM1200 returning a
-7 KB stub on both `/DocsisStatus.htm` and `/RouterStatus.htm` for
+7 KB stub on both `/PonStatus.htm` and `/RouterStatus.htm` for
 ~8 minutes after a fresh integration re-add — all four expected
 `Init…TableTagValue` JS function bodies absent. Integration sat
 silent at `no_signal` until the modem eventually self-corrected with
@@ -1484,7 +1484,7 @@ sequenceDiagram
   a flakey modem mid-window may re-press restart; see UC-42.
 - Snapshots during ranging may report reduced channel bonding
   (e.g., 1 DS / 1 US) before full bonding restores. With at least
-  one locked downstream and upstream, `DocsisStatus = OPERATIONAL`
+  one locked downstream and upstream, `PonStatus = OPERATIONAL`
   is correct — the modem is online at reduced capacity. Channel-
   count sensors render the actual counts faithfully. Detecting
   reduced bonding relative to a steady-state baseline is a capacity

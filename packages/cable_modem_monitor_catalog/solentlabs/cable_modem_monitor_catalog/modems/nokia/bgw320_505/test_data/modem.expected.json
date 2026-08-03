@@ -1,7 +1,7 @@
 {
   "downstream": [],
   "system_info": {
-    "docsis_status": "Operational",
+    "pon_status": "Operational",
     "downstream_channel_count": 0,
     "hardware_version": "02001E0046004F",
     "optical_rx_power": "-17.0",

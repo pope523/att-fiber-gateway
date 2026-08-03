@@ -45,13 +45,13 @@ class ConnectionStatus(Enum):
     NO_SIGNAL = "no_signal"
 
 
-class DocsisStatus(StrEnum):
+class PonStatus(StrEnum):
     """Well-known DOCSIS status values.
 
-    ``enrich_docsis_status`` writes one of these into ``system_info``
-    when the parser does not provide ``docsis_status``.  StrEnum members
+    ``enrich_pon_status`` writes one of these into ``system_info``
+    when the parser does not provide ``pon_status``.  StrEnum members
     compare equal to their string values, so
-    ``docsis == DocsisStatus.OPERATIONAL`` works whether *docsis* is an
+    ``docsis == PonStatus.OPERATIONAL`` works whether *docsis* is an
     enum member or a plain ``"Operational"`` string.
 
     ``OPERATIONAL`` uses title-case ``"Operational"`` to match the

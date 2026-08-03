@@ -481,7 +481,7 @@ class Orchestrator:
         7. If collection failed, apply signal → policy mapping
            (connectivity failures may trigger a recovery window)
         8. On success, derive connection_status from data
-        9. Enrich system_info.docsis_status if absent (from lock_status)
+        9. Enrich system_info.pon_status if absent (from lock_status)
         10. Hand the snapshot to the recovery module
             (runs the reboot-signal check, may enter or exit a window)
         11. Read latest HealthInfo from HealthMonitor (if present)
@@ -753,7 +753,7 @@ class ModemSnapshot:
 
     Attributes:
         connection_status: Derived from collector signal and data.
-        docsis_status: Read from system_info["docsis_status"] (parser-
+        pon_status: Read from system_info["pon_status"] (parser-
             provided or orchestrator-enriched from lock_status fields).
             Falls back to "unknown" when the field is absent.
         modem_data: Parsed channel and system_info data. None on
@@ -768,7 +768,7 @@ class ModemSnapshot:
     """
 
     connection_status: ConnectionStatus
-    docsis_status: str
+    pon_status: str
     modem_data: ModemData | None = None
     health_info: HealthInfo | None = None
     collector_signal: CollectorSignal = CollectorSignal.OK
@@ -913,7 +913,7 @@ class ConnectionStatus(Enum):
 # is a health probe signal. ConnectionStatus has no DEGRADED value.
 
 
-class DocsisStatus(StrEnum):
+class PonStatus(StrEnum):
     """Well-known DOCSIS status values.
 
     OPERATIONAL matches the canonical system_info value.
@@ -993,8 +993,8 @@ def get_modem_data(self) -> ModemSnapshot:
     self._auth_failure_streak = 0
 
     status = self._derive_connection_status(result.modem_data)
-    self._enrich_docsis_status(result.modem_data)  # fills system_info if absent
-    docsis_status = (result.modem_data or {}).get("system_info", {}).get("docsis_status", "unknown")
+    self._enrich_pon_status(result.modem_data)  # fills system_info if absent
+    pon_status = (result.modem_data or {}).get("system_info", {}).get("pon_status", "unknown")
 
     # Hand the snapshot to the recovery module. It runs the reboot-
     # signal check (possibly entering a window), and — if a window is
@@ -1006,7 +1006,7 @@ def get_modem_data(self) -> ModemSnapshot:
 
     health_info = self._health_monitor.latest if self._health_monitor else None
     # ... transition detection ...
-    return ModemSnapshot(connection_status=status, docsis_status=docsis_status, health_info=health_info, ...)
+    return ModemSnapshot(connection_status=status, pon_status=pon_status, health_info=health_info, ...)
 ```
 
 ### Connection Status Derivation
@@ -2031,7 +2031,7 @@ Signals:
 - **Uptime drop** — modem-reported `system_uptime` decreased from
   the previous poll. Only evaluated when the modem exposes the
   field.
-- **Transitional docsis** — `docsis_status` just *entered* a
+- **Transitional docsis** — `pon_status` just *entered* a
   ranging-like state (Denied, not_locked, partial_lock) from a
   stable state (Operational, or the initial "unknown"). This signal
   is **edge-triggered**, not level-triggered: a modem chronically

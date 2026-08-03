@@ -68,7 +68,7 @@ class SnapshotEventPayload(BaseModel):
 
     schema_version: int
     connection_status: str
-    docsis_status: str
+    pon_status: str
     collector_signal: str
     error: str = ""
     stats_last_reset: str | None = None

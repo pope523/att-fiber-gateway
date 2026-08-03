@@ -34,7 +34,7 @@ source data is a delimited string inside a JS function body.
 # parser.yaml — JS-embedded delimited strings, multiple functions per section
 downstream:
   format: javascript
-  resource: "/DocsisStatus.htm"
+  resource: "/PonStatus.htm"
   functions:
     - name: "InitDsTableTagValue"
       channel_type: "qam"
@@ -99,7 +99,7 @@ downstream:
 
 upstream:
   format: javascript
-  resource: "/DocsisStatus.htm"
+  resource: "/PonStatus.htm"
   functions:
     - name: "InitUsTableTagValue"
       channel_type: "atdma"

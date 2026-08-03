@@ -327,7 +327,7 @@ firmware-version-coupled — new firmware that lands on a different
 page (firmware-update prompt, change-password flow, captive state)
 breaks auth where it didn't before. A prior alpha cycle hit this
 from the other direction: a `Login redirect mismatch: expected
-path containing '/DocsisStatus.htm', got '/ErrorMsg.htm'` error
+path containing '/PonStatus.htm', got '/ErrorMsg.htm'` error
 looked like a regression and a softening fix was drafted, but the
 strict check was correctly identifying a real auth failure that
 softening would have masked. The principle runs both directions —

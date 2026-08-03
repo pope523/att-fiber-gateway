@@ -14,8 +14,8 @@ from solentlabs.cable_modem_monitor_core.orchestration.models import (
 from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     CollectorSignal,
     ConnectionStatus,
-    DocsisStatus,
     HealthStatus,
+    PonStatus,
 )
 
 
@@ -80,7 +80,7 @@ class TestModemSnapshot:
         """Snapshot with only required fields."""
         snap = ModemSnapshot(
             connection_status=ConnectionStatus.ONLINE,
-            docsis_status=DocsisStatus.OPERATIONAL,
+            pon_status=PonStatus.OPERATIONAL,
         )
         assert snap.modem_data is None
         assert snap.health_info is None
@@ -92,7 +92,7 @@ class TestModemSnapshot:
         health = HealthInfo(health_status=HealthStatus.RESPONSIVE)
         snap = ModemSnapshot(
             connection_status=ConnectionStatus.ONLINE,
-            docsis_status=DocsisStatus.OPERATIONAL,
+            pon_status=PonStatus.OPERATIONAL,
             modem_data={"downstream": [{"channel_id": 1}]},
             health_info=health,
             collector_signal=CollectorSignal.OK,
@@ -108,65 +108,65 @@ class TestModemSnapshotToEventPayload:
         """Core status fields are present at the top level."""
         snap = ModemSnapshot(
             connection_status=ConnectionStatus.ONLINE,
-            docsis_status=DocsisStatus.OPERATIONAL,
+            pon_status=PonStatus.OPERATIONAL,
             collector_signal=CollectorSignal.OK,
             error="",
         )
         payload = snap.to_event_payload()
         assert payload.connection_status == "online"
-        assert payload.docsis_status == "Operational"
+        assert payload.pon_status == "Operational"
         assert payload.collector_signal == "ok"
         assert payload.error == ""
         assert payload.modem_data is None
         assert payload.health_info is None
 
-    def test_docsis_status_stripped_from_system_info(self) -> None:
-        """docsis_status is removed from system_info in the emitted payload."""
+    def test_pon_status_stripped_from_system_info(self) -> None:
+        """pon_status is removed from system_info in the emitted payload."""
         snap = ModemSnapshot(
             connection_status=ConnectionStatus.ONLINE,
-            docsis_status=DocsisStatus.OPERATIONAL,
+            pon_status=PonStatus.OPERATIONAL,
             modem_data={
                 "downstream": [],
                 "upstream": [],
                 "system_info": {
-                    "docsis_status": "Operational",
+                    "pon_status": "Operational",
                     "system_uptime": "1 days 00h:00m:00s",
                 },
             },
         )
         payload = snap.to_event_payload()
         assert payload.modem_data is not None
-        assert "docsis_status" not in payload.modem_data.system_info
+        assert "pon_status" not in payload.modem_data.system_info
         assert payload.modem_data.system_info["system_uptime"] == "1 days 00h:00m:00s"
 
     def test_original_modem_data_not_mutated(self) -> None:
         """to_event_payload() does not modify the snapshot's modem_data dict."""
-        system_info = {"docsis_status": "Operational", "system_uptime": "0 days"}
+        system_info = {"pon_status": "Operational", "system_uptime": "0 days"}
         snap = ModemSnapshot(
             connection_status=ConnectionStatus.ONLINE,
-            docsis_status=DocsisStatus.OPERATIONAL,
+            pon_status=PonStatus.OPERATIONAL,
             modem_data={"downstream": [], "upstream": [], "system_info": system_info},
         )
         snap.to_event_payload()
-        assert "docsis_status" in system_info
+        assert "pon_status" in system_info
 
     def test_failure_snapshot_no_modem_data(self) -> None:
-        """Top-level docsis_status is present even when modem_data is null."""
+        """Top-level pon_status is present even when modem_data is null."""
         snap = ModemSnapshot(
             connection_status=ConnectionStatus.UNREACHABLE,
-            docsis_status=DocsisStatus.UNKNOWN,
+            pon_status=PonStatus.UNKNOWN,
             collector_signal=CollectorSignal.CONNECTIVITY,
             error="timed out",
         )
         payload = snap.to_event_payload()
-        assert payload.docsis_status == "unknown"
+        assert payload.pon_status == "unknown"
         assert payload.modem_data is None
 
-    def test_system_info_without_docsis_status(self) -> None:
-        """system_info that never had docsis_status is left unchanged."""
+    def test_system_info_without_pon_status(self) -> None:
+        """system_info that never had pon_status is left unchanged."""
         snap = ModemSnapshot(
             connection_status=ConnectionStatus.ONLINE,
-            docsis_status=DocsisStatus.OPERATIONAL,
+            pon_status=PonStatus.OPERATIONAL,
             modem_data={
                 "downstream": [],
                 "upstream": [],

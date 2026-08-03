@@ -130,12 +130,12 @@ def test_normalize_channel_type(value: str, expected: str, desc: str) -> None:
 # │ "SoftwareModelName"      │ "model_name"         │ software model alias   │
 # │ "SystemUptime"           │ "system_uptime"      │ uptime match           │
 # │ "Uptime"                 │ "system_uptime"      │ short uptime alias     │
-# │ "NetworkAccess"          │ "docsis_status"      │ network access         │
+# │ "NetworkAccess"          │ "pon_status"      │ network access         │
 # │ "MacAddress"             │ None                 │ mac not mapped (PII)   │
 # │ "SerialNumber"           │ None                 │ serial not mapped (PII)│
 # │ "CurSystemTime"          │ "system_time"        │ system time variant    │
 # │ "SystemTime"             │ "system_time"        │ system time            │
-# │ "InternetConnection"     │ "docsis_status"      │ internet connection    │
+# │ "InternetConnection"     │ "pon_status"      │ internet connection    │
 # │ "UnknownField"           │ None                 │ no match               │
 # └──────────────────────────┴──────────────────────┴────────────────────────┘
 
@@ -148,12 +148,12 @@ SYSTEM_INFO_KEY_CASES = [
     ("SoftwareModelName",      "model_name",            "software_model"),
     ("SystemUptime",           "system_uptime",         "system_uptime"),
     ("Uptime",                 "system_uptime",         "short_uptime"),
-    ("NetworkAccess",          "docsis_status",         "network_access"),
+    ("NetworkAccess",          "pon_status",         "network_access"),
     ("MacAddress",             None,                    "mac_not_mapped_pii"),
     ("SerialNumber",           None,                    "serial_not_mapped_pii"),
     ("CurSystemTime",          "system_time",           "cur_system_time"),
     ("SystemTime",             "system_time",           "system_time"),
-    ("InternetConnection",     "docsis_status",         "internet_connection"),
+    ("InternetConnection",     "pon_status",         "internet_connection"),
     ("UnknownField",           None,                    "no_match"),
 ]
 # fmt: on

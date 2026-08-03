@@ -243,7 +243,7 @@ The three input signals are:
 
 - **connection_status** — from the data collection pipeline (auth, fetch, parse)
 - **health_status** — from lightweight health probes (ICMP, HTTP)
-- **docsis_status** — from downstream channel lock status
+- **pon_status** — from downstream channel lock status
 
 See [ENTITY_MODEL_SPEC.md § Status Sensor](../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md#status-sensor) for full details.
 

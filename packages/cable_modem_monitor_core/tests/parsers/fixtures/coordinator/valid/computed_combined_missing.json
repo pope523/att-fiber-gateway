@@ -16,7 +16,7 @@
       ]
     },
     "computed": {
-      "docsis_status": {
+      "pon_status": {
         "operation": "combined_status",
         "inputs": {
           "ds": "downstream_status",

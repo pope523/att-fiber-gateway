@@ -42,8 +42,8 @@ from solentlabs.cable_modem_monitor_core.orchestration.models import (
 )
 from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     ConnectionStatus,
-    DocsisStatus,
     HealthStatus,
+    PonStatus,
 )
 
 from .const import (
@@ -68,8 +68,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 _DOCSIS_DISPLAY: dict[str, str] = {
-    DocsisStatus.NOT_LOCKED: "Not Locked",
-    DocsisStatus.PARTIAL_LOCK: "Partial Lock",
+    PonStatus.NOT_LOCKED: "Not Locked",
+    PonStatus.PARTIAL_LOCK: "Partial Lock",
 }
 
 
@@ -104,7 +104,7 @@ def _compute_display_status(
         return docsis_label
     if effective_health == HealthStatus.ICMP_BLOCKED:
         return "ICMP Blocked"
-    if docsis in (DocsisStatus.OPERATIONAL, DocsisStatus.UNKNOWN):
+    if docsis in (PonStatus.OPERATIONAL, PonStatus.UNKNOWN):
         return "Operational"
     return docsis.replace("_", " ").title()
 
@@ -374,7 +374,7 @@ class ModemStatusSensor(ModemSensorBase):
         return _compute_display_status(
             snapshot.connection_status,
             self._latest_health_status,
-            snapshot.docsis_status,
+            snapshot.pon_status,
         )
 
     @functools.cached_property
@@ -385,7 +385,7 @@ class ModemStatusSensor(ModemSensorBase):
         return {
             "connection_status": snapshot.connection_status.value,
             "health_status": (health_status.value if health_status else "unknown"),
-            "docsis_status": snapshot.docsis_status,
+            "pon_status": snapshot.pon_status,
             "diagnosis": _derive_diagnosis(health_status),
         }
 
@@ -446,32 +446,6 @@ class _SystemInfoSensor(ModemSensorBase):
         if modem_data is None:
             return {}
         return modem_data.get("system_info", {})  # type: ignore[no-any-return]
-
-
-class ModemChannelCountSensor(_SystemInfoSensor):
-    """Channel count sensor (downstream or upstream)."""
-
-    def __init__(
-        self,
-        coordinator: DataUpdateCoordinator[ModemSnapshot],
-        entry: CableModemConfigEntry,
-        *,
-        direction: str,
-    ) -> None:
-        """Initialize the channel count sensor."""
-        super().__init__(coordinator, entry)
-        label = "DS" if direction == "downstream" else "US"
-        self._field = f"{direction}_channel_count"
-        self._attr_name = f"{label} Channel Count"
-        self._attr_unique_id = f"{entry.entry_id}_bgw320_{direction}_channel_count"
-        self._attr_icon = "mdi:numeric"
-        self._attr_state_class = SensorStateClass.MEASUREMENT
-
-    @functools.cached_property
-    def native_value(self) -> int | None:
-        """Return the channel count."""
-        value = self._get_system_info().get(self._field)
-        return int(value) if value is not None else None
 
 
 class ModemErrorTotalSensor(_SystemInfoSensor):
@@ -1020,9 +994,12 @@ def _create_data_dependent_entities(
     entities: list[SensorEntity] = []
     system_info = modem_data.get("system_info", {})
 
-    # Channel counts (always computed by parser coordinator)
-    entities.append(ModemChannelCountSensor(data_coord, entry, direction="downstream"))
-    entities.append(ModemChannelCountSensor(data_coord, entry, direction="upstream"))
+    # No DS/US channel-count sensors. The parser coordinator always emits
+    # downstream_channel_count/upstream_channel_count, but the BGW320-505 is
+    # an XGS-PON gateway with no DOCSIS channels, so both are permanently 0
+    # and the sensors are pure noise. The fields stay in
+    # CONSUMED_SYSTEM_INFO_FIELDS so the dynamic pass-through loop below does
+    # not resurrect them as generic sensors.
 
     # Error totals and rates (gated by SC-QAM capability — `total_*`
     # presence indicates the modem reports SC-QAM error counters. Rate

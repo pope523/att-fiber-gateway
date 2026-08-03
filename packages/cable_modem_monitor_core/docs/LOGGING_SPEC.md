@@ -177,7 +177,7 @@ Fields — `CounterReset`: `model`, `prev_corrected: int`, `cur_corrected: int`,
 Fields — `RestartCommandSent`: `model`, `elapsed_seconds: float`
 Fields — `RestartCommandFailed`: `model`, `reason: str`
 Fields — `RecoveryWindowOpened`: `model`, `reason: str`, `window_seconds: float`
-Fields — `RecoveryWindowClosed`: `model`, `elapsed_seconds: float`, `last_docsis_status: str`
+Fields — `RecoveryWindowClosed`: `model`, `elapsed_seconds: float`, `last_pon_status: str`
 Fields — `RecoveryObserverException`: `model`, `exc_type: str`
 
 ### Phase: actions (http exchange)

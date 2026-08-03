@@ -723,7 +723,7 @@ names/positions to canonical output fields.
 | `system_uptime` | string | yes |
 | `software_version` | string | yes |
 | `hardware_version` | string | yes |
-| `docsis_status` | string | sometimes |
+| `pon_status` | string | sometimes |
 
 **System info (Tier 2 registered — see FIELD_REGISTRY):**
 
@@ -1362,7 +1362,7 @@ The channel counts and field lists are returned separately so the LLM can
 sanity-check before writing ("Found 16 downstream, 4 upstream, system
 info has uptime + firmware version — does that look right?").
 `missing_system_info_fields` is the diff of `SYSTEM_INFO_FIELDS` (the four
-Tier-1 fields: `docsis_status`, `hardware_version`, `software_version`,
+Tier-1 fields: `pon_status`, `hardware_version`, `software_version`,
 `system_uptime`) against what the parser actually extracted. A non-empty list
 means the parser is missing a registry field — inspect the HAR for that data
 before proceeding. This is an advisory warning, not a hard stop; some modems

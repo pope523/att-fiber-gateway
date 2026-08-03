@@ -83,7 +83,7 @@ class TestMapApplied:
             fields=[
                 {
                     "source": "js_isCmOperational",
-                    "field": "docsis_status",
+                    "field": "pon_status",
                     "type": "string",
                     "map": {"online": "Operational"},
                 },
@@ -95,7 +95,7 @@ class TestMapApplied:
 
         result = parser.parse(resources)
 
-        assert result == {"docsis_status": "Operational"}
+        assert result == {"pon_status": "Operational"}
 
     def test_unmapped_value_passes_through(self) -> None:
         """Values not in the map pass through unchanged."""
@@ -103,7 +103,7 @@ class TestMapApplied:
             fields=[
                 {
                     "source": "js_isCmOperational",
-                    "field": "docsis_status",
+                    "field": "pon_status",
                     "type": "string",
                     "map": {"online": "Operational"},
                 },
@@ -115,7 +115,7 @@ class TestMapApplied:
 
         result = parser.parse(resources)
 
-        assert result == {"docsis_status": "offline"}
+        assert result == {"pon_status": "offline"}
 
 
 class TestMissingData:

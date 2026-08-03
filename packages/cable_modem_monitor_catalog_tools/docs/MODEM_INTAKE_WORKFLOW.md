@@ -342,7 +342,7 @@ Open the diagnostics JSON and sanity-check:
 - `data.downstream_channels` and `data.upstream_channels` have the
   expected counts and locked entries with full fields (frequency,
   power, snr, corrected/uncorrected where applicable)
-- `data.system_info` populated (docsis_status, system_uptime,
+- `data.system_info` populated (pon_status, system_uptime,
   hardware_version, software_version, total_corrected,
   total_uncorrected)
 - `data.config_entry.variant` matches the variant the contributor

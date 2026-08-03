@@ -1,8 +1,8 @@
 """Status derivation — connection and DOCSIS status from modem data.
 
 Pure functions that derive ConnectionStatus from a successful collection
-result.  ``enrich_docsis_status`` enriches ``system_info`` in-place
-when the parser does not provide ``docsis_status``.
+result.  ``enrich_pon_status`` enriches ``system_info`` in-place
+when the parser does not provide ``pon_status``.
 
 See RUNTIME_POLLING_SPEC.md Status Derivation and UC-07.
 """
@@ -14,7 +14,7 @@ from typing import Any
 
 from .events import ZeroChannelsNoSystemInfo
 from .logging import log_event
-from .signals import ConnectionStatus, DocsisStatus
+from .signals import ConnectionStatus, PonStatus
 
 _logger = logging.getLogger(__name__)
 
@@ -39,10 +39,10 @@ def derive_connection_status(modem_data: dict[str, Any], model: str = "") -> Con
 
     # Channel-less devices (e.g. fiber ONT/gateways) have no DOCSIS
     # downstream/upstream channels and instead report link health via
-    # docsis_status. An operational status means the WAN link is up,
+    # pon_status. An operational status means the WAN link is up,
     # so treat it as ONLINE rather than NO_SIGNAL (which assumes a
     # cable modem that failed to lock any channels).
-    if system_info.get("docsis_status") == DocsisStatus.OPERATIONAL:
+    if system_info.get("pon_status") == PonStatus.OPERATIONAL:
         return ConnectionStatus.ONLINE
 
     if system_info:
@@ -52,8 +52,8 @@ def derive_connection_status(modem_data: dict[str, Any], model: str = "") -> Con
     return ConnectionStatus.NO_SIGNAL
 
 
-def enrich_docsis_status(modem_data: dict[str, Any]) -> None:
-    """Enrich ``system_info`` with ``docsis_status`` when absent.
+def enrich_pon_status(modem_data: dict[str, Any]) -> None:
+    """Enrich ``system_info`` with ``pon_status`` when absent.
 
     Same enrichment pattern as error totals and channel counts: the
     parser provides the field when the modem exposes a native value;
@@ -66,7 +66,7 @@ def enrich_docsis_status(modem_data: dict[str, Any]) -> None:
     """
     system_info = modem_data.setdefault("system_info", {})
 
-    if "docsis_status" in system_info:
+    if "pon_status" in system_info:
         return  # parser provided it — don't overwrite
 
     downstream = modem_data.get("downstream", [])
@@ -85,8 +85,8 @@ def enrich_docsis_status(modem_data: dict[str, Any]) -> None:
     locked_count = sum(1 for ch in downstream if ch.get("lock_status") == "locked")
 
     if locked_count == 0:
-        system_info["docsis_status"] = DocsisStatus.NOT_LOCKED
+        system_info["pon_status"] = PonStatus.NOT_LOCKED
     elif locked_count == len(downstream) and len(upstream) > 0:
-        system_info["docsis_status"] = DocsisStatus.OPERATIONAL
+        system_info["pon_status"] = PonStatus.OPERATIONAL
     else:
-        system_info["docsis_status"] = DocsisStatus.PARTIAL_LOCK
+        system_info["pon_status"] = PonStatus.PARTIAL_LOCK

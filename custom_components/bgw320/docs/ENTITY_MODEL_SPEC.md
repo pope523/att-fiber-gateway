@@ -61,7 +61,7 @@ output (some gated by config).
 
 | Entity | unique_id suffix | State | device_class | state_class | Unit | Attributes |
 |--------|-----------------|-------|--------------|-------------|------|------------|
-| Status | `_status` | display¹ | — | — | — | `connection_status`, `health_status`, `docsis_status`, `diagnosis` |
+| Status | `_status` | display¹ | — | — | — | `connection_status`, `health_status`, `pon_status`, `diagnosis` |
 | Modem Info | `_info` | detected model | — | — | — | `manufacturer`, `model`, `release_date`, `docsis_version`, `status` (from Core's `ModemIdentity`) |
 | Software Version | `_software_version` | string | — | — | — | — |
 | System Uptime | `_system_uptime` | string | — | — | — | — |
@@ -228,7 +228,7 @@ meaning.
 |-----------|--------|--------|
 | `connection_status` | Orchestrator (pipeline outcome) | `online`, `no_signal`, `parser_issue`, `auth_failed`, `unreachable` |
 | `health_status` | Health pipeline (probe results) | `responsive`, `unresponsive`, `icmp_blocked`, `degraded` |
-| `docsis_status` | Orchestrator (normalized `lock_status`) | `operational`, `partial_lock`, `not_locked`, `unknown` |
+| `pon_status` | Orchestrator (normalized `lock_status`) | `operational`, `partial_lock`, `not_locked`, `unknown` |
 | `diagnosis` | HA integration (derived from `health_status`) | Free text |
 
 **Priority cascade** (most to least concerning):
@@ -241,8 +241,8 @@ meaning.
 | 4 | `health_status == degraded` | Degraded |
 | 5 | `connection_status == parser_issue` | Parser Error |
 | 6 | `connection_status == no_signal` | No Signal |
-| 7 | `docsis_status == not_locked` | Not Locked |
-| 8 | `docsis_status == partial_lock` | Partial Lock |
+| 7 | `pon_status == not_locked` | Not Locked |
+| 8 | `pon_status == partial_lock` | Partial Lock |
 | 9 | `health_status == icmp_blocked` | ICMP Blocked |
 | 10 | default | Operational |
 

@@ -1247,7 +1247,7 @@ new distribution mechanism on top of that work.
 - **Single-source system_info** — `modem_data` diagnostics summary
   reduced to evaluated connection + health state (6 fields);
   `system_info` is now the single source for all modem metadata.
-  `docsis_status` enriched into `system_info` (not derived in
+  `pon_status` enriched into `system_info` (not derived in
   parallel). Related to #117.
 - **Self-describing auth strategies + Core orchestrator factory** —
   auth models carry `display_name` and `transport` ClassVars on
@@ -1257,7 +1257,7 @@ new distribution mechanism on top of that work.
   modifications to existing code.
 - **Parser sandbox rules and contribution docs** — PARSING_SPEC,
   ONBOARDING_SPEC, SYSTEM_INFO_SPEC, MODEM_DIRECTORY_SPEC updated
-  with sandbox constraints, sanitization checks, and docsis_status
+  with sandbox constraints, sanitization checks, and pon_status
   pass-through semantics.
 
 ## [3.14.0-alpha.14] - 2026-04-09
@@ -1275,7 +1275,7 @@ new distribution mechanism on top of that work.
 - **Provisioned speed sensors** — `child_aggregates` for downstream/
   upstream provisioned speed, `scale` on `system_info`, fleet-wide
   rollout.
-- **YAML-driven `docsis_status` normalization** — StrEnum pass-through
+- **YAML-driven `pon_status` normalization** — StrEnum pass-through
   with configurable value mapping in parser YAML.
 
 ### Fixed
@@ -1285,7 +1285,7 @@ new distribution mechanism on top of that work.
 - **SB6190 `form_nonce` auth** — response reuse bug where auth manager
   consumed the response body twice; config completeness fixes.
   Related to #83, #93.
-- **TM1602A parser enrichment** — added `docsis_status`, upstream
+- **TM1602A parser enrichment** — added `pon_status`, upstream
   modulation, and metadata cleanup. Related to #112.
 - **CM1200 field mappings** — added missing field mappings and
   verification artifact. Related to #121.
@@ -1347,7 +1347,7 @@ new distribution mechanism on top of that work.
 - **`javascript_json` format detection** — MCP intake pipeline now
   detects JS variable assignments containing JSON arrays in
   `<script>` tags (e.g., TG3442DE `json_dsData = [{...}]`).
-- **Native `docsis_status`** — MB7621 (`Network Access`
+- **Native `pon_status`** — MB7621 (`Network Access`
   from MotoConnection.asp) and XB6/XB7 (`combined_status` computed
   from downstream + upstream status). Three modems now have native
   DOCSIS status instead of relying on lock-status derivation.
@@ -1402,7 +1402,7 @@ new distribution mechanism on top of that work.
   fleet. Removed SB8200v3 aggregate (no QAM error counters).
 - **DOCSIS status field normalized** — 9 modems using inconsistent
   field names (`network_access`, `cm_status`, `registration_status`)
-  normalized to canonical `docsis_status`.
+  normalized to canonical `pon_status`.
 - **CM1100 HAR** — added missing redirect target exposed by auth fix.
 - **Health skip logging** — distinguished "collection active" from
   "recent collection" in skip messages.
@@ -1468,7 +1468,7 @@ new distribution mechanism on top of that work.
   DOCSIS status and missing uptime on CM1200. (Related to #121)
 - **CM820B error totals and DOCSIS status** — Added aggregate section
   to CM820B parser.yaml for error totals. Added fallback in
-  `derive_docsis_status()` to check `system_info.docsis_status` when
+  `derive_docsis_status()` to check `system_info.pon_status` when
   per-channel `lock_status` is absent (2011-era hardware).
   (Related to #57)
 - **S33/S33v2 uptime note** — Corrected modem.yaml notes that claimed
@@ -2510,7 +2510,7 @@ To enable new features added in v3.11 (actual model display in device info, ICMP
   - Channel data now correctly parses 24 downstream and 6 upstream channels from HTML tables instead of JavaScript dummy data
   - Frequency, power, SNR, and error values now match the modem's web interface
   - System information (hardware version, firmware version, uptime) now displays correctly instead of "unknown"
-  - Parser now fetches both DocsisStatus.asp (channel data) and RouterStatus.asp (system info) for complete data
+  - Parser now fetches both PonStatus.asp (channel data) and RouterStatus.asp (system info) for complete data
 
 ### Added
 
@@ -2522,7 +2522,7 @@ To enable new features added in v3.11 (actual model display in device info, ICMP
 ### Changed
 
 - **CM600 Multi-Page Fetching** - Enhanced parser to fetch multiple pages for complete data
-  - DocsisStatus.asp for downstream/upstream channel data
+  - PonStatus.asp for downstream/upstream channel data
   - RouterStatus.asp for hardware version, firmware version, and system information
   - Graceful fallback if page fetching fails
 
@@ -2625,7 +2625,7 @@ This release provides extensive diagnostic information to help understand why th
   - Seamless fallback ensures backward compatibility with older firmware
   - Users no longer need to manually select different parser variants
 - **Netgear CM600 Authentication** - Fixed HTTP 401 errors on protected pages (Fixes Issue #3)
-  - Enabled HTTP Basic Authentication for `/DocsisStatus.asp`, `/DashBoard.asp`, `/RouterStatus.asp`
+  - Enabled HTTP Basic Authentication for `/PonStatus.asp`, `/DashBoard.asp`, `/RouterStatus.asp`
   - Changed `auth_required: False` to `auth_required: True` for protected endpoints
   - Updated login() method to use AuthFactory for proper credential handling
   - Index pages remain accessible without authentication for modem detection
@@ -2715,7 +2715,7 @@ This release provides extensive diagnostic information to help understand why th
 ### Added
 
 - **Netgear CM600 Support** - Full support for Netgear CM600 cable modem (Issue #3)
-  - JavaScript-based parser for DocsisStatus.asp page
+  - JavaScript-based parser for PonStatus.asp page
   - Extracts channel data from InitDsTableTagValue and InitUsTableTagValue functions
   - Comprehensive test coverage with real modem fixtures
   - Handles downstream and upstream channel parsing

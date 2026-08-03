@@ -1,7 +1,7 @@
 """Tests for the status sensor 10-level priority cascade.
 
 Verifies that _compute_display_status correctly maps the three input
-signals (connection_status, health_status, docsis_status) to a
+signals (connection_status, health_status, pon_status) to a
 human-readable display state.
 
 See ENTITY_MODEL_SPEC.md § Status Sensor.
@@ -12,8 +12,8 @@ from __future__ import annotations
 import pytest
 from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     ConnectionStatus,
-    DocsisStatus,
     HealthStatus,
+    PonStatus,
 )
 
 from custom_components.bgw320.sensor import _compute_display_status
@@ -21,7 +21,7 @@ from custom_components.bgw320.sensor import _compute_display_status
 # Aliases for table readability
 _C = ConnectionStatus
 _H = HealthStatus
-_D = DocsisStatus
+_D = PonStatus
 
 # ┌──────────────────────┬─────────────────┬──────────────────┬────────────────┬──────────────────────┐
 # │ connection           │ health          │ docsis           │ expected       │ description          │

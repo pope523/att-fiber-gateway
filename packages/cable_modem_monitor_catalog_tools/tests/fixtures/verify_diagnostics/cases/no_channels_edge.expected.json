@@ -43,7 +43,7 @@
     "error": ""
   },
   "system_info": {
-    "docsis_status": "Operational",
+    "pon_status": "Operational",
     "system_uptime": "1 day",
     "hardware_version": null,
     "software_version": null,

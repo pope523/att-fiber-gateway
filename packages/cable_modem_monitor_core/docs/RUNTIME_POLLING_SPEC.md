@@ -128,19 +128,19 @@ The orchestrator derives status fields after each poll:
 | Auth failure / lockout | `auth_failed` |
 | Connection error / timeout | `unreachable` |
 
-**`docsis_status`** — enriched into `system_info` (same pattern as
+**`pon_status`** — enriched into `system_info` (same pattern as
 error totals and channel counts). The parser provides it when the
 modem exposes a native value; the orchestrator fills it in when
-absent. `snapshot.docsis_status` reads from the enriched
-`system_info["docsis_status"]`.
+absent. `snapshot.pon_status` reads from the enriched
+`system_info["pon_status"]`.
 
-*Parser provides `docsis_status`:* YAML `map` entries normalize
+*Parser provides `pon_status`:* YAML `map` entries normalize
 vendor values to the canonical `"Operational"` (see
 SYSTEM_INFO_SPEC § Canonical Values). Non-mapped values pass through
 as raw diagnostic strings (e.g., `"Ranging"`). The orchestrator does
 not overwrite a parser-provided value.
 
-*Parser does not provide `docsis_status`:* The orchestrator derives
+*Parser does not provide `pon_status`:* The orchestrator derives
 it from downstream channel `lock_status` fields and writes it into
 `system_info`. If the data needed for derivation is not available
 (no downstream channels, or channels lack `lock_status`), the field
@@ -155,7 +155,7 @@ No sensor is created when the field is absent.
 | No DS channels | *(absent — cannot derive)* |
 | Channels lack `lock_status` | *(absent — cannot derive)* |
 
-The platform adapter composes `connection_status`, `docsis_status`,
+The platform adapter composes `connection_status`, `pon_status`,
 and `health_status` (from the health pipeline) into a display state
 via a priority cascade. See
 [ENTITY_MODEL_SPEC.md](../../../custom_components/cable_modem_monitor/docs/ENTITY_MODEL_SPEC.md#status-sensor)

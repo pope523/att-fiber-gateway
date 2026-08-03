@@ -30,14 +30,6 @@ CONF_SUPPORTS_HEAD = "supports_head"
 CONF_CREDENTIAL_ENCODING = "credential_encoding"
 CONF_CREDENTIAL_FIELD = "credential_field"
 
-# Config entry key — channel-bond onboarding eligibility.
-# Set to ``True`` by the config flow on fresh setup; absent for
-# upgraded entries that pre-date the channel-bond notifier. Never
-# mutated after create, so it doesn't trip the entry update listener
-# (which reloads the integration). Baseline totals themselves live in
-# the dedicated Store (``channel_bond_storage``), not entry data.
-CONF_CHANNEL_ONBOARDING_ELIGIBLE = "channel_onboarding_eligible"
-
 # Polling configuration (options flow)
 CONF_SCAN_INTERVAL = "scan_interval"
 CONF_HEALTH_CHECK_INTERVAL = "health_check_interval"

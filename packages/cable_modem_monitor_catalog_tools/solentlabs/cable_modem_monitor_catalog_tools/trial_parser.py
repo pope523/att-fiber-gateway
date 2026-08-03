@@ -24,6 +24,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+import yaml
 from solentlabs.cable_modem_monitor_catalog_tools.generate_golden_file import (
     generate_golden_file,
 )
@@ -77,9 +78,11 @@ def trial_parse(
     ds_count = result.channel_counts.get("downstream", 0)
     us_count = result.channel_counts.get("upstream", 0)
 
-    if ds_count == 0 and "downstream" in parser_yaml_content:
+    sections = _declared_sections(parser_yaml_content)
+
+    if ds_count == 0 and "downstream" in sections:
         errors.append("Downstream section defined but extracted 0 channels")
-    if us_count == 0 and "upstream" in parser_yaml_content:
+    if us_count == 0 and "upstream" in sections:
         errors.append("Upstream section defined but extracted 0 channels")
 
     # Validate channel field coverage
@@ -88,13 +91,17 @@ def trial_parse(
 
     # Validate system_info
     system_info = golden.get("system_info", {})
-    if "system_info" in parser_yaml_content and not system_info:
+    if "system_info" in sections and not system_info:
         warnings.append("system_info section defined but extracted no fields")
     for field_name, value in system_info.items():
         if value is None or value == "":
             warnings.append(f"system_info.{field_name} is empty")
 
-    passed = len(errors) == 0 and ds_count + us_count > 0
+    # A parser passes when it hit no errors and actually extracted
+    # something. Channels are not required: fiber ONT/gateways are
+    # channel-less and legitimately surface everything via system_info.
+    extracted_anything = ds_count + us_count > 0 or bool(system_info)
+    passed = len(errors) == 0 and extracted_anything
 
     return TrialResult(
         passed=passed,
@@ -104,6 +111,27 @@ def trial_parse(
         errors=errors,
         warnings=warnings,
     )
+
+
+def _declared_sections(parser_yaml_content: str) -> frozenset[str]:
+    """Return the top-level section names the parser config declares.
+
+    Parsed structurally rather than substring-matched against the raw
+    text: a parser.yaml whose *comments* mention "downstream" (as a
+    channel-less fiber config naturally does when explaining that it has
+    none) would otherwise be reported as declaring a downstream section
+    and fail with "extracted 0 channels".
+
+    Malformed YAML yields an empty set; ``generate_golden_file`` already
+    surfaces the parse failure as a hard error.
+    """
+    try:
+        parsed = yaml.safe_load(parser_yaml_content)
+    except yaml.YAMLError:
+        return frozenset()
+    if not isinstance(parsed, dict):
+        return frozenset()
+    return frozenset(str(key) for key in parsed)
 
 
 def _check_channel_fields(

@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 
 _logger = logging.getLogger(__name__)
 
-# docsis_status values that indicate the modem is still ranging /
+# pon_status values that indicate the modem is still ranging /
 # partially locked — used by the reboot-signal vote. Module-private
 # because nothing outside Recovery needs to read it.
 _TRANSITIONAL_DOCSIS: frozenset[str] = frozenset({"Denied", "not_locked", "partial_lock"})
@@ -94,7 +94,7 @@ class Recovery:
         self._prev_counters: tuple[int, int] | None = None
         self._prev_uptime: int | None = None
 
-        # Last-observed docsis_status from a successful poll. Two uses:
+        # Last-observed pon_status from a successful poll. Two uses:
         #   (1) the window-close log line — reported as
         #       "last snapshot docsis" (not "final status"): during
         #       a long outage evaluate_snapshot never runs, so this
@@ -107,7 +107,7 @@ class Recovery:
         #       non-transitional for edge purposes, so a modem that's
         #       already partial_lock on the first poll fires once and
         #       then stays quiet on subsequent polls.
-        self._last_docsis_status: str = "unknown"
+        self._last_pon_status: str = "unknown"
 
     @property
     def active(self) -> bool:
@@ -158,14 +158,14 @@ class Recovery:
         if isinstance(raw_system_info, dict):
             system_info = raw_system_info
 
-        docsis_status = str(system_info.get("docsis_status", "")).strip()
+        pon_status = str(system_info.get("pon_status", "")).strip()
 
         # Capture the previous docsis BEFORE updating — the
         # transitional_docsis signal is edge-triggered and needs to
         # know what state we were in last poll.
-        prev_docsis_status = self._last_docsis_status
-        if docsis_status:
-            self._last_docsis_status = docsis_status
+        prev_pon_status = self._last_pon_status
+        if pon_status:
+            self._last_pon_status = pon_status
 
         # Pull the two numeric signals once; _check_reboot_signals
         # compares them against the stored baselines.
@@ -178,8 +178,8 @@ class Recovery:
             reason = self._check_reboot_signals(
                 current_counters=current_counters,
                 current_uptime=current_uptime,
-                docsis_status=docsis_status,
-                prev_docsis_status=prev_docsis_status,
+                pon_status=pon_status,
+                prev_pon_status=prev_pon_status,
             )
             if reason is not None:
                 self._enter_from_internal(reason)
@@ -235,7 +235,7 @@ class Recovery:
             RecoveryWindowClosed(
                 model=self._modem_config.model,
                 elapsed_seconds=elapsed,
-                last_docsis_status=self._last_docsis_status,
+                last_pon_status=self._last_pon_status,
             ),
         )
         self._active = False
@@ -269,8 +269,8 @@ class Recovery:
         *,
         current_counters: tuple[int, int] | None,
         current_uptime: int | None,
-        docsis_status: str,
-        prev_docsis_status: str,
+        pon_status: str,
+        prev_pon_status: str,
     ) -> str | None:
         """2-of-3 vote over reboot-indicator signals.
 
@@ -279,7 +279,7 @@ class Recovery:
         - ``counter_reset`` — ``total_corrected`` or
           ``total_uncorrected`` dropped below the previous poll.
         - ``uptime_drop`` — ``system_uptime`` decreased.
-        - ``transitional_docsis`` — ``docsis_status`` just *entered*
+        - ``transitional_docsis`` — ``pon_status`` just *entered*
           a ranging-like state (Denied / not_locked / partial_lock)
           from a stable state (Operational or unknown). Edge-triggered:
           a modem chronically stuck in partial_lock does NOT fire this
@@ -314,7 +314,7 @@ class Recovery:
         # with a benign event like a user-initiated stats clear. We
         # only care about the *transition into* a transitional state,
         # which is what actually accompanies a reboot.
-        if docsis_status in _TRANSITIONAL_DOCSIS and prev_docsis_status not in _TRANSITIONAL_DOCSIS:
+        if pon_status in _TRANSITIONAL_DOCSIS and prev_pon_status not in _TRANSITIONAL_DOCSIS:
             fired.append("transitional_docsis")
 
         # Threshold vote (2-of-3). Single signals have too many

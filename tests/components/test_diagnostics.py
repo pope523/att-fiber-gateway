@@ -455,7 +455,7 @@ async def test_diagnostics_delegates_to_builder(mock_runtime_data):
     # modem_data contains only evaluated state — no system_info fields
     assert "total_corrected" not in result["modem_data"]
     assert "software_version" not in result["modem_data"]
-    assert "docsis_status" not in result["modem_data"]
+    assert "pon_status" not in result["modem_data"]
     # Full system_info pass-through (single source of truth)
     assert "system_info" in result
     assert result["system_info"]["software_version"] == "4502.9.016"

@@ -53,7 +53,7 @@ _HEALTHY_DATA: dict[str, Any] = {
     "health_coordinator": {"last_update_success": True, "update_interval": "0:00:30"},
     "modem_data": {"error": ""},
     "system_info": {
-        "docsis_status": "Operational",
+        "pon_status": "Operational",
         "system_uptime": "1 day",
         "hardware_version": "1.0",
         "software_version": "1.0",
@@ -214,7 +214,7 @@ def test_pii_fields_stripped_from_system_info(tmp_path: Path) -> None:
     sysinfo = result.verified_json["system_info"]
     assert "mac_address" not in sysinfo
     assert "serial_number" not in sysinfo
-    assert sysinfo["docsis_status"] == "Operational"  # non-PII fields retained
+    assert sysinfo["pon_status"] == "Operational"  # non-PII fields retained
 
 
 def test_no_warnings_on_healthy_diagnostics(tmp_path: Path) -> None:
@@ -462,11 +462,11 @@ def test_variant_override_empty_string_forces_none(tmp_path: Path) -> None:
 def test_imported_system_info_fields_drive_warnings(tmp_path: Path) -> None:
     """Smoke-check the SYSTEM_INFO_FIELDS registry import is wired up.
 
-    Removing ``docsis_status`` (a registry-managed Tier-1 field) must
+    Removing ``pon_status`` (a registry-managed Tier-1 field) must
     surface a partial-confirmation warning. If the import broke, no
     warning would fire and this test would catch it.
     """
-    data = _patched(system_info={**_HEALTHY_DATA["system_info"], "docsis_status": None})
+    data = _patched(system_info={**_HEALTHY_DATA["system_info"], "pon_status": None})
     diag_path = _write_diag(tmp_path, data)
 
     result = verify_diagnostics(
@@ -476,7 +476,7 @@ def test_imported_system_info_fields_drive_warnings(tmp_path: Path) -> None:
         verified_at=_TEST_DATE,
     )
 
-    assert any("docsis_status" in w for w in result.warnings)
+    assert any("pon_status" in w for w in result.warnings)
 
 
 # ---------------------------------------------------------------------------

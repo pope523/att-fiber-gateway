@@ -1199,7 +1199,7 @@ class TestSystemInfoFieldOutcomes:
         held = collector.system_info_fields_failed
         self._execute_with_diagnostics(
             collector,
-            ParseDiagnostics(system_info_fields_failed={"docsis_status": "garbage"}),
+            ParseDiagnostics(system_info_fields_failed={"pon_status": "garbage"}),
         )
 
         assert held == {"system_uptime": "01/17/2026 14:52:10"}

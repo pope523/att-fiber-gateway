@@ -11,12 +11,12 @@
     "format": "json",
     "resource": "/api/state",
     "fields": [
-      {"key": "status", "field": "docsis_status", "type": "string", "path": "modem", "map": {"operational": "Operational"}},
+      {"key": "status", "field": "pon_status", "type": "string", "path": "modem", "map": {"operational": "Operational"}},
       {"key": "upTime", "field": "system_uptime", "type": "string", "path": "modem"}
     ]
   },
   "_expected": {
-    "docsis_status": "Operational",
+    "pon_status": "Operational",
     "system_uptime": "3600"
   }
 }

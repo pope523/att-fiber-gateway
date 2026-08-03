@@ -57,7 +57,7 @@ from solentlabs.cable_modem_monitor_core.orchestration.orchestrator import (
 from solentlabs.cable_modem_monitor_core.orchestration.signals import (
     CollectorSignal,
     ConnectionStatus,
-    DocsisStatus,
+    PonStatus,
 )
 
 # ------------------------------------------------------------------
@@ -201,7 +201,7 @@ class TestFirstPoll:
         snapshot = orch.get_modem_data()
 
         assert snapshot.connection_status == ConnectionStatus.ONLINE
-        assert snapshot.docsis_status == DocsisStatus.OPERATIONAL
+        assert snapshot.pon_status == PonStatus.OPERATIONAL
         assert snapshot.modem_data is not None
         assert len(snapshot.modem_data["downstream"]) == 24
         assert len(snapshot.modem_data["upstream"]) == 4
@@ -313,27 +313,27 @@ class TestZeroChannels:
 # │ None "locked"                │ > 0    │ NOT_LOCKED       │ —                    │
 # │ No DS channels               │ any    │ UNKNOWN(absent)  │ —                    │
 # │ lock_status absent           │ > 0    │ UNKNOWN(absent)  │ —                    │
-# │ lock_status absent           │ > 0    │ raw string       │ docsis_status        │
-# │ lock_status absent           │ > 0    │ raw string       │ docsis_status (lc)   │
+# │ lock_status absent           │ > 0    │ raw string       │ pon_status        │
+# │ lock_status absent           │ > 0    │ raw string       │ pon_status (lc)   │
 # │ lock_status absent           │ > 0    │ raw string       │ non-operational      │
 # └──────────────────────────────┴────────┴──────────────────┴──────────────────────┘
 #
 # fmt: off
 DOCSIS_STATUS_CASES = [
     # (ds_channels,                      us_count, expected,               description,                system_info)
-    ([{"lock_status": "locked"}] * 4,    2,        DocsisStatus.OPERATIONAL,  "all locked + upstream",    None),
-    ([{"lock_status": "locked"}] * 4,    0,        DocsisStatus.PARTIAL_LOCK, "all locked + no upstream", None),
+    ([{"lock_status": "locked"}] * 4,    2,        PonStatus.OPERATIONAL,  "all locked + upstream",    None),
+    ([{"lock_status": "locked"}] * 4,    0,        PonStatus.PARTIAL_LOCK, "all locked + no upstream", None),
     ([{"lock_status": "locked"},
-      {"lock_status": "not_locked"}],    2,        DocsisStatus.PARTIAL_LOCK, "some locked",              None),
-    ([{"lock_status": "not_locked"}] * 3, 2,       DocsisStatus.NOT_LOCKED,   "none locked",              None),
-    ([],                                 2,        DocsisStatus.UNKNOWN,      "no DS channels",           None),
-    ([{"frequency": 600}] * 3,          2,        DocsisStatus.UNKNOWN,      "no lock_status field",     None),
-    ([{"frequency": 600}] * 3,          2,        "OPERATIONAL",             "fallback: docsis_status",
-     {"docsis_status": "OPERATIONAL"}),
-    ([{"frequency": 600}] * 3,          2,        "Operational",             "fallback: docsis_status case insensitive",
-     {"docsis_status": "Operational"}),
+      {"lock_status": "not_locked"}],    2,        PonStatus.PARTIAL_LOCK, "some locked",              None),
+    ([{"lock_status": "not_locked"}] * 3, 2,       PonStatus.NOT_LOCKED,   "none locked",              None),
+    ([],                                 2,        PonStatus.UNKNOWN,      "no DS channels",           None),
+    ([{"frequency": 600}] * 3,          2,        PonStatus.UNKNOWN,      "no lock_status field",     None),
+    ([{"frequency": 600}] * 3,          2,        "OPERATIONAL",             "fallback: pon_status",
+     {"pon_status": "OPERATIONAL"}),
+    ([{"frequency": 600}] * 3,          2,        "Operational",             "fallback: pon_status case insensitive",
+     {"pon_status": "Operational"}),
     ([{"frequency": 600}] * 3,          2,        "Not Synchronized",        "fallback: non-operational",
-     {"docsis_status": "Not Synchronized"}),
+     {"pon_status": "Not Synchronized"}),
 ]
 # fmt: on
 
@@ -343,7 +343,7 @@ DOCSIS_STATUS_CASES = [
     DOCSIS_STATUS_CASES,
     ids=[c[3] for c in DOCSIS_STATUS_CASES],
 )
-def test_docsis_status_derivation(
+def test_pon_status_derivation(
     ds_channels: list[dict[str, Any]],
     us_count: int,
     expected: str,
@@ -362,11 +362,11 @@ def test_docsis_status_derivation(
 
     snapshot = orch.get_modem_data()
 
-    assert snapshot.docsis_status == expected
+    assert snapshot.pon_status == expected
 
 
 # ------------------------------------------------------------------
-# enrich_docsis_status — unit-level (system_info mutation contract)
+# enrich_pon_status — unit-level (system_info mutation contract)
 # ------------------------------------------------------------------
 
 _US1 = [{"channel_id": 1}]
@@ -386,8 +386,8 @@ ENRICH_CASES = [
     ([],                            _US1,  {},                           None,           "no-ds"),
     ([_NO_LOCK] * 2,                _US1,  {},                           None,           "no-lock-status"),
     # Parser provided — not overwritten
-    ([_LOCKED] * 3,                 _US1,  {"docsis_status": "Allowed"}, "Allowed",      "parser-wins"),
-    ([_NO_LOCK] * 2,                _US1,  {"docsis_status": "Ranging"}, "Ranging",      "parser-no-lock"),
+    ([_LOCKED] * 3,                 _US1,  {"pon_status": "Allowed"}, "Allowed",      "parser-wins"),
+    ([_NO_LOCK] * 2,                _US1,  {"pon_status": "Ranging"}, "Ranging",      "parser-no-lock"),
 ]
 # fmt: on
 
@@ -397,15 +397,15 @@ ENRICH_CASES = [
     ENRICH_CASES,
     ids=[c[4] for c in ENRICH_CASES],
 )
-def test_enrich_docsis_status(
+def test_enrich_pon_status(
     ds_channels: list[dict[str, Any]],
     upstream: list[dict[str, Any]],
     system_info: dict[str, Any],
     expected_docsis: str | None,
     desc: str,
 ) -> None:
-    """enrich_docsis_status writes to system_info or leaves it absent."""
-    from solentlabs.cable_modem_monitor_core.orchestration.status import enrich_docsis_status
+    """enrich_pon_status writes to system_info or leaves it absent."""
+    from solentlabs.cable_modem_monitor_core.orchestration.status import enrich_pon_status
 
     modem_data: dict[str, Any] = {
         "downstream": ds_channels,
@@ -413,12 +413,12 @@ def test_enrich_docsis_status(
         "system_info": dict(system_info),
     }
 
-    enrich_docsis_status(modem_data)
+    enrich_pon_status(modem_data)
 
     if expected_docsis is None:
-        assert "docsis_status" not in modem_data["system_info"]
+        assert "pon_status" not in modem_data["system_info"]
     else:
-        assert modem_data["system_info"]["docsis_status"] == expected_docsis
+        assert modem_data["system_info"]["pon_status"] == expected_docsis
 
 
 # ==================================================================
@@ -1372,7 +1372,7 @@ class TestRecoveryWiring:
                 "total_corrected": 500,
                 "total_uncorrected": 20,
                 "system_uptime": "5000",
-                "docsis_status": "Operational",
+                "pon_status": "Operational",
             }
         )
         # Post-reboot poll — counters reset + uptime drop (2 signals).
@@ -1381,7 +1381,7 @@ class TestRecoveryWiring:
                 "total_corrected": 0,
                 "total_uncorrected": 0,
                 "system_uptime": "30",
-                "docsis_status": "Operational",
+                "pon_status": "Operational",
             }
         )
         collector = _mock_collector([_ok_result(data1), _ok_result(data2)])
@@ -1472,13 +1472,13 @@ class TestDiagnostics:
         """The collector's field outcomes land on the diagnostics snapshot."""
         collector = _mock_collector()
         collector.last_system_info_fields_missing = ["system_uptime"]
-        collector.system_info_fields_failed = {"docsis_status": "garbage"}
+        collector.system_info_fields_failed = {"pon_status": "garbage"}
         orch = _make_orchestrator(collector=collector)
 
         snapshot = orch.diagnostics()
 
         assert snapshot.system_info_fields_missing == ["system_uptime"]
-        assert snapshot.system_info_fields_failed == {"docsis_status": "garbage"}
+        assert snapshot.system_info_fields_failed == {"pon_status": "garbage"}
 
     def test_diagnostics_available_with_circuit_open(self) -> None:
         """Diagnostics work even when circuit breaker is open."""

@@ -43,10 +43,10 @@ from .restart import RestartNotSupportedError, run_restart
 from .signals import (
     CollectorSignal,
     ConnectionStatus,
-    DocsisStatus,
     HealthStatus,
+    PonStatus,
 )
-from .status import derive_connection_status, enrich_docsis_status
+from .status import derive_connection_status, enrich_pon_status
 
 __all__ = [
     "ActionResult",
@@ -57,7 +57,7 @@ __all__ = [
     "SnapshotEventPayload",
     "CollectorSignal",
     "ConnectionStatus",
-    "DocsisStatus",
+    "PonStatus",
     "HealthInfo",
     "HealthMonitor",
     "HealthStatus",
@@ -76,7 +76,7 @@ __all__ = [
     "create_collector",
     "create_orchestrator",
     "derive_connection_status",
-    "enrich_docsis_status",
+    "enrich_pon_status",
     "execute_action",
     "execute_hnap_action",
     "execute_http_action",

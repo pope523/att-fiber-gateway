@@ -129,7 +129,7 @@ class TestMapApplied:
         """Map on a field definition transforms (or passes through) the value."""
         field_def: dict[str, Any] = {
             "source": "InternetConnection",
-            "field": "docsis_status",
+            "field": "pon_status",
             "type": "string",
         }
         if map_config is not None:
@@ -146,7 +146,7 @@ class TestMapApplied:
 
         result = parser.parse(resources)
 
-        assert result == {"docsis_status": expected}
+        assert result == {"pon_status": expected}
 
 
 class TestMissingData:

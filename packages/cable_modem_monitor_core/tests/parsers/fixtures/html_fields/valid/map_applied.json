@@ -5,12 +5,12 @@
     "format": "html_fields",
     "resource": "/status.html",
     "fields": [
-      {"label": "Network Access", "field": "docsis_status", "type": "string", "map": {"Allowed": "Operational"}},
+      {"label": "Network Access", "field": "pon_status", "type": "string", "map": {"Allowed": "Operational"}},
       {"label": "System Uptime", "field": "system_uptime", "type": "string"}
     ]
   },
   "_expected": {
-    "docsis_status": "Operational",
+    "pon_status": "Operational",
     "system_uptime": "1 day 02:00:00"
   }
 }

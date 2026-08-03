@@ -147,7 +147,7 @@ class ModemSnapshot:
 
     Attributes:
         connection_status: Derived from collector signal and data.
-        docsis_status: Derived from downstream lock_status fields.
+        pon_status: Derived from downstream lock_status fields.
         modem_data: Parsed channel and system_info data. None on
             collection failure. Channel counts and aggregate fields
             (e.g., total_corrected) are computed by the parser
@@ -163,7 +163,7 @@ class ModemSnapshot:
     """
 
     connection_status: ConnectionStatus
-    docsis_status: str
+    pon_status: str
     modem_data: dict[str, Any] | None = None
     health_info: HealthInfo | None = None
     collector_signal: CollectorSignal = CollectorSignal.OK
@@ -190,19 +190,19 @@ class ModemSnapshot:
 
         modem_data = None
         if self.modem_data:
-            # docsis_status lives at the top level of SnapshotEventPayload;
+            # pon_status lives at the top level of SnapshotEventPayload;
             # strip it from system_info to avoid duplication in the emitted payload.
             payload_data = dict(self.modem_data)
-            if "system_info" in payload_data and "docsis_status" in payload_data["system_info"]:
+            if "system_info" in payload_data and "pon_status" in payload_data["system_info"]:
                 payload_data["system_info"] = {
-                    k: v for k, v in payload_data["system_info"].items() if k != "docsis_status"
+                    k: v for k, v in payload_data["system_info"].items() if k != "pon_status"
                 }
             modem_data = ModemDataPayload.model_validate(payload_data)
 
         return SnapshotEventPayload(
             schema_version=SCHEMA_VERSION,
             connection_status=self.connection_status.value,
-            docsis_status=self.docsis_status,
+            pon_status=self.pon_status,
             collector_signal=self.collector_signal.value,
             error=self.error,
             stats_last_reset=self.stats_last_reset.isoformat() if self.stats_last_reset else None,

@@ -162,7 +162,7 @@ Core's engine. Depends on both Core and Catalog.
 | Data coordinator | Wraps Core's `Orchestrator.get_modem_data()` in HA's `DataUpdateCoordinator` |
 | Health coordinator | Second `DataUpdateCoordinator` wrapping `HealthMonitor.ping()`. Conditional — only created if probes work. Independent cadence (default 30s) |
 | Entities | Maps Core's `ModemSnapshot` → platform entities. Channel entities unavailable when `modem_data` is None |
-| Status sensor | Priority cascade over `connection_status`, `health_status`, `docsis_status`. `diagnosis` attribute derived by adapter from `health_status` enum |
+| Status sensor | Priority cascade over `connection_status`, `health_status`, `pon_status`. `diagnosis` attribute derived by adapter from `health_status` enum |
 | Restart button | Maps platform button press → `orchestrator.restart()` in executor thread with `cancel_event` for clean shutdown |
 | Update button | Triggers immediate poll via `coordinator.async_request_refresh()` |
 | Reset entities button | Removes all entities from HA registry and reloads the integration |
@@ -619,7 +619,7 @@ lifecycle.
 
 **`ModemSnapshot`** — return type of `get_modem_data()`, combining
 collection results with health and operational state. Carries
-`connection_status` and `docsis_status` (derived by the orchestrator),
+`connection_status` and `pon_status` (derived by the orchestrator),
 `modem_data` from the collector (None on failure), and `health_info`
 from the health monitor. Channel counts and aggregate fields are
 already in `system_info` — computed by the parser coordinator.
@@ -656,11 +656,11 @@ field-level definitions of `ModemSnapshot`, `OrchestratorDiagnostics`,
 **Status** — three independent signals, each derived from different data:
 
 - `connection_status` (on `ModemSnapshot`) — from pipeline outcome
-- `docsis_status` (on `ModemSnapshot`) — from channel `lock_status` fields
+- `pon_status` (on `ModemSnapshot`) — from channel `lock_status` fields
 - `health_status` (on `HealthInfo`) — from probe results
 
 See [ORCHESTRATION_SPEC.md](ORCHESTRATION_SPEC.md#data-models) for
-per-value definitions (`ConnectionStatus`, `DocsisStatus`, `HealthStatus`).
+per-value definitions (`ConnectionStatus`, `PonStatus`, `HealthStatus`).
 
 Consumers compose these into a display state. The platform adapter
 uses a priority cascade — see `ENTITY_MODEL_SPEC.md` for the HA

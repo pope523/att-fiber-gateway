@@ -305,7 +305,7 @@ includes both identifiers for log correlation with Core's `[MODEL]`
 convention.
 
 **Return type:** `ModemSnapshot` — contains `connection_status`,
-`docsis_status`, `modem_data`, `health_info`, `error`. Channel counts
+`pon_status`, `modem_data`, `health_info`, `error`. Channel counts
 and aggregate fields (e.g., `total_corrected`) are already in
 `modem_data.system_info` — computed by the parser coordinator.
 Sensors read directly from the snapshot.
@@ -915,15 +915,15 @@ Fields vary by modem (sparse dict). Common fields include:
 | `upstream_channel_count` | int | Coordinator-computed (always present) |
 | `total_corrected` | int | Aggregate or native (see PARSING_SPEC § Aggregate) |
 | `total_uncorrected` | int | Aggregate or native (see PARSING_SPEC § Aggregate) |
-| `docsis_status` | string | Parser-extracted or orchestrator-enriched (see below) |
+| `pon_status` | string | Parser-extracted or orchestrator-enriched (see below) |
 | `software_version` | string | Parser-extracted |
 | `system_uptime` | string | Parser-extracted |
 | `model_name` | string | Parser-extracted (when available) |
 | `hardware_version` | string | Parser-extracted (when available) |
 
-#### `docsis_status` enrichment
+#### `pon_status` enrichment
 
-`docsis_status` follows the same enrichment pattern as error totals:
+`pon_status` follows the same enrichment pattern as error totals:
 the parser provides it when the modem exposes a native value, and the
 orchestrator fills it in from channel `lock_status` when absent. If
 neither the parser nor the orchestrator can determine the value (no
@@ -941,8 +941,8 @@ is created.
    `system_info`. See RUNTIME_POLLING_SPEC § Status Derivation for
    the derivation rules (including when derivation is not possible).
 
-One field, one location in the data layer. `snapshot.docsis_status`
-reads from `system_info["docsis_status"]`, falling back to `"unknown"`
+One field, one location in the data layer. `snapshot.pon_status`
+reads from `system_info["pon_status"]`, falling back to `"unknown"`
 when the field is absent (used internally by the HA status cascade,
 not exposed as a sensor).
 
@@ -988,7 +988,7 @@ payload = SnapshotEventPayload.model_validate(event.data)
 ```yaml
 schema_version: 1         # increment on breaking changes
 connection_status: online # ConnectionStatus enum value
-docsis_status: Operational  # present even when modem_data is null (failure case)
+pon_status: Operational  # present even when modem_data is null (failure case)
 collector_signal: ok      # CollectorSignal enum value
 error: ""                 # human-readable error, empty on success
 stats_last_reset: null    # ISO 8601 datetime or null

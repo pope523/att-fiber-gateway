@@ -34,7 +34,7 @@ def _modem_data(
     total_corrected: int | None = None,
     total_uncorrected: int | None = None,
     system_uptime: int | str | None = None,
-    docsis_status: str | None = None,
+    pon_status: str | None = None,
 ) -> dict[str, Any]:
     """Build a minimal modem_data dict with the fields recovery reads."""
     system_info: dict[str, Any] = {}
@@ -44,8 +44,8 @@ def _modem_data(
         system_info["total_uncorrected"] = total_uncorrected
     if system_uptime is not None:
         system_info["system_uptime"] = system_uptime
-    if docsis_status is not None:
-        system_info["docsis_status"] = docsis_status
+    if pon_status is not None:
+        system_info["pon_status"] = pon_status
     return {
         "downstream": [],
         "upstream": [],
@@ -232,7 +232,7 @@ def test_snapshot_first_call_updates_history_without_firing() -> None:
             total_corrected=100,
             total_uncorrected=5,
             system_uptime=1000,
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
 
@@ -249,7 +249,7 @@ def test_single_signal_does_not_trigger_window() -> None:
             total_corrected=100,
             total_uncorrected=5,
             system_uptime=1000,
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
     # Only the counter-reset signal fires.
@@ -258,7 +258,7 @@ def test_single_signal_does_not_trigger_window() -> None:
             total_corrected=50,  # dropped
             total_uncorrected=5,
             system_uptime=1500,
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
 
@@ -274,7 +274,7 @@ def test_two_of_three_signals_open_window() -> None:
             total_corrected=100,
             total_uncorrected=5,
             system_uptime=1000,
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
     recovery.evaluate_snapshot(
@@ -282,7 +282,7 @@ def test_two_of_three_signals_open_window() -> None:
             total_corrected=0,  # counter reset
             total_uncorrected=0,  # counter reset
             system_uptime=10,  # uptime drop
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
 
@@ -298,7 +298,7 @@ def test_transitional_docsis_counts_as_a_signal() -> None:
             total_corrected=100,
             total_uncorrected=5,
             system_uptime=1000,
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
     recovery.evaluate_snapshot(
@@ -306,7 +306,7 @@ def test_transitional_docsis_counts_as_a_signal() -> None:
             total_corrected=100,  # no change
             total_uncorrected=5,  # no change
             system_uptime=10,  # uptime drop
-            docsis_status="not_locked",  # transitional — Operational→not_locked edge
+            pon_status="not_locked",  # transitional — Operational→not_locked edge
         )
     )
 
@@ -333,7 +333,7 @@ def test_chronic_partial_lock_plus_counter_reset_does_not_trigger() -> None:
             total_corrected=500,
             total_uncorrected=20,
             system_uptime=5000,
-            docsis_status="partial_lock",
+            pon_status="partial_lock",
         )
     )
     assert recovery.active is False
@@ -345,7 +345,7 @@ def test_chronic_partial_lock_plus_counter_reset_does_not_trigger() -> None:
             total_corrected=500,
             total_uncorrected=20,
             system_uptime=5060,
-            docsis_status="partial_lock",
+            pon_status="partial_lock",
         )
     )
     assert recovery.active is False
@@ -359,7 +359,7 @@ def test_chronic_partial_lock_plus_counter_reset_does_not_trigger() -> None:
             total_corrected=0,
             total_uncorrected=0,
             system_uptime=5120,
-            docsis_status="partial_lock",
+            pon_status="partial_lock",
         )
     )
 
@@ -381,7 +381,7 @@ def test_repeated_partial_lock_does_not_re_fire_transitional() -> None:
             total_corrected=100,
             total_uncorrected=5,
             system_uptime=1000,
-            docsis_status="partial_lock",
+            pon_status="partial_lock",
         )
     )
 
@@ -394,7 +394,7 @@ def test_repeated_partial_lock_does_not_re_fire_transitional() -> None:
                 total_corrected=100,
                 total_uncorrected=5,
                 system_uptime=1000 + i * 60,
-                docsis_status="partial_lock",
+                pon_status="partial_lock",
             )
         )
         assert recovery.active is False, f"window opened on chronic-lock poll {i}"
@@ -409,7 +409,7 @@ def test_snapshot_history_updates_even_while_active() -> None:
             total_corrected=500,
             total_uncorrected=10,
             system_uptime=200,
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
 
@@ -425,7 +425,7 @@ def test_snapshot_accepts_string_uptime() -> None:
             total_corrected=1,
             total_uncorrected=1,
             system_uptime="1000",
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
     recovery.evaluate_snapshot(
@@ -433,7 +433,7 @@ def test_snapshot_accepts_string_uptime() -> None:
             total_corrected=0,  # counter reset
             total_uncorrected=0,  # counter reset
             system_uptime="500",  # uptime drop (numeric)
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
 
@@ -448,7 +448,7 @@ def test_snapshot_ignores_non_numeric_uptime() -> None:
             total_corrected=1,
             total_uncorrected=1,
             system_uptime="17d 0h 51m 30s",
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
     # With uptime non-numeric, only counter + docsis signals count.
@@ -457,7 +457,7 @@ def test_snapshot_ignores_non_numeric_uptime() -> None:
             total_corrected=0,  # counter reset
             total_uncorrected=0,  # counter reset
             system_uptime="0d 0h 1m 0s",  # non-numeric — no uptime signal
-            docsis_status="Operational",  # not transitional
+            pon_status="Operational",  # not transitional
         )
     )
 
@@ -478,7 +478,7 @@ def test_snapshot_noop_when_active() -> None:
             total_corrected=100,
             total_uncorrected=5,
             system_uptime=1000,
-            docsis_status="Operational",
+            pon_status="Operational",
         )
     )
     recovery.evaluate_snapshot(
@@ -486,7 +486,7 @@ def test_snapshot_noop_when_active() -> None:
             total_corrected=0,
             total_uncorrected=0,
             system_uptime=10,
-            docsis_status="not_locked",
+            pon_status="not_locked",
         )
     )
 

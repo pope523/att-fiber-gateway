@@ -47,7 +47,7 @@ SYSTEM_INFO_FIELDS: frozenset[str] = frozenset(
         "software_version",
         "hardware_version",
         "system_uptime",
-        "docsis_status",
+        "pon_status",
     }
 )
 

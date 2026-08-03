@@ -49,7 +49,6 @@ from .config_flow_helpers import (
 )
 from .const import (
     CONF_CHANNEL_IDENTITY,
-    CONF_CHANNEL_ONBOARDING_ELIGIBLE,
     CONF_CREDENTIAL_ENCODING,
     CONF_CREDENTIAL_FIELD,
     CONF_ENTITY_PREFIX,
@@ -662,11 +661,6 @@ class CableModemMonitorConfigFlow(config_entries.ConfigFlow):
                 validation["supports_icmp"],
                 validation["supports_head"],
             ),
-            # Marks fresh setups as eligible for the one-time channel-bond
-            # onboarding notification. Never mutated after create so it
-            # doesn't trip the update listener. Upgraded entries lack the
-            # key entirely and skip onboarding (silent init instead).
-            CONF_CHANNEL_ONBOARDING_ELIGIBLE: True,
         }
 
         return self.async_create_entry(title=title, data=entry_data)

@@ -1,5 +1,5 @@
 {
-  "_description": "Computed combined_status synthesizes docsis_status from separate DS/US status fields",
+  "_description": "Computed combined_status synthesizes pon_status from separate DS/US status fields",
   "_html": {
     "/status.html": "<table><tr><td>DS Status</td><td>Complete</td></tr><tr><td>US Status</td><td>Complete</td></tr></table>"
   },
@@ -17,7 +17,7 @@
       ]
     },
     "computed": {
-      "docsis_status": {
+      "pon_status": {
         "operation": "combined_status",
         "inputs": {
           "ds": "downstream_status",
@@ -32,7 +32,7 @@
     "system_info": {
       "downstream_status": "Operational",
       "upstream_status": "Operational",
-      "docsis_status": "Operational",
+      "pon_status": "Operational",
       "downstream_channel_count": 0,
       "upstream_channel_count": 0
     }
