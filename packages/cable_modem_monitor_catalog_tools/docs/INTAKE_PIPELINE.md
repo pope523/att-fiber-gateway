@@ -133,7 +133,7 @@ Two JSON pattern files control what the pipeline recognizes. Adding support for 
 
 - **`action_patterns.json`** — known action URLs (logout, restart, reboot). When `analyze_har` sees POST requests matching patterns here, it maps them to modem actions.
 
-Both files live in Catalog Tools (`pope523/att-fiber-gateway_catalog_tools/analysis/`). Extending them is the first step when a CoreGap is reported for an unmatched endpoint.
+Both files live in Catalog Tools (`solentlabs/cable_modem_monitor_catalog_tools/analysis/`). Extending them is the first step when a CoreGap is reported for an unmatched endpoint.
 
 ---
 
@@ -141,12 +141,12 @@ Both files live in Catalog Tools (`pope523/att-fiber-gateway_catalog_tools/analy
 
 | Artifact | Location |
 | ---------- | ---------- |
-| Pipeline tools (validate, analyze, enrich, generate, test) | `packages/cable_modem_monitor_catalog_tools/pope523/att-fiber-gateway_catalog_tools/` |
+| Pipeline tools (validate, analyze, enrich, generate, test) | `packages/cable_modem_monitor_catalog_tools/solentlabs/cable_modem_monitor_catalog_tools/` |
 | Pattern files (auth, actions) | `.../catalog_tools/analysis/auth/` and `.../catalog_tools/analysis/actions/` |
-| Fleet scanner | `packages/cable_modem_monitor_catalog_tools/pope523/att-fiber-gateway_catalog_tools/fleet_scanner.py` |
+| Fleet scanner | `packages/cable_modem_monitor_catalog_tools/solentlabs/cable_modem_monitor_catalog_tools/fleet_scanner.py` |
 | Intake pipeline regression (accuracy tracking + auth audit) | `packages/cable_modem_monitor_catalog_tools/scripts/intake_pipeline_regression.py` |
-| Test harness (HAR replay, golden file comparison) | `packages/cable_modem_monitor_core/pope523/att-fiber-gateway_core/test_harness/` |
-| Modem catalog entries (output) | `packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/{manufacturer}/{model}/` |
+| Test harness (HAR replay, golden file comparison) | `packages/cable_modem_monitor_core/solentlabs/cable_modem_monitor_core/test_harness/` |
+| Modem catalog entries (output) | `packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/{manufacturer}/{model}/` |
 | Authoritative spec | `packages/cable_modem_monitor_catalog_tools/docs/ONBOARDING_SPEC.md` |
 | Runnable workflow | [MODEM_INTAKE_WORKFLOW.md](MODEM_INTAKE_WORKFLOW.md) |
 
@@ -227,16 +227,16 @@ tree and the new HAR is included automatically on the next run.
 
 The reusable machinery (scorecard building, result classification)
 lives in the unit-tested
-`pope523/att-fiber-gateway_catalog_tools/regression/` package and
+`solentlabs/cable_modem_monitor_catalog_tools/regression/` package and
 is generic over grade dimensions; the script supplies discovery,
 pipeline stages, and printing. The shared grade taxonomy is
-`pope523/att-fiber-gateway_catalog_tools/grading.py`.
+`solentlabs/cable_modem_monitor_catalog_tools/grading.py`.
 
 ---
 
 ## Further Reading
 
 - [ONBOARDING_SPEC.md](ONBOARDING_SPEC.md) — full tool contracts, decision tree (7 phases), validation rules, worked examples, error handling
-- [MODEM_REQUEST.md](../../../docs/MODEM_REQUEST.md) — contributor guide for submitting HAR captures
+- [Upstream modem request guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/MODEM_REQUEST.md) — contributor guide for submitting HAR captures (this project targets a single device; new-device intake lives upstream)
 - [MODEM_YAML_SPEC.md](../../cable_modem_monitor_core/docs/MODEM_YAML_SPEC.md) — modem config schema and transport constraints
 - [PARSING_SPEC.md](../../cable_modem_monitor_core/docs/PARSING_SPEC.md) — parser config schema

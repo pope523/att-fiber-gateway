@@ -46,10 +46,10 @@ more reading and iteration against the specs.
   this project's own tool — which means it's editable when a modem
   needs special handling (pre-flight headers, custom URL filters,
   non-standard auth flows). PRs to extend `har-capture` itself are
-  welcome. For the standard capture walkthrough, see
-  [docs/MODEM_REQUEST.md](../../../docs/MODEM_REQUEST.md). If a HAR
-  has cookies on the first request and no auth flow, recapture in
-  incognito/private browsing — the pipeline will reject it.
+  welcome. For the standard capture walkthrough, see the
+  [upstream modem request guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/MODEM_REQUEST.md).
+  If a HAR has cookies on the first request and no auth flow, recapture
+  in incognito/private browsing — the pipeline will reject it.
 
 ## Inputs
 

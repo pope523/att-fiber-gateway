@@ -627,14 +627,14 @@ buttons, availability, device model) is unaffected.
 [i112-comment]: https://github.com/pope523/att-fiber-gateway/issues/112#issuecomment-2999587412
 
 <!-- Catalog: parser.yaml files (source of field mappings) -->
-[s34-parser]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/arris/s34/parser.yaml
-[mb8611-parser]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/motorola/mb8611/parser.yaml
+[s34-parser]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/arris/s34/parser.yaml
+[mb8611-parser]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/motorola/mb8611/parser.yaml
 
 <!-- Catalog: verified/expected golden files (parsed output evidence) -->
-[s33v2-verified]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/arris/s33v2/test_data/modem.verified.json
-[cm1200-verified]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/netgear/cm1200/test_data/modem-basic.verified.json
-[mb8600-verified]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/motorola/mb8600/test_data/modem.verified.json
-[mb8611-expected]: ../../../packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/motorola/mb8611/test_data/modem.expected.json
+[s33v2-verified]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/arris/s33v2/test_data/modem.verified.json
+[cm1200-verified]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/netgear/cm1200/test_data/modem-basic.verified.json
+[mb8600-verified]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/motorola/mb8600/test_data/modem.verified.json
+[mb8611-expected]: ../../../packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/motorola/mb8611/test_data/modem.expected.json
 
 <!-- Note: Raw HNAP/HTML fixtures are in HAR captures (Git LFS).
      The findings in Section 3 were confirmed from HAR data and

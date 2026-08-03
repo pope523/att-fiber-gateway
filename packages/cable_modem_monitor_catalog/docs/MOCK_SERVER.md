@@ -36,7 +36,7 @@ Home Assistant instance at it to verify sensors populate correctly.
 
 ```bash
 python -m solentlabs.cable_modem_monitor_core.test_harness \
-    packages/cable_modem_monitor_catalog/pope523/att-fiber-gateway_catalog/modems/arris/sb8200 \
+    packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/arris/sb8200 \
     --host 0.0.0.0 --port 8080
 ```
 

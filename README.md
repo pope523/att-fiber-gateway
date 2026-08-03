@@ -58,7 +58,8 @@ Download `bgw320.zip` from a [release](https://github.com/pope523/att-fiber-gate
 and unzip it into `config/custom_components/bgw320/`, then restart Home
 Assistant.
 
-Full details, including building the zip yourself, are in [INSTALL.md](INSTALL.md).
+Full details, including building the zip yourself, are in
+[INSTALL.md](https://github.com/pope523/att-fiber-gateway/blob/main/INSTALL.md).
 
 ## Setup
 
@@ -134,7 +135,8 @@ What changed here:
   the restart action.
 
 Because the engine packages are not published to PyPI under these changes, the
-HACS artifact vendors them. See [INSTALL.md](INSTALL.md).
+HACS artifact vendors them. See
+[INSTALL.md](https://github.com/pope523/att-fiber-gateway/blob/main/INSTALL.md).
 
 The two integrations use different domains and can be installed side by side.
 
@@ -151,8 +153,11 @@ The two integrations use different domains and can be installed side by side.
   Download diagnostics. Output is sanitized of IPs, paths, and credentials, but
   review before sharing.
 
-More in [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
+More in
+[docs/TROUBLESHOOTING.md](https://github.com/pope523/att-fiber-gateway/blob/main/docs/TROUBLESHOOTING.md).
 
 ## License
 
-MIT. See [LICENSE](LICENSE) and [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md).
+MIT. See
+[LICENSE](https://github.com/pope523/att-fiber-gateway/blob/main/LICENSE) and
+[docs/ATTRIBUTION.md](https://github.com/pope523/att-fiber-gateway/blob/main/docs/ATTRIBUTION.md).

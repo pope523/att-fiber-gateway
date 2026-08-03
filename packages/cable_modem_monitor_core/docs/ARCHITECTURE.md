@@ -51,13 +51,13 @@ accelerator, never installed by HA or any runtime consumer. See
 packages/
 ├── cable_modem_monitor_core/           # runtime engine
 │   ├── pyproject.toml                  # name = "bgw320-engine-core"
-│   └── pope523/att-fiber-gateway_core/
+│   └── solentlabs/cable_modem_monitor_core/
 ├── cable_modem_monitor_catalog/        # modem data (pure content)
 │   ├── pyproject.toml                  # name = "bgw320-engine-catalog"
-│   └── pope523/att-fiber-gateway_catalog/
+│   └── solentlabs/cable_modem_monitor_catalog/
 └── cable_modem_monitor_catalog_tools/  # catalog authoring tools (never installed by HA)
     ├── pyproject.toml                  # name = "bgw320-engine-catalog-tools"
-    └── pope523/att-fiber-gateway_catalog_tools/
+    └── solentlabs/cable_modem_monitor_catalog_tools/
 custom_components/
 └── cable_modem_monitor/                # HA integration
 ```
@@ -137,7 +137,7 @@ optional post-processors invoked by Core's `ModemParserCoordinator`).
 | `tests/` | HAR captures and expected output golden files |
 
 ```text
-pope523/att-fiber-gateway_catalog/
+solentlabs/cable_modem_monitor_catalog/
 ├── __init__.py              # exposes CATALOG_PATH
 └── modems/
     └── {mfr}/{model}/
