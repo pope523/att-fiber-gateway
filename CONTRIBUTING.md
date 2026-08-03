@@ -48,24 +48,31 @@ PR titles and bodies are not edited by the maintainer — any feedback comes in 
 
 ---
 
-## Adding Modem Support
+## Scope
 
-There are two paths, depending on what you want to do:
+This project targets one device: the AT&T Nokia BGW320-505 XGS-PON fiber
+gateway. It is not a general modem integration, and the catalog is not
+intended to grow into one.
 
-- **Requesting support for your modem** — see
-  [docs/MODEM_REQUEST.md](./docs/MODEM_REQUEST.md). Capture a HAR,
-  screen it for PII, file a request. A maintainer or contributor builds
-  the parser from there; you verify it works on your hardware.
-- **Want to implement the catalog entry yourself** — the intake pipeline
-  takes a HAR and produces `modem.yaml`, `parser.yaml`, and golden files.
-  AI assistance helps with the judgment steps but is not required. Start
-  with [AI-Assisted Catalog Contribution](#ai-assisted-catalog-contribution)
-  below, then follow
-  [MODEM_INTAKE_WORKFLOW.md](packages/cable_modem_monitor_catalog_tools/docs/MODEM_INTAKE_WORKFLOW.md)
-  for the full walkthrough.
+Good contributions:
 
-Either path is valuable. The catalog grows through community contributions
-because the maintainer can't acquire every modem.
+- Firmware compatibility fixes. AT&T pushes firmware without notice, and a
+  changed label or moved value breaks parsing. Re-capture the affected page
+  and update `parser.yaml` or the post-processor.
+- Additional data already exposed by the gateway that is not yet surfaced.
+- BGW320-500 support. It is a similar Humax-built unit on the same firmware
+  family, but no fixtures exist for it. A sanitized HAR would be the start.
+- Bug fixes, tests, and documentation.
+
+If you want a **different** device supported, the upstream project
+[solentlabs/cable_modem_monitor](https://github.com/solentlabs/cable_modem_monitor)
+is built for exactly that and has a maintained catalog and intake workflow.
+The engine here is a modified copy of theirs, so device work is far better
+spent there.
+
+When re-capturing fixtures, sanitize them: serial numbers, MAC addresses,
+public IPs, and session nonces must be replaced with the placeholder values in
+`packages/cable_modem_monitor_catalog/scripts/data/pii_safe_values.json`.
 
 If the intake pipeline stops with a **Core gap** — a pattern the pipeline
 can't classify — the gap report is the contribution. Paste it into your

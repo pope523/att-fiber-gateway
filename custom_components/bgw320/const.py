@@ -8,7 +8,7 @@ from homeassistant.const import Platform
 
 # IMPORTANT: Do not edit VERSION manually!
 # Use: python scripts/release.py <version>
-VERSION = "3.14.0-beta.13"
+VERSION = "1.0.0"
 
 DOMAIN = "bgw320"
 PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BUTTON]

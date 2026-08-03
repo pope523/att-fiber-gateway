@@ -1,235 +1,70 @@
 # Attribution and Credits
 
-This project builds on the work of the open source community. We acknowledge and thank the following projects and contributors.
+## Upstream project
 
----
+This integration is derived from
+**[solentlabs/cable_modem_monitor](https://github.com/solentlabs/cable_modem_monitor)**
+by **Ken Schulz** (@kwschulz), MIT licensed.
 
-## Research and Inspiration
+Nearly all of the collection, parsing, authentication, and orchestration
+machinery here is that project's work. What this repository adds is the
+BGW320-505 device definition, fiber-specific status handling, the
+`form_md5_nonce` auth strategy, and the rescoping of the Home Assistant
+adapter to a single fiber gateway.
 
-### Modem Compatibility Research
+The upstream copyright notice is retained in [LICENSE](../LICENSE) as the MIT
+license requires. If you want DOCSIS cable modem monitoring, use the upstream
+project — it supports a large catalog of modems and is actively maintained.
 
-<!-- AUTO-GENERATED FROM fixtures - DO NOT EDIT BELOW -->
+## Device research
 
-### Data Contributors (Auto-Generated)
+Understanding the BGW320's web interface was informed by prior
+reverse-engineering of AT&T residential gateways:
 
-Users who provided modem captures for parser development:
+| Project | Used for |
+|---|---|
+| [edgan/att-fiber-gateway-info](https://github.com/edgan/att-fiber-gateway-info) | Page inventory and the nonce + MD5 login flow |
+| [attrouter](https://github.com/0x666690/attrouter) | Reboot endpoint and form-field behaviour |
 
-| Contributor | Modem | Contribution | Issue |
-|-------------|-------|--------------|-------|
-| @captain-coredump | ARRIS SB6141 | HTML samples and compatibility testing (Community Forum) | — |
-| @dlindnegm | Motorola MB8611 | Original HTML page captures | [#4](https://github.com/solentlabs/cable_modem_monitor/issues/4) |
-| @cvonk | Motorola MB8611 | HAR captures, debug logs, iterative testing | [#6](https://github.com/solentlabs/cable_modem_monitor/issues/6) |
-| @Mar1usW3 | Technicolor TC4400 | HTML samples and compatibility testing | [#1](https://github.com/solentlabs/cable_modem_monitor/issues/1) |
+Both are related prior art: they informed the approach, and the login and
+restart flows here were then confirmed directly against the hardware (firmware
+6.34.7) before being implemented in this project's own architecture.
 
-### External References (Auto-Generated)
+The `1/10 dBm` scaling for optical power comes from the gateway's own on-page
+help text, not from external sources.
 
-Open source projects that informed our parser implementations:
+## Fixtures
 
-| Project | Used For | Contribution |
-|---------|----------|--------------|
-| [BowlesCR/MB8600_Login](https://github.com/BowlesCR/MB8600_Login) | Motorola MB8611 | HNAP HMAC-MD5 challenge-response authentication |
-| [Tatsh/mb8611](https://github.com/Tatsh/mb8611) | Motorola MB8611 | HNAP action names and response field definitions (StatusSoftwareSfVer, etc.) |
-| [xNinjaKittyx/mb8600](https://github.com/xNinjaKittyx/mb8600) | Motorola MB8611 | Protocol reference and prior art for understanding HNAP flow |
-| [philfry/check_tc4400](https://github.com/philfry/check_tc4400) | Technicolor TC4400 | Related prior art for TC4400 web interface monitoring |
-
-<!-- END AUTO-GENERATED ATTRIBUTION -->
-
-### Polling Interval Research
-
-#### SNMP Polling Best Practices
-
-- **Source:** Obkio Network Monitoring Blog
-- **URL:** <https://obkio.com/blog/snmp-polling/>
-- **Contribution:** Industry standards for network device polling intervals (5-10 minutes standard)
-- **Applied:** Default scan interval configuration (300 seconds)
-
-#### API Polling Best Practices
-
-- **Source:** Merge.dev Engineering Blog
-- **URL:** <https://www.merge.dev/blog/api-polling-best-practices>
-- **Contribution:** Guidance on preventing server overload (> 1 second polling can overload)
-- **Applied:** Minimum scan interval validation (60 seconds)
-
-#### Network Device Polling Guidelines
-
-- **Source:** Broadcom DX NetOps Community
-- **URL:** <https://community.broadcom.com/communities/community-home/digestviewer/viewthread?MID=824934>
-- **Contribution:** Recommendations for client device polling (not lower than 5 minutes)
-- **Applied:** Health recommendations in UI and documentation
-
----
+The HAR fixtures under
+`packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/nokia/bgw320_505/test_data/`
+were captured from a live BGW320-505 and sanitized: serial numbers, MAC
+addresses, public IP addresses, and session nonces are replaced with the
+catalog-safe placeholder values defined in
+`packages/cable_modem_monitor_catalog/scripts/data/pii_safe_values.json`.
 
 ## Dependencies
 
-This integration relies on the following open source libraries:
+- [Home Assistant Core](https://github.com/home-assistant/core) — integration framework
+- [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/) — HTML parsing
+- [pydantic](https://docs.pydantic.dev/) — config model validation
+- [requests](https://requests.readthedocs.io/) — HTTP transport
+- [PyYAML](https://pyyaml.org/) — device and parser config
+- [defusedxml](https://github.com/tiran/defusedxml) — safe XML parsing
+- [cryptography](https://cryptography.io/) — retained for engine auth strategies
 
-### Python Libraries
+Development: [pytest](https://pytest.org/),
+[pytest-homeassistant-custom-component](https://github.com/MatthewFlamm/pytest-homeassistant-custom-component),
+[ruff](https://github.com/astral-sh/ruff), [black](https://black.readthedocs.io/),
+[mypy](https://mypy-lang.org/).
 
-- **BeautifulSoup4** (<https://www.crummy.com/software/BeautifulSoup/>) - HTML parsing
-- **Home Assistant Core** (<https://github.com/home-assistant/core>) - Integration framework
+## Attribution notes
 
-### Development & Testing
+This project was developed with AI assistance. Citations above were checked
+against the actual work: the two device-research projects were genuinely
+consulted while mapping the gateway's pages and login flow, and their influence
+is described with deliberately conservative framing ("informed by", "related
+prior art") because the implementation is independent and the protocol details
+were verified against real hardware rather than copied.
 
-- **pytest** (<https://pytest.org/>) - Testing framework
-- **pytest-homeassistant-custom-component** - HA testing utilities
-- **ruff** (<https://github.com/astral-sh/ruff>) - Code linting
-
----
-
-## Community Contributions
-
-### Hardware Testing & Samples
-
-- **@captain-coredump** - Confirmed ARRIS SB6141 compatibility, provided HTML samples and testing feedback ([Community Forum](https://community.home-assistant.io/t/cable-modem-monitor-track-your-internet-signal-quality-in-home-assistant))
-- **@esand** - Provided Technicolor XB7 HTML samples and detailed modem information (Issue #2)
-
-### User Contributions
-
-- Users who report modem compatibility issues
-- Contributors who provide HTML samples for new modem support
-- Community members who test pre-release versions
-- Documentation improvements and bug reports
-
-**Thank you to all community members who help improve this integration!**
-
----
-
-## Tools and Platforms
-
-- **GitHub** - Code hosting and collaboration
-- **GitHub Actions** - CI/CD automation
-- **HACS** (Home Assistant Community Store) - Distribution platform
-- **Home Assistant** - Smart home platform
-
----
-
-## Attribution Policy
-
-### For This Project
-
-When using or referencing this project:
-
-- **Attribution:** Cable Modem Monitor by kwschulz
-- **Repository:** <https://github.com/solentlabs/cable_modem_monitor>
-- **License:** MIT License (see LICENSE file)
-
-### Our Commitment
-
-We commit to:
-
-- ✅ Properly attribute external research and code
-- ✅ Credit community contributors
-- ✅ Acknowledge dependencies
-- ✅ Respect open source licenses
-- ✅ Give back to the community
-
-### If We Missed Something
-
-If we've used your work without proper attribution:
-
-1. We sincerely apologize - it was unintentional
-2. Please open an issue or contact us
-3. We'll add proper attribution immediately
-
-Open source thrives on mutual respect and acknowledgment. We're committed to doing our part.
-
----
-
-## Attribution Standards
-
-When adding a parser informed by external code or research, follow
-these standards.
-
-### Parser docstring template
-
-Document the source in the parser docstring:
-
-```python
-"""
-{Manufacturer} {Model} parser for Cable Modem Monitor.
-
-Auth implementation informed by:
-- {Author/Project name}: {URL}
-
-See ATTRIBUTION.md for full credits.
-"""
-```
-
-### Adding to ATTRIBUTION.md
-
-Add an entry under "External References" with:
-
-- Project name and author
-- Repository URL
-- What we learned from it
-- License acknowledgment
-
-We learn from, not copy. External references inform our approach;
-we implement in our own architecture with proper attribution.
-
-### AI-assisted attribution discipline
-
-AI tools sometimes add plausible-sounding citations that weren't
-actually referenced during development. Before committing:
-
-1. **Review all attributions** — verify each one is real and that you
-   can explain how it influenced the work.
-2. **Verify you can answer "how did we use this?"** — if you can't
-   explain the specific influence, use softer framing instead of
-   claiming direct learning.
-3. **Data contributors are verifiable** — issue numbers, forum posts,
-   and HAR captures can be traced. External code references added by
-   AI may not be.
-
-### Honest framing levels
-
-| Framing | When to use it | Example phrasing |
-|---------|----------------|------------------|
-| "Based on" / "Informed by" | The source's approach is traceable in the code | "Auth flow informed by BowlesCR/MB8600_Login (HMAC-MD5 challenge-response)" |
-| "Field definitions from" | Specific field names or values came from the source | "Response field names from Tatsh/mb8611" |
-| "Related prior art" | Similar work exists; direct influence can't be verified | "Related prior art: other DOCSIS modem monitoring projects" |
-
-### When in doubt
-
-- **Don't remove existing attribution** — removing credit looks worse
-  than over-crediting.
-- **Soften the language** — change "Based on" to "Related prior art."
-- **Document the uncertainty** — note in your tracker that influence
-  couldn't be verified.
-
----
-
-## How to Get Credit
-
-### Contributing Code
-
-- Pull requests with merged code are automatically credited in release notes
-- Your GitHub profile is linked in commit history
-- Significant contributions acknowledged in this file
-
-### Contributing Research/Ideas
-
-- Open an issue describing your contribution
-- We'll add you to the acknowledgments section
-- Credit will be included in relevant documentation
-
-### Providing Modem Support
-
-- Users who provide HTML samples for new modem support are credited in:
-  - Release notes when support is added
-  - Comments in the code for that modem
-  - Compatibility guide
-
----
-
-## Contact
-
-Questions about attribution or credits?
-
-- **GitHub Issues:** <https://github.com/solentlabs/cable_modem_monitor/issues>
-- **GitHub Discussions:** <https://github.com/solentlabs/cable_modem_monitor/discussions>
-
----
-
-**Last Updated:** 2025-10-28
-**Document Version:** 1.1
+If your work is used here without proper credit, please open an issue — it was
+not intentional and will be corrected.

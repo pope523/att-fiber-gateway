@@ -1,59 +1,158 @@
-# Cable Modem Monitor
+# AT&T BGW320 Gateway
 
-[![GitHub Release](https://img.shields.io/github/v/release/solentlabs/cable_modem_monitor?include_prereleases)](https://github.com/solentlabs/cable_modem_monitor/releases)
-[![HACS installs](https://img.shields.io/badge/dynamic/json?color=41BDF5&logo=home-assistant&label=HACS&suffix=%20installs&cacheSeconds=15600&url=https://analytics.home-assistant.io/custom_integrations.json&query=$.cable_modem_monitor.total)](https://analytics.home-assistant.io/)
+[![GitHub Release](https://img.shields.io/github/v/release/pope523/att-fiber-gateway?include_prereleases)](https://github.com/pope523/att-fiber-gateway/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Help Add Your Modem](https://img.shields.io/badge/Help-Add%20Your%20Modem-brightgreen.svg)](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/MODEM_REQUEST.md)
 
-Monitor your cable modem's signal quality, power levels, and error rates from Home Assistant. Track connection health, identify line issues before they cause outages, and build automations that alert you when something looks off.
+Home Assistant integration for the **AT&T Nokia BGW320-505** XGS-PON fiber
+gateway. Graphs the optical link, tracks WAN health and throughput counters,
+and adds a restart button.
+
+This is a fiber integration. It is not a DOCSIS cable modem integration — see
+[Relationship to Cable Modem Monitor](#relationship-to-cable-modem-monitor).
 
 ## What you get
 
-- **Per-channel signal quality.** Power (dBmV), SNR, and frequency for every downstream and upstream channel.
-- **Error tracking.** Corrected and uncorrected error counts, plus per-minute error rates.
-- **Connection health.** Status, uptime, last boot time, and reboot detection from counter resets.
-- **Health probes.** Ping and HTTP latency on a separate cadence from the full data poll.
-- **Remote restart.** Reboot the modem from a Home Assistant button.
-- **Local-only.** No cloud, no telemetry. Credentials stored in Home Assistant's encrypted storage.
+- **Fiber optics as first-class sensors.** Optical Rx power, Tx power, and SFP
+  module temperature, read from the gateway's `fiberstat` page and graphable
+  over time. Rx power is the number to watch: a slow decline usually means a
+  dirty or bending fiber, and it degrades well before the link actually drops.
+- **PON link state.** Optical WAN operational status, link state, wavelength,
+  and the raw GPON state (`OPERATION (O5)` when healthy).
+- **WAN status and throughput.** Connection type, network type, negotiated link
+  speed, public IPv4/IPv6, and receive/transmit byte, packet, error, and drop
+  counters.
+- **Device info.** Firmware version, hardware version, uptime, and derived last
+  boot time.
+- **Health probes.** TCP, ping, and HTTP latency on a fast cadence (30s by
+  default) independent of the full data poll (10 minutes by default).
+- **Restart button.** Reboots the gateway using its nonce + MD5 login.
+- **Local only.** No cloud, no telemetry. Everything is read from the gateway's
+  own web interface on your LAN.
 
-## Dashboard
+Monitoring needs **no credentials** — the BGW320's status pages are readable
+without logging in. Only the restart button requires the Device Access Code.
 
-![Cable Modem Health Dashboard](https://raw.githubusercontent.com/solentlabs/cable_modem_monitor/main/images/dashboard-screenshot-dark.png)
+## Requirements
 
-[More screenshots on GitHub](https://github.com/solentlabs/cable_modem_monitor#see-it-in-action)
+- Home Assistant 2024.12.0 or newer
+- An AT&T Nokia BGW320-505 reachable on your network (default `192.168.0.254`)
+- HACS, for the recommended install path
 
-## Supported modems
+Only the **BGW320-505** is verified. The BGW320-500 is a similar Humax-built
+unit with the same firmware family; it may work, but no fixtures exist for it
+and it is untested here.
 
-Modems from ARRIS, Compal, Hitron, Motorola, Netgear, SerComm, Technicolor, and Virgin Media. Compatibility varies by firmware and ISP customization.
+## Install
 
-Check the [catalog of supported modems on PyPI](https://pypi.org/project/solentlabs-cable-modem-monitor-catalog/) before installing. Every supported model is listed with DOCSIS version and verification status.
+**HACS custom repository (recommended)**
 
-Modem not listed? [File a request](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/MODEM_REQUEST.md). The guide walks through capturing the data needed to add support.
+1. HACS → three-dot menu → **Custom repositories**.
+2. Add `https://github.com/pope523/att-fiber-gateway` with category
+   **Integration**.
+3. Install **AT&T BGW320 Gateway**, then restart Home Assistant.
+4. Settings → Devices & Services → **Add Integration** → "AT&T BGW320 Gateway".
+
+**Manual**
+
+Download `bgw320.zip` from a [release](https://github.com/pope523/att-fiber-gateway/releases)
+and unzip it into `config/custom_components/bgw320/`, then restart Home
+Assistant.
+
+Full details, including building the zip yourself, are in [INSTALL.md](INSTALL.md).
 
 ## Setup
 
-1. Install via HACS (you're here).
-2. Restart Home Assistant.
-3. Settings → Devices & Services → Add Integration → "Cable Modem Monitor".
-4. Pick your manufacturer and model, enter your modem's IP (usually `192.168.100.1`) and credentials if required.
+Pick Nokia → BGW320-505, then enter:
 
-## Privacy and security
+- **Host:** `192.168.0.254` (the AT&T default).
+- **Password:** optional. Leave blank for monitoring only. To enable the
+  restart button, enter the **12-character Device Access Code** printed on the
+  gateway's label.
 
-All processing happens on your Home Assistant instance. The integration reads from the modem's local web interface; the only write action is a user-invoked restart button. Every push is scanned by GitHub CodeQL.
+The access code is stored in Home Assistant's encrypted credential storage and
+is used only to authenticate the restart action. Polling never sends it.
 
-## Using the integration
+## Entities
 
-- [Sensor reference](https://github.com/solentlabs/cable_modem_monitor#available-sensors) — full list of entities, naming patterns, and what each value means
-- [Dashboard and automation examples](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/EXAMPLES.md) — ready-to-use Lovelace YAML and automation templates
-- [Troubleshooting guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/TROUBLESHOOTING.md) — connection problems, missing sensors, duplicate entities
-- [Changelog](https://github.com/solentlabs/cable_modem_monitor/blob/main/CHANGELOG.md) — what changed in each release
+Entities are prefixed `bgw320_`, for example `sensor.bgw320_optical_rx_power`.
 
-## Contributing and modem support
+| Entity | Notes |
+|---|---|
+| `sensor.bgw320_status` | Rolled-up status from connection, health, and PON state |
+| `sensor.bgw320_pon_status` | Optical WAN operational status (`Operational` when up) |
+| `sensor.bgw320_pon_link_status` | Raw GPON state, e.g. `OPERATION (O5)` |
+| `sensor.bgw320_optical_rx_power` | Receive power, dBm |
+| `sensor.bgw320_optical_tx_power` | Transmit power, dBm |
+| `sensor.bgw320_optical_temperature` | SFP module temperature |
+| `sensor.bgw320_optical_status` | Optical link state |
+| `sensor.bgw320_optical_wavelength` | Wavelength, e.g. `1270 nm` |
+| `sensor.bgw320_wan_link_speed_mbps` | Negotiated WAN speed |
+| `sensor.bgw320_wan_connection_type` | e.g. `FIBER` |
+| `sensor.bgw320_wan_network_type` | e.g. `Lightspeed` |
+| `sensor.bgw320_wan_ipv4` / `_wan_ipv6` | Public WAN addresses |
+| `sensor.bgw320_wan_rx_bytes` / `_wan_tx_bytes` | Throughput counters |
+| `sensor.bgw320_wan_rx_packets` / `_wan_tx_packets` | Packet counters |
+| `sensor.bgw320_wan_rx_errors` / `_wan_tx_errors` | Error counters |
+| `sensor.bgw320_wan_rx_drops` / `_wan_tx_drops` | Drop counters |
+| `sensor.bgw320_software_version` | Firmware, e.g. `6.34.7` |
+| `sensor.bgw320_hardware_version` | Hardware revision |
+| `sensor.bgw320_system_uptime` | Uptime since last reboot |
+| `sensor.bgw320_last_boot_time` | Timestamp derived from uptime |
+| `sensor.bgw320_tcp_latency` | TCP connect latency |
+| `sensor.bgw320_ping_latency` | ICMP latency |
+| `sensor.bgw320_http_latency` | HTTP HEAD latency |
+| `button.bgw320_restart_modem` | Reboot (needs the access code) |
+| `button.bgw320_update_modem_data` | Force an immediate poll |
+| `button.bgw320_reset_entities` | Re-run capability detection |
 
-- [Modem request guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/MODEM_REQUEST.md) — how to capture the data needed to add your modem
-- [Contributing guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/CONTRIBUTING.md) — workflow, code style, and PR guidelines
-- [Getting started for developers](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/setup/GETTING_STARTED.md) — environment setup, running tests, first commit
+Optical temperature is reported in Celsius and displayed in your Home Assistant
+unit system, so a US install shows Fahrenheit.
+
+## Relationship to Cable Modem Monitor
+
+This integration is derived from
+[solentlabs/cable_modem_monitor](https://github.com/solentlabs/cable_modem_monitor),
+a DOCSIS cable modem integration by Ken Schulz, and reuses its collection,
+parsing, and orchestration engine under the MIT license.
+
+It began as a fork adding the BGW320-505 as one more catalog entry. That did
+not fit: upstream is deliberately DOCSIS-scoped, and supporting a fiber gateway
+required changes to core status derivation, a new authentication strategy, and
+optional device metadata — more than a catalog addition. Rather than push a
+non-DOCSIS device into a DOCSIS project, this became a separate integration.
+
+What changed here:
+
+- Domain is `bgw320`; entities are `bgw320_*`.
+- The catalog contains one device, the BGW320-505.
+- Fiber link health is `pon_status`, not `docsis_status`.
+- Downstream/upstream channel-count sensors are gone. XGS-PON has no DOCSIS
+  channels, so they only ever reported 0.
+- Channel-bond change notifications are gone; they are meaningless without
+  channel bonding.
+- Adds the `form_md5_nonce` auth strategy and per-request nonce injection for
+  the restart action.
+
+Because the engine packages are not published to PyPI under these changes, the
+HACS artifact vendors them. See [INSTALL.md](INSTALL.md).
+
+The two integrations use different domains and can be installed side by side.
+
+## Troubleshooting
+
+- **No entities after setup.** Confirm `http://192.168.0.254` loads from the
+  Home Assistant host. The gateway is HTTP-only on the LAN.
+- **Restart button does nothing.** The access code is the 12-character code on
+  the gateway label, not your Wi-Fi password or AT&T account password.
+  Reconfigure the integration and re-enter it.
+- **Optical temperature looks too high.** It is Celsius converted to your unit
+  system; roughly 49 °C shows as about 120 °F, which is normal.
+- **Diagnostics.** Settings → Devices & Services → AT&T BGW320 Gateway →
+  Download diagnostics. Output is sanitized of IPs, paths, and credentials, but
+  review before sharing.
+
+More in [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE) and [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md).

@@ -3,9 +3,6 @@ contact_links:
   - name: 💬 Discuss an idea before filing
     url: https://github.com/pope523/att-fiber-gateway/discussions/new?category=ideas
     about: For new sensors, architecture changes, or anything spanning multiple files, start a Discussion first
-  - name: 📊 Check Supported Modems First
-    url: https://pypi.org/project/solentlabs-cable-modem-monitor-catalog/
-    about: See if your modem is already supported before opening an issue
   - name: Troubleshooting Guide
     url: https://github.com/pope523/att-fiber-gateway/blob/main/docs/TROUBLESHOOTING.md
     about: Check common issues and solutions

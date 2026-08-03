@@ -303,7 +303,7 @@ def _build_diagnostics_dict(
             "if_you_find_credentials": (
                 "Replace them with ***REDACTED*** and note it in your " "GitHub issue so we can improve the sanitizer."
             ),
-            "documentation": ("https://github.com/pope523/att-fiber-gateway" "/blob/main/docs/MODEM_REQUEST.md"),
+            "documentation": ("https://github.com/pope523/att-fiber-gateway" "/blob/main/docs/TROUBLESHOOTING.md"),
         },
         "config_entry": {
             "title": entry.title,
