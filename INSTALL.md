@@ -55,10 +55,23 @@ Leave the password blank if you only want monitoring. You can add it later via
 This integration uses the domain `bgw320`, so it will not adopt entities from a
 previous `cable_modem_monitor` install. Entity history does not carry over.
 
+**Remove the old integration first — do not run both.** Home Assistant tolerates
+the two domains, but each ships its own copy of the engine vendored under the
+same `solentlabs.*` import namespace. Python imports that namespace once and
+caches it, so whichever integration loads first supplies the engine for both.
+In practice this integration then reads upstream's DOCSIS catalog: the device
+picker lists every cable modem manufacturer instead of just Nokia. Deleting the
+config entry is not enough, because the files on disk are what get imported —
+the old directory has to go, followed by a restart.
+
 1. Settings → Devices & Services → **Cable Modem Monitor** → delete the entry.
-2. Remove it from HACS (or delete `config/custom_components/bgw320/`).
-3. Install this integration and add it fresh.
-4. Update dashboards and automations from `sensor.cable_modem_*` to
+2. Remove it from HACS, and confirm
+   `config/custom_components/cable_modem_monitor/` is actually gone.
+3. Restart Home Assistant. This clears the cached engine modules.
+4. Install this integration and add it fresh. The manufacturer dropdown should
+   offer only **Nokia** — if you see other manufacturers, the old copy is still
+   on disk.
+5. Update dashboards and automations from `sensor.cable_modem_*` to
    `sensor.bgw320_*`. Note `docsis_status` is now `pon_status`, and the DS/US
    channel-count sensors no longer exist.
 

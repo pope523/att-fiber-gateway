@@ -138,7 +138,13 @@ Because the engine packages are not published to PyPI under these changes, the
 HACS artifact vendors them. See
 [INSTALL.md](https://github.com/pope523/att-fiber-gateway/blob/main/INSTALL.md).
 
-The two integrations use different domains and can be installed side by side.
+**Do not run both integrations at once.** They use different Home Assistant
+domains, so Home Assistant itself is happy, but each bundles its own engine
+under the same `solentlabs.*` import namespace. Whichever loads first wins for
+both, and Python caches it — so this integration can silently end up running
+upstream's DOCSIS catalog instead of its own. Remove `cable_modem_monitor`
+before installing this one; see the migration steps in
+[INSTALL.md](https://github.com/pope523/att-fiber-gateway/blob/main/INSTALL.md).
 
 ## Troubleshooting
 
