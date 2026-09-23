@@ -2,7 +2,7 @@
 
 > Auto-generated. Run `scripts/generate_catalog_index.py` to refresh.
 
-**1 configurations supported** — 0 confirmed on real hardware, 1 awaiting verification.
+**2 configurations supported** — 0 confirmed on real hardware, 2 awaiting verification.
 
 ---
 
@@ -14,6 +14,7 @@ and share a diagnostics snapshot.
 
 | Modem | Transport | ISPs | Note |
 |-------|-----------|------|------|
+| BGW620-700 (02002300460053) | HTML | AT&T, AT&T Fiber |  |
 | BGW320-505 (02001E0046004F) | HTML | AT&T, AT&T Fiber |  |
 
 ## Pending Review

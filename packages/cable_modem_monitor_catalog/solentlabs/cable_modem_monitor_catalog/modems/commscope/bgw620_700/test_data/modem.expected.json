@@ -1,0 +1,31 @@
+{
+  "downstream": [],
+  "system_info": {
+    "downstream_channel_count": 0,
+    "hardware_version": "02002300460053",
+    "optical_rx_power": "-8.6",
+    "optical_status": "Up",
+    "optical_temperature": "53.8",
+    "optical_tx_power": "6.1",
+    "optical_wavelength": "1270 nm",
+    "pon_link_status": "OPERATION (O5)",
+    "pon_status": "Operational",
+    "software_version": "5.35.7",
+    "system_uptime": "0 days 06h:07m:45s",
+    "upstream_channel_count": 0,
+    "wan_connection_type": "FIBER",
+    "wan_ipv4": "203.0.113.168",
+    "wan_ipv6": "aaaa::1",
+    "wan_link_speed_mbps": "10000",
+    "wan_network_type": "Lightspeed",
+    "wan_rx_bytes": "13801230809",
+    "wan_rx_drops": "0",
+    "wan_rx_errors": "0",
+    "wan_rx_packets": "10347636",
+    "wan_tx_bytes": "416498726",
+    "wan_tx_drops": "14",
+    "wan_tx_errors": "0",
+    "wan_tx_packets": "1800970"
+  },
+  "upstream": []
+}

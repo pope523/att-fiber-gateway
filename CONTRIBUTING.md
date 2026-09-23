@@ -50,25 +50,31 @@ PR titles and bodies are not edited by the maintainer — any feedback comes in 
 
 ## Scope
 
-This project targets one device: the AT&T Nokia BGW320-505 XGS-PON fiber
-gateway. It is not a general modem integration, and the catalog is not
-intended to grow into one.
+This project targets AT&T-issued XGS-PON fiber gateways: the Nokia
+BGW320-505 and the CommScope BGW620-700. It is not a general modem
+integration, and the catalog is not intended to grow beyond AT&T's own
+fiber hardware.
 
 Good contributions:
 
 - Firmware compatibility fixes. AT&T pushes firmware without notice, and a
   changed label or moved value breaks parsing. Re-capture the affected page
   and update `parser.yaml` or the post-processor.
-- Additional data already exposed by the gateway that is not yet surfaced.
-- BGW320-500 support. It is a similar Humax-built unit on the same firmware
-  family, but no fixtures exist for it. A sanitized HAR would be the start.
+- Additional data already exposed by a supported gateway that is not yet
+  surfaced.
+- BGW320-500 support. It is a similar Humax-built unit on the BGW320-505's
+  firmware family, but no fixtures exist for it. A sanitized HAR would be
+  the start.
+- Other AT&T-issued fiber gateway models, starting from a sanitized live
+  HAR capture.
 - Bug fixes, tests, and documentation.
 
-If you want a **different** device supported, the upstream project
+If you want a **non-AT&T** or **non-fiber** device supported (DOCSIS cable
+modems, other ISPs' gateways, etc.), the upstream project
 [solentlabs/cable_modem_monitor](https://github.com/solentlabs/cable_modem_monitor)
 is built for exactly that and has a maintained catalog and intake workflow.
-The engine here is a modified copy of theirs, so device work is far better
-spent there.
+The engine here is a modified copy of theirs, so device work outside AT&T
+fiber hardware is far better spent there.
 
 When re-capturing fixtures, sanitize them: serial numbers, MAC addresses,
 public IPs, and session nonces must be replaced with the placeholder values in

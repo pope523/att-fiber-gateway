@@ -1,0 +1,55 @@
+manufacturer: CommScope
+model: BGW620-700
+transport: http
+default_host: "192.168.1.254"
+
+auth:
+  strategy: none
+
+# No restart action yet: the BGW320-505 nonce + MD5 restart flow has not
+# been verified against this firmware (5.35.x), and verifying it reboots
+# a live gateway. Polling is auth-free, same as the BGW320-505.
+
+hardware:
+  hw_version: "02002300460053"
+  firmware: "5.35.7"
+  release_date: "2024"
+
+status: awaiting_verification
+
+sources:
+  data: "Live HTTP capture from an AT&T BGW620-700 (firmware 5.35.7): sysinfo.ha, broadbandstatistics.ha, fiberstat.ha"
+
+attribution:
+  contributors:
+    - github: https://github.com/MatthewPricePhd
+      contribution: "Live capture from an AT&T BGW620-700 on 5Gb XGS-PON service, catalog entry, and decimal-format fiber post-processor"
+
+isps:
+  - AT&T
+  - AT&T Fiber
+
+notes: |
+  AT&T's successor to the Nokia BGW320: a CommScope-built XGS-PON fiber
+  gateway (ONT + router) with the same /cgi-bin/*.ha XHTML UI. All of the
+  BGW320-505 catalog labels are present unchanged on firmware 5.35.7; the
+  differences are in value formats:
+
+  - fiberstat.ha reports the current optical values as DECIMALS, not the
+    BGW320's tenth-dBm integers, and the page's own help text declares raw
+    SFF-8472 register units ("Power in W/10,000,000") rather than dBm.
+    Observed display scaling (see parser.py): Rx Power prints in mW
+    (register/10000), while Tx Power and all alarm/warning thresholds
+    print in tenths of a mW (register/1000). With that reading every
+    value lands inside normal XGS-PON N1 bands on a live 5Gb line
+    (Tx +6.1 dBm inside the +4.2..+8.1 dBm threshold band, Rx -8.6 dBm
+    inside the -13..-8 dBm threshold band). Scaling inferred from one
+    unit's thresholds — worth confirming against a second BGW620 or a
+    tech's light meter before promoting to confirmed.
+  - sysinfo.ha reports "Time Since Last Reboot" as Days:Hours:Minutes:
+    Seconds (e.g. 00:06:07:45) instead of raw seconds.
+  - fiberstat.ha also exposes Vcc and Tx Bias "Currently" headers the
+    BGW320-505 lacks (not yet surfaced).
+
+references:
+  issues: []

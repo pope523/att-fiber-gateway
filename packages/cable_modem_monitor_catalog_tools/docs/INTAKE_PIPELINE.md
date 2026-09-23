@@ -237,6 +237,6 @@ pipeline stages, and printing. The shared grade taxonomy is
 ## Further Reading
 
 - [ONBOARDING_SPEC.md](ONBOARDING_SPEC.md) — full tool contracts, decision tree (7 phases), validation rules, worked examples, error handling
-- [Upstream modem request guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/MODEM_REQUEST.md) — contributor guide for submitting HAR captures (this project targets a single device; new-device intake lives upstream)
+- [Upstream modem request guide](https://github.com/solentlabs/cable_modem_monitor/blob/main/docs/MODEM_REQUEST.md) — contributor guide for submitting HAR captures (this project targets AT&T fiber gateways only; new-device intake for other hardware lives upstream)
 - [MODEM_YAML_SPEC.md](../../cable_modem_monitor_core/docs/MODEM_YAML_SPEC.md) — modem config schema and transport constraints
 - [PARSING_SPEC.md](../../cable_modem_monitor_core/docs/PARSING_SPEC.md) — parser config schema

@@ -12,6 +12,19 @@ history.
 
 ## [Unreleased]
 
+### Added
+
+- **CommScope BGW620-700 catalog entry.** AT&T's successor to the
+  Nokia BGW320-505 (5Gb XGS-PON tier). Same `/cgi-bin/*.ha` page layout and
+  labels as the BGW320-505, but three value formats differ: `fiberstat.ha`
+  reports optical Rx/Tx power as decimals (raw SFF-8472 register counts)
+  instead of tenth-dBm integers, `sysinfo.ha` reports uptime as
+  `Days:Hours:Minutes:Seconds` instead of raw seconds, and the page exposes
+  additional `Vcc`/`Tx Bias` headers not yet surfaced. A dedicated
+  post-processor converts the decimal register counts to dBm. Captured live
+  from firmware 5.35.7 on a 5Gb line; contributed by @MatthewPricePhd
+  (issue #1).
+
 ## [1.0.0] - 2026-08-03
 
 First release as a standalone integration for the AT&T Nokia BGW320-505
