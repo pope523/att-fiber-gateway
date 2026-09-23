@@ -6,10 +6,14 @@ These tests run against the real catalog to verify extraction correctness.
 The pattern-extraction suites below assert DOCSIS fleet conventions
 (downstream/upstream selectors, SC-QAM error aggregates, JS and HNAP
 channel-table layouts) learned by scanning many cable modems. This
-repository ships a single channel-less fiber gateway, so there is no
-fleet to learn from and every pattern map is legitimately empty. Those
-suites are skipped rather than deleted so they come back automatically
-if the catalog ever holds more than one device.
+repository ships channel-less XGS-PON fiber gateways (BGW320-505,
+BGW620-700) with no downstream/upstream sections, so there is no fleet
+to learn from and every pattern map is legitimately empty. Catalog
+device *count* is not the right proxy for that — two fiber gateways are
+still zero DOCSIS gateways — so the gate checks for an actual
+channel-bearing entry instead. These suites are skipped rather than
+deleted so they come back automatically once the catalog holds a real
+DOCSIS modem.
 
 ``TestAuditFleetAuth`` builds its own catalogs under ``tmp_path`` and is
 independent of catalog contents, so it always runs.
@@ -20,19 +24,35 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+import yaml
 from solentlabs.cable_modem_monitor_catalog import CATALOG_PATH
 from solentlabs.cable_modem_monitor_catalog_tools.analysis.types import FleetPatterns
 from solentlabs.cable_modem_monitor_catalog_tools.fleet_scanner import AuthAuditIssue, audit_fleet_auth, scan_fleet
 
 
-def _catalog_device_count() -> int:
-    """Number of devices in the installed catalog."""
-    return len(list(CATALOG_PATH.glob("*/*/parser.yaml")))
+def _catalog_has_channel_data() -> bool:
+    """True if any catalog parser.yaml declares DOCSIS downstream/upstream channels.
+
+    Fleet-pattern extraction (selector directions, JS/HNAP channel-table
+    layouts, aggregate fields) only has something to learn from a modem
+    that actually has channels. A catalog full of channel-less fiber
+    gateways produces legitimately empty pattern maps no matter how many
+    of them are onboarded.
+    """
+    for parser_path in CATALOG_PATH.glob("*/*/parser.yaml"):
+        try:
+            data = yaml.safe_load(parser_path.read_text(encoding="utf-8"))
+        except (yaml.YAMLError, OSError):
+            continue
+        if isinstance(data, dict) and ("downstream" in data or "upstream" in data):
+            return True
+    return False
 
 
 _needs_fleet = pytest.mark.skipif(
-    _catalog_device_count() < 2,
-    reason="fleet-pattern extraction needs a multi-device catalog; this repo ships one fiber gateway",
+    not _catalog_has_channel_data(),
+    reason="fleet-pattern extraction needs at least one DOCSIS (channel-bearing) modem; "
+    "this repo currently ships only channel-less fiber gateways",
 )
 
 
