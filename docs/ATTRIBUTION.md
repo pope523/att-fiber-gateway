@@ -8,9 +8,9 @@ by **Ken Schulz** (@kwschulz), MIT licensed.
 
 Nearly all of the collection, parsing, authentication, and orchestration
 machinery here is that project's work. What this repository adds is the
-BGW320-505 device definition, fiber-specific status handling, the
-`form_md5_nonce` auth strategy, and the rescoping of the Home Assistant
-adapter to a single fiber gateway.
+BGW320-505 and BGW620-700 device definitions, fiber-specific status
+handling, the `form_md5_nonce` auth strategy, and the rescoping of the
+Home Assistant adapter to AT&T fiber gateways.
 
 The upstream copyright notice is retained in [LICENSE](../LICENSE) as the MIT
 license requires. If you want DOCSIS cable modem monitoring, use the upstream
@@ -41,6 +41,11 @@ were captured from a live BGW320-505 and sanitized: serial numbers, MAC
 addresses, public IP addresses, and session nonces are replaced with the
 catalog-safe placeholder values defined in
 `packages/cable_modem_monitor_catalog/scripts/data/pii_safe_values.json`.
+
+The HAR fixtures under
+`packages/cable_modem_monitor_catalog/solentlabs/cable_modem_monitor_catalog/modems/commscope/bgw620_700/test_data/`
+were captured from a live BGW620-700 and sanitized the same way, contributed
+by [@MatthewPricePhd](https://github.com/MatthewPricePhd).
 
 ## Dependencies
 

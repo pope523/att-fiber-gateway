@@ -7,8 +7,8 @@
 > Not intended for direct use — install the HA integration via [HACS](https://hacs.xyz/).
 >
 > This package holds the device configuration, parser config, and test fixtures for
-> the one device this integration targets. It is not published to PyPI; it is
-> vendored into the HACS release artifact.
+> the AT&T fiber gateways this integration targets. It is not published to PyPI; it
+> is vendored into the HACS release artifact.
 
 ---
 

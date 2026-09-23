@@ -3,9 +3,9 @@
 [![GitHub Release](https://img.shields.io/github/v/release/pope523/att-fiber-gateway?include_prereleases)](https://github.com/pope523/att-fiber-gateway/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Home Assistant integration for the **AT&T Nokia BGW320-505** XGS-PON fiber
-gateway. Graphs the optical link, tracks WAN health and throughput counters,
-and adds a restart button.
+Home Assistant integration for AT&T XGS-PON fiber gateways — the **Nokia
+BGW320-505** and **CommScope BGW620-700**. Graphs the optical link, tracks
+WAN health and throughput counters, and adds a restart button.
 
 This is a fiber integration. It is not a DOCSIS cable modem integration — see
 [Relationship to Cable Modem Monitor](#relationship-to-cable-modem-monitor).
@@ -35,12 +35,15 @@ without logging in. Only the restart button requires the Device Access Code.
 ## Requirements
 
 - Home Assistant 2024.12.0 or newer
-- An AT&T Nokia BGW320-505 reachable on your network (default `192.168.0.254`)
+- An AT&T Nokia BGW320-505 or CommScope BGW620-700 reachable on your network
+  (default `192.168.0.254`)
 - HACS, for the recommended install path
 
-Only the **BGW320-505** is verified. The BGW320-500 is a similar Humax-built
-unit with the same firmware family; it may work, but no fixtures exist for it
-and it is untested here.
+The **BGW320-505** is verified on real hardware. The **BGW620-700** catalog
+entry is newly added and still awaiting broader hardware confirmation (see
+[CATALOG_AUDIT.md](https://github.com/pope523/att-fiber-gateway/blob/main/packages/cable_modem_monitor_catalog/CATALOG_AUDIT.md)).
+The BGW320-500 is a similar Humax-built unit on the BGW320-505's firmware
+family; it may work, but no fixtures exist for it and it is untested here.
 
 ## Install
 
@@ -63,7 +66,8 @@ Full details, including building the zip yourself, are in
 
 ## Setup
 
-Pick Nokia → BGW320-505, then enter:
+Pick your gateway's manufacturer and model (Nokia BGW320-505 or CommScope
+BGW620-700), then enter:
 
 - **Host:** `192.168.0.254` (the AT&T default).
 - **Password:** optional. Leave blank for monitoring only. To enable the
@@ -125,7 +129,8 @@ non-DOCSIS device into a DOCSIS project, this became a separate integration.
 What changed here:
 
 - Domain is `bgw320`; entities are `bgw320_*`.
-- The catalog contains one device, the BGW320-505.
+- The catalog contains AT&T XGS-PON fiber gateways — currently the
+  BGW320-505 and BGW620-700.
 - Fiber link health is `pon_status`, not `docsis_status`.
 - Downstream/upstream channel-count sensors are gone. XGS-PON has no DOCSIS
   channels, so they only ever reported 0.
